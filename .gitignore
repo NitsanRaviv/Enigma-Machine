@@ -1,0 +1,27 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+.out/
+*.class
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+logs
+
+log-agent-parent/log-agent/logs
+log-agent-parent/log-agent-mini/logs
+log-agent-parent/log-agent/console.out
+logs/*
+
+derby.log
