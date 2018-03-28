@@ -34,7 +34,7 @@ public class Rotor {
     {
         if(this.leftEntries != null && rightEntries != null) {
             Collections.rotate(leftEntries, leftEntries.size() - 1);
-            Collections.rotate(rightEntries,  leftEntries.size() - 1);
+            Collections.rotate(rightEntries,  rightEntries.size() - 1);
             zeezIndex--;
         }
 
@@ -57,6 +57,15 @@ public class Rotor {
         this.zeezIndex = zeezIndex;
     }
 
+    public void setNotch(Integer notch)
+    {
+        while (this.rightEntries.get(0) != notch)
+        {
+            Collections.rotate(rightEntries, rightEntries.size() - 1);
+            Collections.rotate(leftEntries, rightEntries.size() - 1);
+        }
+    }
+
     public void setLeftRotor(Rotor leftRotor) {
         this.leftRotor = leftRotor;
     }
@@ -64,7 +73,8 @@ public class Rotor {
     public int outputComingFromRight(int entranceNumber)
     {
         //TODO add checks on index bound
-        int searched = rightEntries.get(entranceNumber - 1);
+        int searched;
+        searched = rightEntries.get(entranceNumber - 1);
         int index = 1;
         for (int i: leftEntries) {
             if(i == searched)
@@ -90,6 +100,5 @@ public class Rotor {
         }
         return index;
     }
-
 
 }
