@@ -13,50 +13,65 @@ public class TestPartsOfMachine {
 
     private List<Integer> rotorList = new ArrayList<>(5);
 
-    @Ignore
+    @Test
     public void testRotor() {
-        List<Integer> beforeRotatation = new ArrayList<>(5);
-        for (int i = 1; i <= 5; i++) {
-            beforeRotatation.add(i);
-        }
-        Rotor rotor = new Rotor(beforeRotatation);
+        List<Integer> rightEntries = new ArrayList<>(5);
+        rightEntries.add(1);
+        rightEntries.add(2);
+        rightEntries.add(3);
+        List<Integer> leftEntries = new ArrayList<>(5);
+        leftEntries.add(2);
+        leftEntries.add(1);
+        leftEntries.add(3);
+        Rotor rotor = new Rotor(leftEntries, rightEntries);
         rotor.rotateRotorOneRound();
         List<Integer> rotorsList = rotor.getLeftEntries();
         for (int i = 0; i < rotorsList.size(); i++) {
             System.out.println(rotorsList.get(i));
         }
+        System.out.println();
+
     }
 
-    @Ignore
+    @Test
     public void testNotifyRotor()
     {
-        List<Integer> beforeRotatation = new ArrayList<>(5);
-        beforeRotatation.add(3);
-        beforeRotatation.add(1);
-        beforeRotatation.add(2);
-        Rotor rotor = new Rotor(beforeRotatation, 0);
-        Rotor rotor1 = new Rotor(beforeRotatation);
+        List<Integer> rightEntries = new ArrayList<>(5);
+        rightEntries.add(1);
+        rightEntries.add(2);
+        rightEntries.add(3);
+        List<Integer> leftEntries = new ArrayList<>(5);
+        leftEntries.add(2);
+        leftEntries.add(1);
+        leftEntries.add(3);
+        Rotor rotor = new Rotor(leftEntries, rightEntries);
+        Rotor rotor1 = new Rotor(leftEntries, rightEntries);
         rotor.setLeftRotor(rotor1);
         rotor.rotateRotorOneRound();
         for (int i = 0; i < rotor1.getLeftEntries().size(); i++) {
             System.out.println("left " + rotor1.getLeftEntries().get(i) + " right " +  rotor1.getRightEntries().get(i));
         }
+        System.out.println();
     }
 
     @Test
-    public void ecription()
+    public void testEcription()
     {
-        List<Integer> beforeRotatation = new ArrayList<>(5);
-        beforeRotatation.add(3); // 1 -> 3
-        beforeRotatation.add(1); // 2 -> 1
-        beforeRotatation.add(2); // 3 -> 2
-        Rotor rotor = new Rotor(beforeRotatation);
+        List<Integer> rightEntries = new ArrayList<>(5);
+        rightEntries.add(1);
+        rightEntries.add(2);
+        rightEntries.add(3);
+        List<Integer> leftEntries = new ArrayList<>(5);
+        leftEntries.add(2);
+        leftEntries.add(1);
+        leftEntries.add(3);
+        Rotor rotor = new Rotor(leftEntries, rightEntries);
         rotor.rotateRotorOneRound();
         System.out.println(rotor.outputComingFromRight(2 ));
         rotor.rotateRotorOneRound();
         System.out.println(rotor.outputComingFromRight(2 ));
         rotor.rotateRotorOneRound();
         System.out.println(rotor.outputComingFromRight(3 ));
-
+        System.out.println();
     }
 }

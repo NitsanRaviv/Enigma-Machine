@@ -13,9 +13,9 @@ public class Rotor {
     private int zeezIndex;
     private Rotor leftRotor = null;
 
-    public Rotor(List<Integer> leftEntries)
+    public Rotor(List<Integer> leftEntries, List<Integer> rightEntries )
     {
-        this(leftEntries, MachineConstants.DEFAULT_ZEEZ_INDEX);
+        this(leftEntries,rightEntries, MachineConstants.DEFAULT_ZEEZ_INDEX);
     }
 
 
@@ -23,19 +23,18 @@ public class Rotor {
         return rightEntries;
     }
 
-    public Rotor(List<Integer> leftEntries, int zeezIndex)
+    public Rotor(List<Integer> leftEntries,List<Integer> rightEntries, int zeezIndex)
     {
         this.leftEntries = new ArrayList<>(leftEntries);
-        this.rightEntries = new ArrayList<>(leftEntries);
+        this.rightEntries = new ArrayList<>(rightEntries);
         this.zeezIndex = zeezIndex;
-        initLeftEntries();
     }
 
     public void rotateRotorOneRound()
     {
         if(this.leftEntries != null && rightEntries != null) {
             Collections.rotate(leftEntries, leftEntries.size() - 1);
-            Collections.rotate(rightEntries,  1);
+            Collections.rotate(rightEntries,  leftEntries.size() - 1);
             zeezIndex--;
         }
 
@@ -49,12 +48,6 @@ public class Rotor {
         }
     }
 
-    private void initLeftEntries() {
-        for (int i = 0; i < rightEntries.size(); i++)
-        {
-            leftEntries.set(rightEntries.get(i) - 1, i + 1);
-        }
-    }
 
     public List<Integer> getLeftEntries() {
         return leftEntries;
@@ -70,12 +63,32 @@ public class Rotor {
 
     public int outputComingFromRight(int entranceNumber)
     {
-        return rightEntries.get(entranceNumber - 1);
+        //TODO add checks on index bound
+        int searched = rightEntries.get(entranceNumber - 1);
+        int index = 1;
+        for (int i: leftEntries) {
+            if(i == searched)
+            {
+                break;
+            }
+            index++;
+        }
+        return index;
     }
 
     public int outputComingFromLeft(int entranceNumber)
     {
-        return leftEntries.get(entranceNumber - 1);
+        //TODO add checks on index bound
+        int searched = leftEntries.get(entranceNumber - 1);
+        int index = 1;
+        for (int i: rightEntries) {
+            if(i == searched)
+            {
+                break;
+            }
+            index++;
+        }
+        return index;
     }
 
 
