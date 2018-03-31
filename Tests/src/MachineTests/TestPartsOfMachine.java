@@ -1,9 +1,12 @@
 package MachineTests;
 
 
+import Machine.MachineBuilder;
+import Machine.MachineProxy;
 import Parts.Reflector;
 import Parts.Rotor;
 import Utilities.LanguageInterpeter;
+import org.junit.Assert;
 import org.junit.Test;
 import Machine.EnigmaMachine;
 
@@ -28,7 +31,8 @@ public class TestPartsOfMachine {
         leftEntries.add(3);
         Rotor rotor = new Rotor(leftEntries, rightEntries);
         rotor.rotateRotorOneRound();
-        TestUtilities.printList(rotor.getLeftEntries());
+        Assert.assertEquals (rotor.getLeftEntries().toString() , "[1, 3, 2]");
+
 
     }
 
@@ -47,14 +51,13 @@ public class TestPartsOfMachine {
         Rotor rotor1 = new Rotor(leftEntries, rightEntries);
         rotor.setLeftRotor(rotor1);
         rotor.rotateRotorOneRound();
-        for (int i = 0; i < rotor1.getLeftEntries().size(); i++) {
-            System.out.println("left " + rotor1.getLeftEntries().get(i) + " right " +  rotor1.getRightEntries().get(i));
-        }
-        System.out.println();
+        Assert.assertEquals(rotor1.getLeftEntries().toString(), "[2, 1, 3]");
+        Assert.assertEquals(rotor1.getRightEntries().toString(), "[1, 2, 3]");
+
     }
 
     @Test
-    public void testEcription()
+    public void testEncription()
     {
         List<Integer> rightEntries = new ArrayList<>(5);
         rightEntries.add(1);
@@ -66,12 +69,11 @@ public class TestPartsOfMachine {
         leftEntries.add(3);
         Rotor rotor = new Rotor(leftEntries, rightEntries);
         rotor.rotateRotorOneRound();
-        System.out.println(rotor.outputComingFromRight(2 ));
+        Assert.assertEquals(rotor.outputComingFromRight(2 ), 2);
         rotor.rotateRotorOneRound();
-        System.out.println(rotor.outputComingFromRight(2 ));
+        Assert.assertEquals(rotor.outputComingFromRight(2 ), 3);
         rotor.rotateRotorOneRound();
-        System.out.println(rotor.outputComingFromRight(3 ));
-        System.out.println();
+        Assert.assertEquals(rotor.outputComingFromRight(3 ), 3);
     }
 
     @Test
@@ -85,12 +87,12 @@ public class TestPartsOfMachine {
         }
         LanguageInterpeter languageInterpeter = new LanguageInterpeter(lang);
         List<Character> res = languageInterpeter.numberToLetters(numbers);
-        TestUtilities.printList(res);
+        Assert.assertEquals(res.toString(), "[1, 9, %, &, *]");
 
     }
 
     @Test
-    public void testMachineEncription()
+    public void testMachineEncriptionAndInitMachine()
     {
         LanguageInterpeter  languageInterpeter = new LanguageInterpeter(new char[]{'A','B','C','D','E','F'});
         List<Integer> numbers = languageInterpeter.getLanguageAsNumbers();
@@ -133,13 +135,19 @@ public class TestPartsOfMachine {
 
         EnigmaMachine machine = new EnigmaMachine(rotors,chosenReflector)
                 .setChosenReflector(0)
-                .setChosenRotors(new int[]{0,1});
+                .setChosenRotors(0, 1);
 
         List<Integer> resNumbers;
         List<Character> resCharacters;
         resNumbers = machine.encryptCode(languageInterpeter.lettersToNumbers(new char[]{'A','A','B','B','C','C','D','D','E','E','F','F'}));
         resCharacters = languageInterpeter.numberToLetters(resNumbers);
-        TestUtilities.printList(resCharacters);
+        Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
+
+        machine.setToInitialState();
+        resNumbers = machine.encryptCode(languageInterpeter.lettersToNumbers(new char[]{'A','A','B','B','C','C','D','D','E','E','F','F'}));
+        resCharacters = languageInterpeter.numberToLetters(resNumbers);
+        Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
+        
     }
 
 

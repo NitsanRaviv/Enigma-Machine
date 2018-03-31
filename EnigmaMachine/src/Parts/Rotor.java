@@ -12,6 +12,8 @@ public class Rotor {
     private List<Integer> rightEntries;
     private int zeezIndex;
     private Rotor leftRotor = null;
+    private int initialNotch;
+    private int initialZeezIndex;
 
     public Rotor(List<Integer> leftEntries, List<Integer> rightEntries )
     {
@@ -28,6 +30,7 @@ public class Rotor {
         this.leftEntries = new ArrayList<>(leftEntries);
         this.rightEntries = new ArrayList<>(rightEntries);
         this.zeezIndex = zeezIndex;
+        this.initialZeezIndex = zeezIndex;
     }
 
     public void rotateRotorOneRound()
@@ -53,8 +56,10 @@ public class Rotor {
         return leftEntries;
     }
 
+    //should use it only when initializing or reseting machine , maybe init only in constructor
     public void setZeezIndex(int zeezIndex) {
         this.zeezIndex = zeezIndex;
+        this.initialZeezIndex = zeezIndex;
     }
 
     public void setNotch(Integer notch)
@@ -62,8 +67,9 @@ public class Rotor {
         while (this.rightEntries.get(0) != notch)
         {
             Collections.rotate(rightEntries, rightEntries.size() - 1);
-            Collections.rotate(leftEntries, rightEntries.size() - 1);
+            Collections.rotate(leftEntries, leftEntries.size() - 1);
         }
+        this.initialNotch = notch;
     }
 
     public void setLeftRotor(Rotor leftRotor) {
@@ -100,5 +106,9 @@ public class Rotor {
         }
         return index;
     }
-
+    public void setToInitialState()
+    {
+        this.setZeezIndex(initialZeezIndex);
+        this.setNotch(initialNotch);
+    }
 }

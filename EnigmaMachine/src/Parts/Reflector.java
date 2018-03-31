@@ -14,7 +14,7 @@ public class Reflector {
         }
         for(Integer i : oneWayMapping.keySet())
         {
-            this.relectedValues.put(oneWayMapping.get(i),i );
+            this.relectedValues.put(oneWayMapping.get(i),i);
         }
     }
 

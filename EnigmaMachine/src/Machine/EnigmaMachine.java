@@ -1,7 +1,6 @@
 package Machine;
 
 import Parts.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class EnigmaMachine {
         this.reflectors = new ArrayList<>(reflectors);
     }
 
-    public EnigmaMachine setChosenRotors(int[] rotorNumbers)
+    public EnigmaMachine setChosenRotors(int... rotorNumbers)
     {
         this.chosenRotors = new ArrayList<>(rotorNumbers.length);
         for(Integer i : rotorNumbers)
@@ -66,6 +65,14 @@ public class EnigmaMachine {
         }
         encryptedLetter =  letterToEncrypt;
         return encryptedLetter;
+    }
+
+    public void setToInitialState()
+    {
+        for(Rotor rotor : chosenRotors)
+        {
+            rotor.setToInitialState();
+        }
     }
 
 }
