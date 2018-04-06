@@ -1,6 +1,8 @@
 package Machine;
 
 import Parts.*;
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +18,13 @@ public class EnigmaMachine {
         this.reflectors = new ArrayList<>(reflectors);
     }
 
-    public EnigmaMachine setChosenRotors(int... rotorNumbers)
+    public EnigmaMachine setChosenRotors(Pair<Integer, Integer>... rotorAndNotch)
     {
-        this.chosenRotors = new ArrayList<>(rotorNumbers.length);
-        for(Integer i : rotorNumbers)
+        this.chosenRotors = new ArrayList<>(rotorAndNotch.length);
+        for(Pair p : rotorAndNotch)
         {
-            chosenRotors.add(this.rotors.get(i));
+            chosenRotors.add(this.rotors.get((int)p.getKey()));
+            this.rotors.get((int)p.getKey()).setNotch((int)p.getValue());
         }
         for(int i = rotors.size() - 1; i > 0; i--)
         {

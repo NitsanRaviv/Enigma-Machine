@@ -26,7 +26,7 @@ public class MachineBuilder {
 
     public MachineBuilder setRotor(String rightEntries, String leftEntries, int zeezIndex)
     {
-        Rotor rotor = new Rotor(languageInterpeter.lettersToNumbers(leftEntries.toCharArray()), languageInterpeter.lettersToNumbers(rightEntries.toCharArray()));
+        Rotor rotor = new Rotor(languageInterpeter.lettersToNumbers(leftEntries.toCharArray()), languageInterpeter.lettersToNumbers(rightEntries.toCharArray()), zeezIndex);
         rotors.add(rotor);
         return this;
     }

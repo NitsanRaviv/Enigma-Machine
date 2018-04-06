@@ -6,6 +6,7 @@ import Machine.MachineProxy;
 import Parts.Reflector;
 import Parts.Rotor;
 import Utilities.LanguageInterpeter;
+import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import Machine.EnigmaMachine;
@@ -135,7 +136,7 @@ public class TestPartsOfMachine {
 
         EnigmaMachine machine = new EnigmaMachine(rotors,chosenReflector)
                 .setChosenReflector(0)
-                .setChosenRotors(0, 1);
+                .setChosenRotors(new Pair<>(0, 3), new Pair<>(1,3));
 
         List<Integer> resNumbers;
         List<Character> resCharacters;
@@ -147,7 +148,27 @@ public class TestPartsOfMachine {
         resNumbers = machine.encryptCode(languageInterpeter.lettersToNumbers(new char[]{'A','A','B','B','C','C','D','D','E','E','F','F'}));
         resCharacters = languageInterpeter.numberToLetters(resNumbers);
         Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
-        
+
+    }
+
+    @Test
+    public void testMachineProxyAndMachineBuilder()
+    {
+        List<Character> resCharacters;
+        MachineBuilder mb = new MachineBuilder();
+        MachineProxy mp = mb.initMachine(2,1,new char[]{'A','B','C','D','E','F'})
+                .setReflector(new int[]{1,2,3}, new int[]{4,5,6})
+                .setRotor("ABCDEF", "EBDFCA",1)
+                .setRotor("ABCDEF", "FEDCBA",0)
+                .create();
+        mp.setChosenRotors(new Pair<>(0,3),new Pair<>(1,3)); //left to right
+        mp.setChosenReflector(0);
+
+        resCharacters = mp.encryptCode("AABBCCDDEEFF");
+        Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
+        mp.setMachineToInitialState();
+        resCharacters = mp.encryptCode("AABBCCDDEEFF");
+        Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
     }
 
 

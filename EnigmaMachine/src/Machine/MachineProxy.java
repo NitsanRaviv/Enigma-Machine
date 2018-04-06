@@ -1,6 +1,7 @@
 package Machine;
 
 import Utilities.*;
+import javafx.util.Pair;
 
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class MachineProxy {
         this.machine.setToInitialState();
     }
 
-    public void setChosenRotors(int... chosenRotors)
+    public void setChosenRotors(Pair<Integer, Integer>... rotorsAndNotch)
     {
-        machine.setChosenRotors(chosenRotors);
+        machine.setChosenRotors(rotorsAndNotch);
     }
 
     public void setChosenReflector(int reflectorNum)
