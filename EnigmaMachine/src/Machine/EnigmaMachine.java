@@ -24,9 +24,9 @@ public class EnigmaMachine {
         for(Pair p : rotorAndNotch)
         {
             chosenRotors.add(this.rotors.get((int)p.getKey()));
-            this.rotors.get((int)p.getKey()).setNotch((int)p.getValue());
+            this.rotors.get((int)p.getKey()).setPosition((int)p.getValue());
         }
-        for(int i = rotors.size() - 1; i > 0; i--)
+        for(int i = chosenRotors.size() - 1; i > 0; i--)
         {
             this.chosenRotors.get(i).setLeftRotor(this.chosenRotors.get(i - 1));
         }

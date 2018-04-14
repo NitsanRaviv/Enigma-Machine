@@ -15,17 +15,17 @@ public class MachineBuilder {
     private  List<Reflector> reflectors;
     private  LanguageInterpeter languageInterpeter;
 
-    public  MachineBuilder initMachine(int rotorNum,int reflectorNum, char[] language)
+    public  MachineBuilder initMachine(char[] language)
     {
-        rotors = new ArrayList<>(rotorNum);
-        reflectors = new ArrayList<>(reflectorNum);
+        rotors = new ArrayList<>();
+        reflectors = new ArrayList<>();
         languageInterpeter = new LanguageInterpeter(language);
         return this;
     }
 
-    public MachineBuilder setRotor(String rightEntries, String leftEntries, int zeezIndex)
+    public MachineBuilder setRotor(String rightEntries, String leftEntries, int notch)
     {
-        Rotor rotor = new Rotor(languageInterpeter.lettersToNumbers(leftEntries.toCharArray()), languageInterpeter.lettersToNumbers(rightEntries.toCharArray()), zeezIndex);
+        Rotor rotor = new Rotor(languageInterpeter.lettersToNumbers(leftEntries.toCharArray()), languageInterpeter.lettersToNumbers(rightEntries.toCharArray()), notch);
         rotors.add(rotor);
         return this;
     }

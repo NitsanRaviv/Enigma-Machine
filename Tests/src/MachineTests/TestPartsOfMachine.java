@@ -102,7 +102,7 @@ public class TestPartsOfMachine {
 
         Rotor rotorRight = new Rotor(leftEntries1, numbers);
         rotorRight.setNotch(3);
-        rotorRight.setZeezIndex(0);
+        rotorRight.setPosition(3);
 
         List<Integer> leftEntries2 = new ArrayList<>(numbers.size());
         leftEntries2.add(5);
@@ -113,7 +113,7 @@ public class TestPartsOfMachine {
         leftEntries2.add(1);
 
         Rotor rotorLeft = new Rotor(leftEntries2, numbers);
-        rotorLeft.setNotch(3);
+        rotorLeft.setPosition(3);
 
 
         Map<Integer, Integer> reflectorMap = new HashMap<>(6);
@@ -150,10 +150,10 @@ public class TestPartsOfMachine {
     public void testMachineProxyAndMachineBuilder() {
         List<Character> resCharacters;
         MachineBuilder mb = new MachineBuilder();
-        MachineProxy mp = mb.initMachine(2, 1, new char[]{'A', 'B', 'C', 'D', 'E', 'F'})
+        MachineProxy mp = mb.initMachine(new char[]{'A', 'B', 'C', 'D', 'E', 'F'})
                 .setReflector(new int[]{1, 2, 3}, new int[]{4, 5, 6})
-                .setRotor("ABCDEF", "EBDFCA", 1)
-                .setRotor("ABCDEF", "FEDCBA", 0)
+                .setRotor("ABCDEF", "EBDFCA", 3)
+                .setRotor("ABCDEF", "FEDCBA", 3)
                 .create();
         mp.setChosenRotors(new Pair<>(0, 3), new Pair<>(1, 3)); //left to right
         mp.setChosenReflector(0);
@@ -164,6 +164,5 @@ public class TestPartsOfMachine {
         resCharacters = mp.encryptCode("AABBCCDDEEFF");
         Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
     }
-
 
 }
