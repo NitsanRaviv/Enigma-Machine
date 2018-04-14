@@ -2,7 +2,6 @@ package Machine;
 
 import Parts.*;
 import Utilities.LanguageInterpeter;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
