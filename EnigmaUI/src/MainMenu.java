@@ -16,7 +16,7 @@ public class MainMenu {
 
     private int getSerialNumberByName(String name)
     {
-        int res = -1;
+        int res = errorSign;
         for(MenuItem item : theMenu)
         {
             if(item.getName() == name)
@@ -52,45 +52,14 @@ public class MainMenu {
                 continue;
             }
 
-            doChoice(userChoice);
+            doChoice(userChoice -1); //menu items are in an array
         }
     }
 
     private void doChoice(int userChoice) {
-        switch (userChoice) {
-            case 1:
-                System.out.println("Reading the file...");
-                break;
-
-            case 2:
-                System.out.println("Show machine specifications...");
-                break;
-
-            case 3:
-                System.out.println("do 3...");
-                break;
-            case 4:
-                System.out.println("do 4...");
-                break;
-            case 5:
-                System.out.println("do 5...");
-                break;
-            case 6:
-                System.out.println("do 6...");
-                break;
-            case 7:
-                System.out.println("do 7...");
-                break;
-            case 8:
-                System.out.println("Bye bye!");
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
+        this.theMenu.get(userChoice).run();
     }
+
 
     private int getInputFromUser() {
         int userChoice;

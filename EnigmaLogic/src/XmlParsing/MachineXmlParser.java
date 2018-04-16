@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MachineXmlParser {
 
-    public Enigma parseXmltoJaxbMachine(String filePath) throws JAXBException {
+    private static Enigma parseXmltoJaxbMachine(String filePath) throws JAXBException {
         Unmarshaller jaxbUnmarshaller = null;
         Enigma jaxbEnigma = null;
         File xmlFilePath = new File(filePath);
@@ -23,7 +23,7 @@ public class MachineXmlParser {
         return jaxbEnigma;
     }
 
-    public MachineProxy parseXmlToMachineProxy(String filePath) throws JAXBException {
+    public static MachineProxy parseXmlToMachineProxy(String filePath) throws JAXBException {
         Enigma jaxbEnigma = parseXmltoJaxbMachine(filePath);
         Machine jaxbMachine = jaxbEnigma.getMachine();
         MachineBuilder machineBuilder = new MachineBuilder();
@@ -33,7 +33,7 @@ public class MachineXmlParser {
         return machineBuilder.create();
     }
 
-    public void setMachineProxyReflectors(MachineBuilder machineBuilder, Machine jaxbMachine) {
+    private static void setMachineProxyReflectors(MachineBuilder machineBuilder, Machine jaxbMachine) {
         Reflectors reflectors = jaxbMachine.getReflectors();
         List<Reflector> reflectorList = reflectors.getReflector();
         for(Reflector refl : reflectorList)
@@ -45,21 +45,21 @@ public class MachineXmlParser {
 
     }
 
-    private int[] getReflectedValues(List<Reflect> reflectedList, String reflectedOrigin) {
+    private static int[] getReflectedValues(List<Reflect> reflectedList, String reflectedOrigin) {
         int[] reflectedVal = new int[reflectedList.size()];
         int index = 0;
         for(Reflect refl : reflectedList)
         {
-            if(reflectedOrigin == "from")
+            if(reflectedOrigin.equals("from"))
                 reflectedVal[index] = reflectedList.get(index).getInput();
-            else if(reflectedOrigin == "to")
+            else if(reflectedOrigin.equals("to"))
                 reflectedVal[index] = reflectedList.get(index).getOutput();
             index++;
         }
         return reflectedVal;
     }
 
-    public void setMachineProxyRotors(MachineBuilder machineBuilder, Machine jaxbMachine) {
+    private static void setMachineProxyRotors(MachineBuilder machineBuilder, Machine jaxbMachine) {
         Rotors jaxbRotors = jaxbMachine.getRotors();
         List<Rotor> jaxbRotorsList = jaxbRotors.getRotor();
         for(Rotor rotor : jaxbRotorsList)
@@ -70,7 +70,7 @@ public class MachineXmlParser {
         }
     }
 
-    private String getEntries(List<Mapping> mapping, String entry) {
+    private static String getEntries(List<Mapping> mapping, String entry) {
         String entries = new String();
         for(Mapping mapp : mapping)
         {

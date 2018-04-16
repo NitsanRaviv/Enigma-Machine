@@ -17,7 +17,7 @@ public class Rotor {
     private int initialStateBeforeRotation;
 
     public Rotor(List<Integer> leftEntries, List<Integer> rightEntries) {
-        this(leftEntries, rightEntries, MachineConstants.DEFAULT_ZEEZ_INDEX);
+        this(leftEntries, rightEntries, MachineConstants.DEFAULT_NOTCH_INDEX);
     }
 
 

@@ -1,14 +1,16 @@
-public class MenuItem {
+public class MenuItem implements Runnable {
 
     private String name;
     private int serialNumber;
     private String description;
+    private Runnable myFunc;
 
-    public MenuItem(String name, int serialNumber, String description)
+    public MenuItem(String name, int serialNumber, String description, Runnable func)
     {
         this.name = name;
         this.serialNumber = serialNumber;
         this.description = description;
+        this.myFunc = func;
     }
 
 
@@ -37,4 +39,9 @@ public class MenuItem {
     }
 
 
+    @Override
+    public void run() {
+        this.myFunc.run();
+
+    }
 }
