@@ -37,7 +37,7 @@ public class MachineProxy {
 
     @Override
     public String toString() {
-        String res = "Rotor num: " + this.machine.rotors.size() + "Reflector num: " + this.machine.reflectors.size();
+        String res = "Rotor num: " + this.machine.rotors.size() + " Reflector num: " + this.machine.reflectors.size();
         return res;
     }
 }
