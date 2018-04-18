@@ -5,7 +5,7 @@ import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
-import LogicManager.LogicApi;
+import LogicManager.Performer;
 
 import javax.xml.bind.JAXBException;
 import java.util.List;
@@ -36,10 +36,10 @@ public class XmlParsingTests {
     @Test
     public void loadMachineWithLogicApi() {
         try {
-            LogicApi.loadMachineFromXml("ex1-sanity-small.xml");
+            Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
         }catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(LogicApi.getMachineSpecification());
+        System.out.println(Performer.getPerformer().getMachineSpecification());
     }
 }

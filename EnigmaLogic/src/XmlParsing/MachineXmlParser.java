@@ -82,7 +82,4 @@ public class MachineXmlParser {
         }
         return entries;
     }
-
-
-
 }
