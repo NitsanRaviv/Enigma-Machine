@@ -16,7 +16,7 @@ public class Tester {
     private List<Reflector> theReflectors;
 
     // first method
-    public boolean theFileExists(String filePath){
+    public boolean theFileIsXml(String filePath){
 
         String extension = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
 
@@ -57,7 +57,7 @@ public class Tester {
 
     }
 
-    public boolean numOfRotorosIsValid(){
+    public boolean amountOfRotorosIsValid(){
         int rotorsCount = machine.getRotorsCount();
 
         if(rotorsCount <= theRotors.size())

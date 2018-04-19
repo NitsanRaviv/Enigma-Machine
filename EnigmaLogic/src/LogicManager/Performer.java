@@ -12,12 +12,14 @@ public class Performer implements LogicApi {
     private static Performer performer;
 
     @Override
-    public void loadMachineFromXml(String path) {
+    public boolean loadMachineFromXml(String path, String msg) {
         try {
             machineProxy = MachineXmlParser.parseXmlToMachineProxy(path);
         }catch (JAXBException je) {
-            je.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
     @Override
