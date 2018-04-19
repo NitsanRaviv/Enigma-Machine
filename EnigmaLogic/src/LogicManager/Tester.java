@@ -12,6 +12,8 @@ public class Tester {
     private Machine machine;
     private Rotors rotors;
     private List<Rotor> theRotors;
+    private Reflectors reflectors;
+    private List<Reflector> theReflectors;
 
     // first method
     public boolean theFileExists(String filePath){
@@ -38,6 +40,8 @@ public class Tester {
         machine = enigma.getMachine();
         rotors = machine.getRotors();
         theRotors = rotors.getRotor();
+        reflectors = machine.getReflectors();
+        theReflectors = reflectors.getReflector();
 
         return true;
     }
@@ -114,5 +118,61 @@ public class Tester {
 
         return res;
     }
+
+    public boolean notchIsValid(){
+
+        int numOfLetters = machine.getABC().length();
+
+        for(Rotor rotor : theRotors)
+        {
+            if(rotor.getNotch() >= numOfLetters)
+                return false;
+        }
+
+        return true;
+    }
+
+    public boolean allReflectorsIdsValid(){
+
+        boolean res = true;
+        List<String> reflectorsIds = new ArrayList<>();
+        Set<String> idsNoDuplicate = new HashSet<>();
+
+        for (Reflector reflector : theReflectors)
+            reflectorsIds.add(reflector.getId());
+
+        for(String id : reflectorsIds)
+        {
+            if(id != "I" && id != "II" && id != "III"
+                    && id != "IV" && id != "V")
+                return false;
+
+            idsNoDuplicate.add(id);
+        }// if we here -> all the ids are roman letters
+
+        if(idsNoDuplicate.size() != reflectorsIds.size())//check if we have duplicate
+            return false;
+
+        return true;
+    }
+
+    public boolean allReflectVaild(){
+
+        List<Reflect> theReflects;
+
+        for(Reflector reflector : theReflectors)
+        {
+            theReflects = reflector.getReflect();
+
+            for(Reflect reflect : theReflects)
+                if(reflect.getInput() == reflect.getOutput())
+                    return false;
+        }
+
+        return true;
+    }
+
+
+
 
 }
