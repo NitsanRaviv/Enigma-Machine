@@ -2,6 +2,7 @@ package LogicManager;
 
 public interface ErrorsMessages {
 
+    public String errNoMachine = "tried get info about the machine without load one";
     public String errXML = "the file is not xml type";
     public String errGetMachine = "error reading machine";
     public String errABCSize = "ABC size is not even";

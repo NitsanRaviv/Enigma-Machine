@@ -33,8 +33,9 @@ public class Performer implements LogicApi {
     }
 
     @Override
-    public void resetCode() {
+    public String resetCode() {
         machineProxy.setMachineToInitialState();
+        return null;
     }
 
     @Override

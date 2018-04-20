@@ -1,11 +1,20 @@
 package LogicManager;
 
-public class Integrator implements LogicApi,ErrorsMessages {
+public class Integrator implements LogicApi {
     private Tester tester;
 
     @Override
     public String getMachineSpecification() {
-       return Performer.getPerformer().getMachineSpecification();
+        String res;
+        try {
+            res = Performer.getPerformer().getMachineSpecification();
+        }
+        catch (Exception e)
+        {
+            return ErrorsMessages.errNoMachine;
+        }
+
+        return res;
     }
 
     @Override
@@ -106,11 +115,28 @@ public class Integrator implements LogicApi,ErrorsMessages {
 
     @Override
     public String processInput(String input) {
-       return Performer.getPerformer().processInput(input);
+        String res;
+        try {
+            res = Performer.getPerformer().processInput(input);;
+        }
+        catch (Exception e)
+        {
+            return ErrorsMessages.errNoMachine;
+        }
+
+        return res;
     }
 
     @Override
-    public void resetCode() {
-        Performer.getPerformer().resetCode();
+    public String resetCode() {
+        try {
+            Performer.getPerformer().resetCode();
+        }
+        catch (Exception e)
+        {
+            return ErrorsMessages.errNoMachine;
+        }
+
+        return null;
     }
 }

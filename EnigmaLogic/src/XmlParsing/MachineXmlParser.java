@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MachineXmlParser {
 
-    private static Enigma parseXmltoJaxbMachine(String filePath) throws JAXBException {
+    public static Enigma parseXmltoJaxbMachine(String filePath) throws JAXBException {
         Unmarshaller jaxbUnmarshaller = null;
         Enigma jaxbEnigma = null;
         File xmlFilePath = new File(filePath);
