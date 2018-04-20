@@ -2,6 +2,7 @@ package LogicManager;
 
 public class Integrator implements LogicApi {
     private Tester tester;
+    private static Integrator integrator ;
 
     @Override
     public String getMachineSpecification() {
@@ -18,7 +19,7 @@ public class Integrator implements LogicApi {
     }
 
     @Override
-     public boolean loadMachineFromXml(String path, String msg) {
+    public boolean loadMachineFromXml(String path, String msg) {
 
         if(!(doAllProperChecks(msg,path)))
             return false;
@@ -117,7 +118,7 @@ public class Integrator implements LogicApi {
     public String processInput(String input) {
         String res;
         try {
-            res = Performer.getPerformer().processInput(input);;
+            res = Performer.getPerformer().processInput(input);
         }
         catch (Exception e)
         {
@@ -138,5 +139,13 @@ public class Integrator implements LogicApi {
         }
 
         return null;
+    }
+
+    public static Integrator getIntegrator(){
+        if(integrator == null)
+        {
+            integrator = new Integrator();
+        }
+        return integrator;
     }
 }

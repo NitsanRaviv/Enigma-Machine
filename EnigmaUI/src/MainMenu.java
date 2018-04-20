@@ -1,3 +1,6 @@
+import LogicManager.ErrorsMessages;
+import LogicManager.Integrator;
+
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -8,6 +11,8 @@ public class MainMenu {
 
     private ArrayList<MenuItem> theMenu = new ArrayList<>();
     private final int errorSign = -1;
+    private String path;
+    private Scanner getInput = new Scanner(System.in);
 
     public void addNewItem(MenuItem newItem)
     {
@@ -26,11 +31,12 @@ public class MainMenu {
         return res;
     }
 
-    public void start() {
+    public void start(String xmlFilePath) {
         int userChoice = 0;
         int exitItemNumber = getSerialNumberByName("exit");
         int readFileItemNUmber = getSerialNumberByName("readFile");
-        boolean fileExists = false;
+        boolean fileExists = false , choiceSucc;
+        path = xmlFilePath;
 
         while (userChoice != exitItemNumber) {
             printMenu();
@@ -38,32 +44,81 @@ public class MainMenu {
 
             if (userChoice == errorSign)
                 continue;
-
             if (userChoice == readFileItemNUmber && fileExists) {
                 System.out.println("There is a file in the system so you can not read a new file. In order to read a new file, the system must be restarted");
                 continue;
             }
-
-            if (userChoice == readFileItemNUmber)
-                fileExists = true;
-
             if (userChoice != readFileItemNUmber && userChoice != exitItemNumber && !fileExists) {
                 System.out.println("There is no file in the system. First, you need to read a file");
                 continue;
             }
 
-            doChoice(userChoice -1); //menu items are in an array
+            choiceSucc = (doChoice(userChoice));
+            if (userChoice == readFileItemNUmber && choiceSucc)
+                fileExists = true;
         }
     }
 
-    private void doChoice(int userChoice) {
-        this.theMenu.get(userChoice).run();
-    }
+    //have to separate cases to methods(after we will be sure we work like that)
+    private boolean doChoice(int userChoice) {
 
+        String msg = null , input;
+        boolean res = true;
+        switch (userChoice) {
+            case 1:
+                res = Integrator.getIntegrator().loadMachineFromXml(path,msg);
+                if(!res)
+                    System.out.println(msg);
+                break;
+
+            case 2:
+                msg = Integrator.getIntegrator().getMachineSpecification();
+                System.out.println(msg);
+                if(msg == ErrorsMessages.errNoMachine)
+                    res = false;
+                break;
+
+            case 3:
+                System.out.println("do 3...");
+                break;
+            case 4:
+                System.out.println("do 4...");
+                break;
+            case 5:
+                System.out.println("Pleas enter input to process");
+                input = getInput.next();
+                // TODO: need to check if the input is from the ABC machine
+                msg = Integrator.getIntegrator().processInput(input);
+                System.out.println(msg);
+                if(msg == ErrorsMessages.errNoMachine)
+                    res = false;
+                break;
+            case 6:
+                msg = Integrator.getIntegrator().resetCode();
+                if(msg == ErrorsMessages.errNoMachine)
+                {
+                    System.out.println(msg);
+                    res = false;
+                }
+                break;
+            case 7:
+                System.out.println("do 7...");
+                break;
+            case 8:
+                System.out.println("Bye bye!");
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
+        return res;
+    }
 
     private int getInputFromUser() {
         int userChoice;
-        Scanner getInput = new Scanner(System.in);
 
         try {
             userChoice = getInput.nextInt();
