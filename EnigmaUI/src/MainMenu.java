@@ -148,7 +148,7 @@ public class MainMenu {
 
         for(MenuItem item : theMenu)
         {
-            System.out.println(item.getSerialNumber() + " - " + item.getDescription());
+            System.out.println(item.toString());
         }
 
         System.out.println("---------------------------------------------------------\n");

@@ -11,6 +11,10 @@ public class MenuItem {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return this.getSerialNumber() + " - " + this.getDescription();
+    }
 
     public String getName() {
         return name;
