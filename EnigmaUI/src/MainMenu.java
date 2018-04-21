@@ -146,7 +146,7 @@ public class MainMenu {
         System.out.println("Welcome to NicEnigma\n");
         System.out.println("Please select one of the options:");
 
-        for( MenuItem item : theMenu)
+        for(MenuItem item : theMenu)
         {
             System.out.println(item.getSerialNumber() + " - " + item.getDescription());
         }

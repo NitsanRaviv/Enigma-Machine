@@ -18,6 +18,10 @@ public class Integrator implements LogicApi {
         return res;
     }
 
+    private Integrator(){
+        tester = new Tester();
+    }
+
     @Override
     public boolean loadMachineFromXml(String path, String msg) {
 
