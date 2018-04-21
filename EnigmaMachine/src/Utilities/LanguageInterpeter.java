@@ -9,7 +9,6 @@ public class LanguageInterpeter {
     private char[] language;
     private Map<Character, Integer> dictionary;
 
-
     public LanguageInterpeter(char[] language) {
         int number = 1;
         this.language = language;
@@ -53,4 +52,5 @@ public class LanguageInterpeter {
         }
         return res;
     }
+
 }

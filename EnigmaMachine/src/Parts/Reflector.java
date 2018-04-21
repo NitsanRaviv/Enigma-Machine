@@ -5,9 +5,11 @@ import java.util.Map;
 
 public class Reflector {
     private Map<Integer, Integer> relectedValues;
+    private int id;
 
-    public Reflector(Map<Integer, Integer> oneWayMapping) {
+    public Reflector(Map<Integer, Integer> oneWayMapping, int id) {
         this.relectedValues = new HashMap();
+        this.id = id;
         for(Integer i : oneWayMapping.keySet())
         {
             this.relectedValues.put(i, oneWayMapping.get(i));
@@ -21,5 +23,9 @@ public class Reflector {
     public Integer getReflectedValue(int entrance)
     {
         return this.relectedValues.get(entrance);
+    }
+
+    public int getId() {
+        return id;
     }
 }

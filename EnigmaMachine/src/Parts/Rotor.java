@@ -15,9 +15,11 @@ public class Rotor {
     private int initialPosition;
     private int initialNotch;
     private int initialStateBeforeRotation;
+    private int id;
+    private static int runningId = 0;
 
     public Rotor(List<Integer> leftEntries, List<Integer> rightEntries) {
-        this(leftEntries, rightEntries, MachineConstants.DEFAULT_NOTCH_INDEX);
+        this(leftEntries, rightEntries, MachineConstants.DEFAULT_NOTCH_INDEX, runningId++);
     }
 
 
@@ -25,12 +27,13 @@ public class Rotor {
         return rightEntries;
     }
 
-    public Rotor(List<Integer> leftEntries, List<Integer> rightEntries, int notch) {
+    public Rotor(List<Integer> leftEntries, List<Integer> rightEntries, int notch, int id) {
         this.leftEntries = new ArrayList<>(leftEntries);
         this.rightEntries = new ArrayList<>(rightEntries);
         this.notch = notch;
         this.initialNotch = notch;
         this.initialStateBeforeRotation = rightEntries.get(0);
+        this.id = id;
     }
 
     public void rotateRotorOneRound() {
@@ -117,5 +120,21 @@ public class Rotor {
             Collections.rotate(rightEntries, rightEntries.size() - 1);
             Collections.rotate(leftEntries, leftEntries.size() - 1);
         }
+    }
+    @Override
+    public String toString(){
+        return "rotor id: " + id + " notch: " + notch;
+    }
+
+    public int getInitialNotch() {
+        return initialNotch;
+    }
+
+    public int getInitialPosition() {
+        return initialPosition;
+    }
+
+    public int getId(){
+        return this.id;
     }
 }

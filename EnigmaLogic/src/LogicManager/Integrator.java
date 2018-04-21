@@ -1,18 +1,21 @@
 package LogicManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Integrator implements LogicApi {
     private Tester tester;
     private static Integrator integrator ;
 
     @Override
-    public String getMachineSpecification() {
-        String res;
+    public List<String> getMachineSpecification() {
+        List<String> res = new ArrayList<>();
         try {
             res = Performer.getPerformer().getMachineSpecification();
         }
         catch (Exception e)
         {
-            return ErrorsMessages.errNoMachine;
+            res.add(ErrorsMessages.errNoMachine);
         }
 
         return res;
@@ -143,6 +146,11 @@ public class Integrator implements LogicApi {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean setInitialCode(String[] rotors, String[] rotorMap, String chosenReflector) {
+        return false;
     }
 
     public static Integrator getIntegrator(){

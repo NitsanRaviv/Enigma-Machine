@@ -1,6 +1,8 @@
 package LogicManager;
 
+import LogicManager.InitialCode.InitialCodeParser;
 import Machine.MachineProxy;
+import Utilities.RomanInterpeter;
 import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
 
@@ -24,10 +26,6 @@ public class Performer implements LogicApi {
 
     @Override
     public String processInput(String input) {
-        ////Temp Code!!!!/////
-        machineProxy.setChosenRotors(new Pair<>(2, 3), new Pair<>(0, 3)); //left to right
-        machineProxy.setChosenReflector(0);
-        /////Temp code finish////
         List<Character> processedInput =  machineProxy.encryptCode(input);
         return processedInput.toString();
     }
@@ -39,9 +37,24 @@ public class Performer implements LogicApi {
     }
 
     @Override
-    public String getMachineSpecification()
+    public boolean setInitialCode(String[] rotorIds, String[] rotorMap, String chosenReflector) {
+        List<Pair<Integer, Integer>> rotorsAndNotch = InitialCodeParser.parseRotors(rotorIds, rotorMap);
+        Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorsAndNotch.size()];
+        int index = 0;
+        for(Pair p : rotorsAndNotch){
+          rotorsAndNotchArr[index] = p;
+          index++;
+        }
+        machineProxy.setChosenRotors(rotorsAndNotchArr);
+        machineProxy.setChosenReflector(chosenReflector);
+        machineProxy.isMachineSet(true);
+        return true;
+    }
+
+    @Override
+    public List<String> getMachineSpecification()
     {
-        String spec = machineProxy.toString();
+        List<String> spec = machineProxy.getMachineSpecifications();
         return spec;
     }
 

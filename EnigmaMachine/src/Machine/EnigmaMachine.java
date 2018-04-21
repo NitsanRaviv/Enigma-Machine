@@ -8,14 +8,19 @@ import java.util.List;
 
 
 public class EnigmaMachine {
-    List<Rotor> rotors;
-    List<Reflector> reflectors;
-    List<Rotor> chosenRotors;
-    Reflector chosenReflector;
+   private List<Rotor> rotors;
+   private List<Reflector> reflectors;
+   private List<Rotor> chosenRotors;
+   private Reflector chosenReflector;
+    private int chosenReflNumber;
 
     public EnigmaMachine(List<Rotor> rotors, List<Reflector> reflectors) {
         this.rotors = new ArrayList<>(rotors);
         this.reflectors = new ArrayList<>(reflectors);
+    }
+
+    public int getChosenRotorsSize(){
+        return this.chosenRotors.size();
     }
 
     public EnigmaMachine setChosenRotors(Pair<Integer, Integer>... rotorAndNotch)
@@ -23,8 +28,8 @@ public class EnigmaMachine {
         this.chosenRotors = new ArrayList<>(rotorAndNotch.length);
         for(Pair p : rotorAndNotch)
         {
-            chosenRotors.add(this.rotors.get((int)p.getKey()));
-            this.rotors.get((int)p.getKey()).setPosition((int)p.getValue());
+            chosenRotors.add(this.getRotorById((int)p.getKey()));
+            this.getRotorById((int)p.getKey()).setPosition((int)p.getValue());
         }
         for(int i = chosenRotors.size() - 1; i > 0; i--)
         {
@@ -33,12 +38,28 @@ public class EnigmaMachine {
         return this;
     }
 
+    private Rotor getRotorById(int id) {
+        for(Rotor rotor : rotors){
+            if(rotor.getId() == id)
+                return rotor;
+        }
+        return null;
+    }
+
     public EnigmaMachine setChosenReflector(int reflectorNum)
     {
-        this.chosenReflector = reflectors.get(reflectorNum);
+        this.chosenReflector = getReflectorByNum(reflectorNum);
+        this.chosenReflNumber = reflectorNum;
         return this;
     }
 
+    private Reflector getReflectorByNum(int reflectorNum) {
+        for(Reflector refl : reflectors){
+            if (refl.getId() == reflectorNum)
+                return refl;
+        }
+        return null;
+    }
 
 
     public List<Integer> encryptCode(List<Integer> numbersToCode)
@@ -78,4 +99,23 @@ public class EnigmaMachine {
         }
     }
 
+    public List<Rotor> getRotors(){
+        return this.rotors;
+    }
+
+    public int getReflectorsSize() {
+        return this.reflectors.size();
+    }
+
+    public List<Rotor> getChosenRotors() {
+        return chosenRotors;
+    }
+
+    public int getChosenReflector() {
+        return chosenReflNumber;
+    }
+
+    public int getRotorsSize() {
+        return this.rotors.size();
+    }
 }

@@ -70,14 +70,12 @@ public class MainMenu {
                 if(!res)
                     System.out.println(msg);
                 break;
-
             case 2:
-                msg = Integrator.getIntegrator().getMachineSpecification();
-                System.out.println(msg);
-                if(msg == ErrorsMessages.errNoMachine)
+                List<String>msgs = Integrator.getIntegrator().getMachineSpecification();
+                System.out.println(msgs);
+                if(msgs.get(0) == ErrorsMessages.errNoMachine)
                     res = false;
                 break;
-
             case 3:
                 System.out.println("do 3...");
                 break;
@@ -113,7 +111,6 @@ public class MainMenu {
                 }
                 break;
         }
-
         return res;
     }
 

@@ -22,9 +22,8 @@ public class XmlParsingTests {
             e.printStackTrace();
         }
 
-
-        mp.setChosenRotors(new Pair<>(2, 3), new Pair<>(0, 3)); //left to right
-        mp.setChosenReflector(0);
+        mp.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
+        mp.setChosenReflector("I");
         resCharacters = mp.encryptCode("AABBCCDDEEFF");
         Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
 
@@ -36,10 +35,21 @@ public class XmlParsingTests {
     @Test
     public void loadMachineWithLogicApi() {
         try {
-            Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
+            Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml", "");
         }catch (Exception e) {
             e.printStackTrace();
         }
+        //Performer.getPerformer().setInitialCode("1,3".split(","), "2,3".split(","),"I");
         System.out.println(Performer.getPerformer().getMachineSpecification());
+    }
+
+    @Test
+    public void testInitialCodeParserAndPerformer(){
+        Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml","");
+        Performer.getPerformer().setInitialCode("2,1".split(","), "3,3".split(","),"I");
+        Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
+        System.out.println(Performer.getPerformer().getMachineSpecification());
+
+
     }
 }

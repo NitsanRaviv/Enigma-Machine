@@ -27,7 +27,7 @@ public class MachineXmlParser {
         Enigma jaxbEnigma = parseXmltoJaxbMachine(filePath);
         Machine jaxbMachine = jaxbEnigma.getMachine();
         MachineBuilder machineBuilder = new MachineBuilder();
-        machineBuilder.initMachine(jaxbMachine.getABC().trim().toCharArray());
+        machineBuilder.initMachine(jaxbMachine.getABC().trim().toCharArray(), jaxbEnigma.getMachine().getRotorsCount());
         setMachineProxyReflectors(machineBuilder, jaxbMachine);
         setMachineProxyRotors(machineBuilder, jaxbMachine);
         return machineBuilder.create();
@@ -40,7 +40,7 @@ public class MachineXmlParser {
         {
             int[] from = getReflectedValues(refl.getReflect(), "from");
             int[] to = getReflectedValues(refl.getReflect(), "to");
-            machineBuilder.setReflector(from, to);
+            machineBuilder.setReflector(from, to, refl.getId());
         }
 
     }
@@ -66,7 +66,7 @@ public class MachineXmlParser {
         {
           String rightEntries = getEntries(rotor.getMapping(), "right");
           String leftEntries = getEntries(rotor.getMapping(), "left");
-          machineBuilder.setRotor(rightEntries,leftEntries,rotor.getNotch() - 1); // add id!
+          machineBuilder.setRotor(rightEntries,leftEntries,rotor.getNotch() - 1, rotor.getId()); // add id!
         }
     }
 
