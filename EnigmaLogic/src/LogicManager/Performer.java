@@ -18,14 +18,14 @@ public class Performer implements LogicApi {
     private static Performer performer;
 
     @Override
-    public boolean loadMachineFromXml(String path, String msg) {
+    public String loadMachineFromXml(String path) {
         try {
             machineProxy = MachineXmlParser.parseXmlToMachineProxy(path);
         }catch (JAXBException je) {
-            return false;
+            return ErrorsMessages.errGetMachine;
         }
 
-        return true;
+        return ErrorsMessages.noErrors;
     }
 
     @Override
