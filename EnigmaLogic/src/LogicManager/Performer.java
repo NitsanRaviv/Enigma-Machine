@@ -2,7 +2,6 @@ package LogicManager;
 
 import LogicManager.InitialCode.InitialCodeParser;
 import Machine.MachineProxy;
-import Utilities.RomanInterpeter;
 import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
 
@@ -61,6 +60,11 @@ public class Performer implements LogicApi {
         List<String> spec = machineProxy.getMachineSpecifications();
         return spec;
     }
+
+    public String getStatistics(){
+        return this.machineProxy.getStatistics();
+    }
+
 
 
     public static Performer getPerformer(){

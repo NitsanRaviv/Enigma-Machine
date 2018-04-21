@@ -14,6 +14,8 @@ public class MachineProxy {
     private List<String> machineSpecifications;
     private int inputMsgNum;
     private boolean machineIsSet;
+    MachineStatistics machineStatistics;
+    private String machineCode;
 
     public MachineProxy(EnigmaMachine machine, LanguageInterpeter languageInterpeter, int rotorsCount)
     {
@@ -26,8 +28,19 @@ public class MachineProxy {
 
     public List<Character> encryptCode(String codeToEncrypt)
     {
+        long start = System.nanoTime();
+        List<Character> encrypted =  languageInterpeter.numberToLetters(machine.encryptCode(languageInterpeter.lettersToNumbers(codeToEncrypt.toCharArray())));
+        long end = System.nanoTime();
+        updateStatistics(codeToEncrypt, encrypted.toString(), start - end);
         inputMsgNum++;
-        return languageInterpeter.numberToLetters(machine.encryptCode(languageInterpeter.lettersToNumbers(codeToEncrypt.toCharArray())));
+        return encrypted;
+    }
+
+    private void updateStatistics(String codeToEncrypt, String encrypted, long timeToProcess) {
+        if(machineStatistics == null){
+            machineStatistics = new MachineStatistics(getCurrentCode());
+        }
+        this.machineStatistics.addOrigStringDestStringAndTime(getCurrentCode(),codeToEncrypt, encrypted, timeToProcess);
     }
 
     public void setMachineToInitialState()
@@ -94,6 +107,16 @@ public class MachineProxy {
 
     public void isMachineSet(boolean isSet){
         this.machineIsSet = isSet;
+        if(machineIsSet) {
+            if (machineStatistics == null)
+            {
+                machineStatistics = new MachineStatistics(getCurrentCode());
+            }
+            else
+            {
+                machineStatistics.setNewInitialCode(getCurrentCode());
+            }
+        }
     }
 
     public int getAppliedRotors(){
@@ -102,5 +125,9 @@ public class MachineProxy {
 
     public char[] getLanguage(){
         return this.languageInterpeter.getLanguage();
+    }
+
+    public String getStatistics() {
+        return machineStatistics.getStatistics();
     }
 }
