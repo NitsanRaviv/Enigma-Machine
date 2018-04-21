@@ -62,16 +62,19 @@ public class MainMenu {
     //have to separate cases to methods(after we will be sure we work like that)
     private boolean doChoice(int userChoice) {
 
-        String msg = null , input;
+        String msg, input;
         boolean res = true;
         switch (userChoice) {
             case 1:
-                res = Integrator.getIntegrator().loadMachineFromXml(path,msg);
-                if(!res)
+                msg = Integrator.getIntegrator().loadMachineFromXml(path);
+                if(msg != ErrorsMessages.noErrors)
+                {
                     System.out.println(msg);
+                    res = false;
+                }
                 break;
             case 2:
-                List<String>msgs = Integrator.getIntegrator().getMachineSpecification();
+                List<String> msgs = Integrator.getIntegrator().getMachineSpecification();
                 System.out.println(msgs);
                 if(msgs.get(0) == ErrorsMessages.errNoMachine)
                     res = false;

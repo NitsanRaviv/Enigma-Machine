@@ -20,7 +20,7 @@ public class Tester {
 
         String extension = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
 
-        if(extension == "xml")
+        if(extension.equals("xml"))
             return true;
 
         return false;
@@ -49,6 +49,8 @@ public class Tester {
     public boolean lettersAmountIsEven(){
 
         String letters = machine.getABC();
+        letters = letters.replaceAll("\n","");
+        letters = letters.replaceAll("\t","");
 
         if(letters.length() % 2 == 0)
             return true;
@@ -143,8 +145,8 @@ public class Tester {
 
         for(String id : reflectorsIds)
         {
-            if(id != "I" && id != "II" && id != "III"
-                    && id != "IV" && id != "V")
+            if(!(id.equals("I")) && !(id.equals("II")) && !(id.equals("III"))
+                    && !(id.equals("IV")) && !(id.equals("V")))
                 return false;
 
             idsNoDuplicate.add(id);

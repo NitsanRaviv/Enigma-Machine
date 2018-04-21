@@ -35,7 +35,7 @@ public class XmlParsingTests {
     @Test
     public void loadMachineWithLogicApi() {
         try {
-            Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml", "");
+            Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ public class XmlParsingTests {
 
     @Test
     public void testInitialCodeParserAndPerformer(){
-        Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml","");
+        Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
         Performer.getPerformer().setInitialCode("2,1".split(","), "3,3".split(","),"I");
         Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
     }

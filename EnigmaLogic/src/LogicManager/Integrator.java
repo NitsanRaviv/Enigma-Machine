@@ -26,99 +26,81 @@ public class Integrator implements LogicApi {
     }
 
     @Override
-    public boolean loadMachineFromXml(String path, String msg) {
+    public String loadMachineFromXml(String path) {
 
-        if(!(doAllProperChecks(msg,path)))
-            return false;
+        String msg;
 
-        if(!(Performer.getPerformer().loadMachineFromXml(path,null)))
-            return false;
+        msg = doAllFileProperChecks(path);
+        if(msg != ErrorsMessages.noErrors)
+            return msg;
 
-        return true;
+        msg = Performer.getPerformer().loadMachineFromXml(path);
+        if(msg != ErrorsMessages.noErrors)
+            return msg;
+
+        return ErrorsMessages.noErrors;
     }
 
-    private boolean doAllProperChecks(String msg, String path) {
+    private String doAllFileProperChecks(String path) {
+        String msg;
 
-        if(!(fileValidChecks(msg,path)))
-            return false;
-        if(!(rotorsChecks(msg,path)))
-            return false;
-        if(!(reflectorChecks(msg,path)))
-            return false;
+        msg = fileValidChecks(path);
+        if(msg != ErrorsMessages.noErrors)
+            return msg;
 
-        msg = null;
-        return true;
+        msg = rotorsChecks();
+        if(msg != ErrorsMessages.noErrors)
+            return msg;
+
+        msg = reflectorChecks();
+        if(msg != ErrorsMessages.noErrors)
+            return msg;
+
+        return ErrorsMessages.noErrors;
     }
 
-    private boolean reflectorChecks(String msg, String path)
+    private String reflectorChecks()
     {
         if(!(tester.allReflectorsIdsValid()))
-        {
-            msg = ErrorsMessages.errIDsReflector;
-            return false;
-        }
+            return ErrorsMessages.errIDsReflector;
+
         if(!(tester.allReflectVaild()))
-        {
-            msg = ErrorsMessages.errReflect;
-            return false;
-        }
+            return ErrorsMessages.errReflect;
 
-        msg = null;
-        return true;
+        return ErrorsMessages.noErrors;
     }
 
-    private boolean rotorsChecks(String msg, String path)
-    {
-        if(!(tester.amountOfRotorosIsValid()))
-        {
-            msg = ErrorsMessages.errAmountOfRotor;
-            return false;
-        }
-        if(!(tester.moreThenOneRotor()))
-        {
-            msg = ErrorsMessages.errLessThenTwoRotor;
-            return false;
-        }
-        if(!(tester.allRotorsIdsValid()))
-        {
-            msg = ErrorsMessages.errIDsRotors;
-            return false;
-        }
-        if(!(tester.NoDuplicateMappings()))
-        {
-            msg = ErrorsMessages.errDuplicateMappings;
-            return false;
-        }
-        if(!(tester.notchIsValid()))
-        {
-            msg = ErrorsMessages.errNotch;
-            return false;
-        }
+    private String rotorsChecks() {
+        if (!(tester.amountOfRotorosIsValid()))
+            return ErrorsMessages.errAmountOfRotor;
 
-        msg = null;
-        return true;
+        if (!(tester.moreThenOneRotor()))
+            return ErrorsMessages.errLessThenTwoRotor;
+
+        if (!(tester.allRotorsIdsValid()))
+            return ErrorsMessages.errIDsRotors;
+
+        if (!(tester.NoDuplicateMappings()))
+            return ErrorsMessages.errDuplicateMappings;
+
+        if (!(tester.notchIsValid()))
+            return ErrorsMessages.errNotch;
+
+        return ErrorsMessages.noErrors;
     }
 
-    private boolean fileValidChecks(String msg, String path)
+    private String fileValidChecks(String path)
     {
         if(!(tester.theFileIsXml(path)))
-        {
-            msg = ErrorsMessages.errXML;
-            return false;
-        }
-        if(!(tester.getMachine(path)))
-        {
-            msg = ErrorsMessages.errGetMachine;
-            return false;
-        }
-        if(!(tester.lettersAmountIsEven()))
-        {
-            msg = ErrorsMessages.errABCSize;
-            return false;
-        }
+            return ErrorsMessages.errXML;
 
-        msg = null;
-        return true;
+        if(!(tester.getMachine(path)))
+            return ErrorsMessages.errGetMachine;
+
+        if(!(tester.lettersAmountIsEven()))
+            return ErrorsMessages.errABCSize;
+
+        return ErrorsMessages.noErrors;
     }
 
     @Override
