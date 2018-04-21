@@ -99,4 +99,8 @@ public class MachineProxy {
     public int getAppliedRotors(){
         return appliedRotors;
     }
+
+    public char[] getLanguage(){
+        return this.languageInterpeter.getLanguage();
+    }
 }

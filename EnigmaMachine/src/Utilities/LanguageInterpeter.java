@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 public class LanguageInterpeter {
+
+    public char[] getLanguage() {
+        return language;
+    }
+
     private char[] language;
     private Map<Character, Integer> dictionary;
 
@@ -52,5 +57,6 @@ public class LanguageInterpeter {
         }
         return res;
     }
+
 
 }

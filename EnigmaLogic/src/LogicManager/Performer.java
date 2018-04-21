@@ -10,6 +10,10 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 
 public class Performer implements LogicApi {
+    public MachineProxy getMachineProxy() {
+        return machineProxy;
+    }
+
     private MachineProxy machineProxy;
     private static Performer performer;
 
