@@ -58,8 +58,9 @@ public class LanguageInterpeter {
         return res;
     }
 
-    public int characterToNum(String character){
-        return dictionary.get(character);
+    public int characterToNum(String charToConvert){
+        char c = charToConvert.charAt(0);
+        return dictionary.get(c);
     }
 
 
