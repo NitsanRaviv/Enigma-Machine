@@ -107,41 +107,47 @@ public class MainMenu {
         String[] rotors;
         String[] rotorMap;
         String chosenReflector;
-        boolean rotorsValid, rotorMapValid, reflectorValid;
+        boolean rotorsValid, rotorMapValid, reflectorValid ,sizeWasValid = false, sizeProblemR = false, sizeProblemRm = false;
 
         rotors = getRotorsFromUser();
         rotorMap = getRotorMapFromUser();
         chosenReflector = getReflectorFromUser();
-
         rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
         rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
         reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
 
-        while(!rotorsValid)
+        while(!sizeWasValid)
         {
-            System.out.println("You Insert invalid rotor numbers. Please Try again");
-            rotors = getRotorsFromUser();
-            rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
-        }
-        while(!rotorMapValid)
-        {
-            System.out.println("You Insert invalid initial location for rotors. Please Try again");
-            rotorMap = getRotorMapFromUser();
-            rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
-        }
-        while(!reflectorValid)
-        {
-            System.out.println("You Insert invalid reflector number. Please Try again");
-            chosenReflector = getReflectorFromUser();
-            reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
-        }
-        while (rotors.length != rotorMap.length)
-        {
-            System.out.println("You Insert not the same number of rotors and initial location for them. Please Try again");
-            rotors = getRotorsFromUser();
-            rotorMap = getRotorMapFromUser();
-            rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
-            rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
+            sizeWasValid = true;
+            while(!rotorsValid || sizeProblemR)
+            {
+                if (!rotorsValid)
+                    System.out.println("You Insert invalid rotors numbers. Please Try again");
+                rotors = getRotorsFromUser();
+                rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
+                sizeProblemR = false;
+            }
+            while(!rotorMapValid || sizeProblemRm)
+            {
+                if(!rotorMapValid)
+                    System.out.println("You Insert invalid initial location for rotors. Please Try again");
+                rotorMap = getRotorMapFromUser();
+                rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
+                sizeProblemRm = false;
+            }
+            while(!reflectorValid)
+            {
+                System.out.println("You Insert invalid reflector number. Please Try again");
+                chosenReflector = getReflectorFromUser();
+                reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
+            }
+            if (rotors.length != rotorMap.length)
+            {
+                System.out.println("You must insert the same number of rotors and initial location for them. Please Try again");
+                sizeWasValid = false;
+                sizeProblemR = true;
+                sizeProblemRm = true;
+            }
         }
 
         Integrator.getIntegrator().setInitialCode(rotors,rotorMap,chosenReflector);
@@ -149,17 +155,17 @@ public class MainMenu {
     }
 
     private String getReflectorFromUser() {
-        System.out.println("Please enter the chosen reflector");
+        System.out.println("Please enter the chosen reflector(example format: II)");
         return getInput.next();
     }
 
     private String[] getRotorMapFromUser() {
-        System.out.println("Please enter initial location for rotors by order");
+        System.out.println("Please enter initial location for rotors by order without spaces(example format: ABC)");
         return getInputAndMakeArr("");
     }
 
     private String[] getRotorsFromUser() {
-        System.out.println("Please enter rotors numbers by order(separate by ',')");
+        System.out.println("Please enter rotors numbers by order and separate by ','(example format: 1,2,3)");
         return getInputAndMakeArr(",");
     }
 
