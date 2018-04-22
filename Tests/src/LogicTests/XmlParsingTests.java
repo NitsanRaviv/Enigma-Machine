@@ -48,5 +48,6 @@ public class XmlParsingTests {
         Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
         Performer.getPerformer().setInitialCode("2,1".split(","), "3,3".split(","),"I");
         Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
+        System.out.println(Performer.getPerformer().getStatistics());
     }
 }

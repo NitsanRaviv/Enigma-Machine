@@ -9,12 +9,17 @@ import java.util.List;
 
 public class MachineProxy {
     private EnigmaMachine machine;
+
+    public LanguageInterpeter getLanguageInterpeter() {
+        return languageInterpeter;
+    }
+
     private LanguageInterpeter languageInterpeter;
     private int appliedRotors;
     private List<String> machineSpecifications;
     private int inputMsgNum;
     private boolean machineIsSet;
-    MachineStatistics machineStatistics;
+    private MachineStatistics machineStatistics;
     private String machineCode;
 
     public MachineProxy(EnigmaMachine machine, LanguageInterpeter languageInterpeter, int rotorsCount)
@@ -31,7 +36,7 @@ public class MachineProxy {
         long start = System.nanoTime();
         List<Character> encrypted =  languageInterpeter.numberToLetters(machine.encryptCode(languageInterpeter.lettersToNumbers(codeToEncrypt.toCharArray())));
         long end = System.nanoTime();
-        updateStatistics(codeToEncrypt, encrypted.toString(), start - end);
+        updateStatistics(codeToEncrypt, encrypted.toString(), end - start);
         inputMsgNum++;
         return encrypted;
     }

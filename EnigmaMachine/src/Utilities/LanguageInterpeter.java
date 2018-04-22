@@ -58,5 +58,9 @@ public class LanguageInterpeter {
         return res;
     }
 
+    public int characterToNum(String character){
+        return dictionary.get(character);
+    }
+
 
 }

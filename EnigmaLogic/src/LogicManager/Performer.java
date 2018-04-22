@@ -41,7 +41,7 @@ public class Performer implements LogicApi {
 
     @Override
     public void setInitialCode(String[] rotorIds, String[] rotorMap, String chosenReflector) {
-        List<Pair<Integer, Integer>> rotorsAndNotch = InitialCodeParser.parseRotors(rotorIds, rotorMap);
+        List<Pair<Integer, Integer>> rotorsAndNotch = InitialCodeParser.parseRotors(rotorIds, rotorMap, machineProxy.getLanguageInterpeter());
         Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorsAndNotch.size()];
         int index = 0;
         for(Pair p : rotorsAndNotch){
