@@ -174,7 +174,69 @@ public class Tester {
         return true;
     }
 
+    public boolean allTheRotorIdsExists(String[] rotors) {
+        List<Integer> rotorsIds = new ArrayList<>();
+        boolean res = false;
 
+        for (Rotor rotor : theRotors)
+            rotorsIds.add(rotor.getId());
 
+        for(String idToCheck : rotors)
+        {
+            for (Integer id : rotorsIds)
+            {
+                if(idToCheck.equals(id.toString()))
+                {
+                    res = true;
+                    break;
+                }
+            }
 
+            if(!res)
+                return false;
+
+            res = false;
+        }
+
+        return true;
+    }
+
+    public boolean allTheRotorsInitialValid(String[] rotorMap, char[] lang) {
+        boolean res = false;
+
+        for(String charToCheck : rotorMap)
+        {
+            for (char letter : lang)
+            {
+                if(charToCheck.equals(String.valueOf(letter)))
+                {
+                    res = true;
+                    break;
+                }
+            }
+
+            if(!res)
+                return false;
+
+            res = false;
+        }
+
+        return true;
+
+    }
+
+    public boolean TheReflectorIdExists(String chosenReflector) {
+        List<String> reflectorsIds = new ArrayList<>();
+
+        for (Reflector reflector : theReflectors)
+            reflectorsIds.add(reflector.getId());
+
+        for(String refID : reflectorsIds)
+        {
+            if(chosenReflector.equals(refID))
+                return true;
+        }
+
+        return false;
+    }
 }

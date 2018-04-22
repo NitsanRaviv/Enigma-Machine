@@ -10,111 +10,225 @@ import java.util.concurrent.TimeUnit;
 public class MainMenu {
 
     private ArrayList<MenuItem> theMenu = new ArrayList<>();
-    private final int errorSign = -1;
     private String path;
     private Scanner getInput = new Scanner(System.in);
 
-    public void addNewItem(MenuItem newItem)
-    {
+    public void addNewItem(MenuItem newItem) {
         theMenu.add(newItem);
-    }
-
-    private int getSerialNumberByName(String name)
-    {
-        int res = errorSign;
-        for(MenuItem item : theMenu)
-        {
-            if(item.getName() == name)
-                res = item.getSerialNumber();
-        }
-
-        return res;
     }
 
     public void start(String xmlFilePath) {
         int userChoice = 0;
-        int exitItemNumber = getSerialNumberByName("exit");
-        int readFileItemNUmber = getSerialNumberByName("readFile");
-        boolean fileExists = false , choiceSucc;
+        boolean fileExists = false, choiceSucc, codeInitialized = false;
         path = xmlFilePath;
 
-        while (userChoice != exitItemNumber) {
+        while (userChoice != MainMenuOptions.exit) {
             printMenu();
             userChoice = getInputFromUser();
 
-            if (userChoice == errorSign)
+            if(!(priorityChecks(userChoice,fileExists,codeInitialized)))
                 continue;
-            if (userChoice == readFileItemNUmber && fileExists) {
-                System.out.println("There is a file in the system so you can not read a new file. In order to read a new file, the system must be restarted");
-                continue;
-            }
-            if (userChoice != readFileItemNUmber && userChoice != exitItemNumber && !fileExists) {
-                System.out.println("There is no file in the system. First, you need to read a file");
-                continue;
-            }
 
             choiceSucc = (doChoice(userChoice));
-            if (userChoice == readFileItemNUmber && choiceSucc)
+            if (userChoice == MainMenuOptions.readMachineFile && choiceSucc)
                 fileExists = true;
+            if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically)
+                    && choiceSucc)
+                codeInitialized = true;
         }
     }
 
-    //have to separate cases to methods(after we will be sure we work like that)
+    private boolean priorityChecks(int userChoice, boolean fileExists, boolean codeInitialized) {
+        if (userChoice == MainMenuOptions.errorSign)
+            return false;
+
+        if (userChoice == MainMenuOptions.readMachineFile && fileExists) {
+            System.out.println("There is a file in the system so you can not read a new file. In order to read a new file, the system must be restarted");
+            return false;
+        }
+        if (userChoice != MainMenuOptions.readMachineFile && userChoice != MainMenuOptions.exit && !fileExists) {
+            System.out.println("There is no file in the system. First, you need to read a file");
+            return false;
+        }
+        if ((userChoice == MainMenuOptions.inputProcessing ||userChoice == MainMenuOptions.resetCode)
+        && !codeInitialized) {
+            System.out.println("First, you must select an initial code configuration(manually or automatically)");
+            return false;
+        }
+
+        return true;
+    }
+
     private boolean doChoice(int userChoice) {
 
-        String msg, input;
         boolean res = true;
         switch (userChoice) {
-            case 1:
-                msg = Integrator.getIntegrator().loadMachineFromXml(path);
-                if(msg != ErrorsMessages.noErrors)
-                {
-                    System.out.println(msg);
-                    res = false;
-                }
+            case MainMenuOptions.readMachineFile:
+                res = readMachineFile();
                 break;
-            case 2:
-                List<String> msgs = Integrator.getIntegrator().getMachineSpecification();
-                System.out.println(msgs);
-                if(msgs.get(0) == ErrorsMessages.errNoMachine)
-                    res = false;
+            case MainMenuOptions.machineSpecifications:
+                res = showMachineSpecification();
                 break;
-            case 3:
-                System.out.println("do 3...");
+            case MainMenuOptions.initialCodeManually:
+                res = initialCodeManually();
                 break;
-            case 4:
-                System.out.println("do 4...");
+            case MainMenuOptions.initialCodeAutomatically:
+                System.out.println("do 4...");//TODO
                 break;
-            case 5:
-                System.out.println("Pleas enter input to process");
-                input = getInput.next();
-                // TODO: need to check if the input is from the ABC machine
-                msg = Integrator.getIntegrator().processInput(input);
-                System.out.println(msg);
-                if(msg == ErrorsMessages.errNoMachine)
-                    res = false;
+            case MainMenuOptions.inputProcessing:
+                res = processInput();
                 break;
-            case 6:
-                msg = Integrator.getIntegrator().resetCode();
-                if(msg == ErrorsMessages.errNoMachine)
-                {
-                    System.out.println(msg);
-                    res = false;
-                }
+            case MainMenuOptions.resetCode:
+                res = resetCurrentCode();
                 break;
-            case 7:
-                System.out.println("do 7...");
+            case MainMenuOptions.historyAndStatistics:
+                res = gethistoryAndStatistics();
                 break;
-            case 8:
-                System.out.println("Bye bye!");
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            case MainMenuOptions.exit:
+                turnOff();
                 break;
         }
         return res;
+    }
+
+    private boolean gethistoryAndStatistics() {
+        try {
+            System.out.println(Integrator.getIntegrator().gethistoryAndStatistics());
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean initialCodeManually() {
+        String[] rotors;
+        String[] rotorMap;
+        String chosenReflector;
+        boolean rotorsValid, rotorMapValid, reflectorValid;
+
+        rotors = getRotorsFromUser();
+        rotorMap = getRotorMapFromUser();
+        chosenReflector = getReflectorFromUser();
+
+        rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
+        rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
+        reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
+
+        while(!rotorsValid)
+        {
+            System.out.println("You Insert invalid rotor numbers. Please Try again");
+            rotors = getRotorsFromUser();
+            rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
+        }
+        while(!rotorMapValid)
+        {
+            System.out.println("You Insert invalid initial location for rotors. Please Try again");
+            rotorMap = getRotorMapFromUser();
+            rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
+        }
+        while(!reflectorValid)
+        {
+            System.out.println("You Insert invalid reflector number. Please Try again");
+            chosenReflector = getReflectorFromUser();
+            reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
+        }
+        while (rotors.length != rotorMap.length)
+        {
+            System.out.println("You Insert not the same number of rotors and initial location for them. Please Try again");
+            rotors = getRotorsFromUser();
+            rotorMap = getRotorMapFromUser();
+            rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
+            rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
+        }
+
+        Integrator.getIntegrator().setInitialCode(rotors,rotorMap,chosenReflector);
+        return true;
+    }
+
+    private String getReflectorFromUser() {
+        System.out.println("Please enter the chosen reflector");
+        return getInput.next();
+    }
+
+    private String[] getRotorMapFromUser() {
+        System.out.println("Please enter initial location for rotors by order");
+        return getInputAndMakeArr("");
+    }
+
+    private String[] getRotorsFromUser() {
+        System.out.println("Please enter rotors numbers by order(separate by ',')");
+        return getInputAndMakeArr(",");
+    }
+
+    private String[] getInputAndMakeArr(String splitSign) {
+        String[] res;
+        String input;
+
+        input = getInput.next().toUpperCase();
+        res = input.split(splitSign);
+
+        return res;
+    }
+
+    private void turnOff() {
+        System.out.println("Bye bye!");
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean resetCurrentCode() {
+        String msg = Integrator.getIntegrator().resetCode();
+
+        if (msg == ErrorsMessages.errNoMachine) {
+            System.out.println(msg);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean showMachineSpecification() {
+        List<String> msgs = Integrator.getIntegrator().getMachineSpecification();
+        System.out.println(msgs);
+
+        if (msgs.get(0) == ErrorsMessages.errNoMachine)
+            return false;
+
+        return true;
+    }
+
+    private boolean readMachineFile() {
+        String msg = Integrator.getIntegrator().loadMachineFromXml(path);
+
+        if (msg != ErrorsMessages.noErrors) {
+            System.out.println(msg);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean processInput() {
+        boolean validInput;
+        String msg;
+        System.out.println("Pleas enter input to process");
+        String input = getInput.next().toUpperCase();
+        validInput = Integrator.getIntegrator().checkValidOfProcessInput(input);
+
+        if (validInput) {
+            msg = Integrator.getIntegrator().processInput(input);
+            System.out.println(msg);
+            if (msg == ErrorsMessages.errNoMachine)
+                return false;
+        } else
+            return false;
+
+        return true;
     }
 
     private int getInputFromUser() {
@@ -124,36 +238,34 @@ public class MainMenu {
             userChoice = getInput.nextInt();
         } catch (IllegalArgumentException ilae) {
             System.out.println("Invaild input! Please enter a number between 1 to 8");
-            return errorSign;
-        }
-        catch (InputMismatchException ime)
-        {
+            return MainMenuOptions.errorSign;
+        } catch (InputMismatchException ime) {
             System.out.println("Invaild input! Please enter a number between 1 to 8");
-            return errorSign;
+            return MainMenuOptions.errorSign;
         }
 
         if (userChoice > 8 || userChoice < 1) {
             System.out.println("Out of range input! Please enter a number between 1 to 8");
-            return errorSign;
+            return MainMenuOptions.errorSign;
         }
 
         return userChoice;
     }
 
-    private void printMenu()
-    {
+    private void printMenu() {
         System.out.println("---------------------------------------------------------\n");
         System.out.println("Welcome to NicEnigma\n");
         System.out.println("Please select one of the options:");
 
-        for(MenuItem item : theMenu)
-        {
+        for (MenuItem item : theMenu)
             System.out.println(item.toString());
-        }
+
 
         System.out.println("---------------------------------------------------------\n");
     }
-
 }
+
+
+
 
 

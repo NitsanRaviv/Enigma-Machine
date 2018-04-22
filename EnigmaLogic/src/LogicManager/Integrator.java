@@ -131,8 +131,29 @@ public class Integrator implements LogicApi {
     }
 
     @Override
-    public boolean setInitialCode(String[] rotors, String[] rotorMap, String chosenReflector) {
-        return false;
+    public void setInitialCode(String[] rotors, String[] rotorMap, String chosenReflector) {
+        Performer.getPerformer().setInitialCode(rotors, rotorMap, chosenReflector);
+    }
+
+    public boolean checkValidOfProcessInput(String input) {
+        String machineLanguage = integrator.getMachineLanguage();
+
+        for (char ch : input.toCharArray()) {
+            if (machineLanguage.indexOf(ch) == -1) {
+                System.out.println("Incorrect input. you must enter input that includes only the ABC machine language");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public String getMachineLanguage(){
+       return  String.valueOf(Performer.getPerformer().getMachineProxy().getLanguage());
+    }
+
+    public String gethistoryAndStatistics(){
+        return Performer.getPerformer().getMachineProxy().getStatistics();
     }
 
     public static Integrator getIntegrator(){
@@ -141,5 +162,18 @@ public class Integrator implements LogicApi {
             integrator = new Integrator();
         }
         return integrator;
+    }
+
+    public boolean checkInitialRotors(String[] rotors) {
+        return tester.allTheRotorIdsExists(rotors);
+    }
+
+    public boolean checkInitialRotorsMap(String[] rotorMap) {
+       char[] lang = Performer.getPerformer().getMachineProxy().getLanguage();
+        return tester.allTheRotorsInitialValid(rotorMap,lang);
+    }
+
+    public boolean checkChosenReflector(String chosenReflector) {
+        return tester.TheReflectorIdExists(chosenReflector);
     }
 }

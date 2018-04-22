@@ -40,7 +40,7 @@ public class Performer implements LogicApi {
     }
 
     @Override
-    public boolean setInitialCode(String[] rotorIds, String[] rotorMap, String chosenReflector) {
+    public void setInitialCode(String[] rotorIds, String[] rotorMap, String chosenReflector) {
         List<Pair<Integer, Integer>> rotorsAndNotch = InitialCodeParser.parseRotors(rotorIds, rotorMap);
         Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorsAndNotch.size()];
         int index = 0;
@@ -51,7 +51,6 @@ public class Performer implements LogicApi {
         machineProxy.setChosenRotors(rotorsAndNotchArr);
         machineProxy.setChosenReflector(chosenReflector);
         machineProxy.isMachineSet(true);
-        return true;
     }
 
     @Override

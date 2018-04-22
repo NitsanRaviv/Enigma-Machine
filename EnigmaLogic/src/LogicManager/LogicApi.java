@@ -7,5 +7,5 @@ public interface LogicApi {
      String loadMachineFromXml(String path);
      String processInput(String input);
      String resetCode();
-     boolean setInitialCode(String[] rotors,String[] rotorMap,String chosenReflector);
+     void setInitialCode(String[] rotors,String[] rotorMap,String chosenReflector);
 }
