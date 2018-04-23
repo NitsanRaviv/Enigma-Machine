@@ -26,7 +26,10 @@ public class MainMenu {
             userChoice = getInputFromUser();
 
             if(!(priorityChecks(userChoice,fileExists,codeInitialized)))
+            {
+                getInput.nextLine();
                 continue;
+            }
 
             choiceSucc = (doChoice(userChoice));
             if (userChoice == MainMenuOptions.readMachineFile && choiceSucc)
@@ -216,6 +219,7 @@ public class MainMenu {
 
         if (msg != ErrorsMessages.noErrors) {
             System.out.println(msg);
+            getInput.nextLine();
             return false;
         }
         return true;
