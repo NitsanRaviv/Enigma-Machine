@@ -17,10 +17,9 @@ public class MainMenu {
         theMenu.add(newItem);
     }
 
-    public void start(String xmlFilePath) {
+    public void start() {
         int userChoice = 0;
         boolean fileExists = false, choiceSucc, codeInitialized = false;
-        path = xmlFilePath;
 
         while (userChoice != MainMenuOptions.exit) {
             printMenu();
@@ -156,7 +155,7 @@ public class MainMenu {
 
     private String getReflectorFromUser() {
         System.out.println("Please enter the chosen reflector(example format: II)");
-        return getInput.next();
+        return getInput.next().toUpperCase();
     }
 
     private String[] getRotorMapFromUser() {
@@ -210,6 +209,9 @@ public class MainMenu {
     }
 
     private boolean readMachineFile() {
+        System.out.println("Please enter a path to the xml file:");
+        path = getInput.next();
+        // path = "Tests/ex1-sanity-small.xml"; for tests
         String msg = Integrator.getIntegrator().loadMachineFromXml(path);
 
         if (msg != ErrorsMessages.noErrors) {

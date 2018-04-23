@@ -4,20 +4,15 @@ import LogicManager.Performer;
 import java.util.Scanner;
 
 
-/*TODO:
-        1. in mainMenu class line 90
-        2. all the serial number have to be interFace not numbers*/
+
 public class Main
 {
-    private static LogicApi logicApi = Performer.getPerformer();
-    private static String xmlFilePath = "Tests/ex1-sanity-small.xml";
     public static void main(String[] args) {
 
         MainMenu mainMenu = new MainMenu();
         createMenue(mainMenu);
-        mainMenu.start(xmlFilePath);
+        mainMenu.start();
     }
-
 
     public static void createMenue(MainMenu mainMenu)
     {
