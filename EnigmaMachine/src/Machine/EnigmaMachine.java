@@ -12,7 +12,7 @@ public class EnigmaMachine {
    private List<Reflector> reflectors;
    private List<Rotor> chosenRotors;
    private Reflector chosenReflector;
-    private int chosenReflNumber;
+   private int chosenReflNumber;
 
     public EnigmaMachine(List<Rotor> rotors, List<Reflector> reflectors) {
         this.rotors = new ArrayList<>(rotors);
@@ -117,5 +117,13 @@ public class EnigmaMachine {
 
     public int getRotorsSize() {
         return this.rotors.size();
+    }
+
+    public int getNumRotors() {
+        return this.rotors.size();
+    }
+
+    public int getNumReflectors() {
+        return this.reflectors.size();
     }
 }

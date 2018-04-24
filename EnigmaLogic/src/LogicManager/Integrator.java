@@ -135,6 +135,11 @@ public class Integrator implements LogicApi {
         Performer.getPerformer().setInitialCode(rotors, rotorMap, chosenReflector);
     }
 
+    @Override
+    public String setRandomMachineCode() {
+        return Performer.getPerformer().setRandomMachineCode();
+    }
+
     public boolean checkValidOfProcessInput(String input) {
         String machineLanguage = integrator.getMachineLanguage();
 

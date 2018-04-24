@@ -1,5 +1,6 @@
 import LogicManager.ErrorsMessages;
 import LogicManager.Integrator;
+import LogicManager.Performer;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -75,7 +76,7 @@ public class MainMenu {
                 res = initialCodeManually();
                 break;
             case MainMenuOptions.initialCodeAutomatically:
-                System.out.println("do 4...");//TODO
+                System.out.println(Performer.getPerformer().setRandomMachineCode());//TODO
                 break;
             case MainMenuOptions.inputProcessing:
                 res = processInput();

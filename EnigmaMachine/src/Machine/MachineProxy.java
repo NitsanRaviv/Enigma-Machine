@@ -79,7 +79,7 @@ public class MachineProxy {
         return machineSpecifications;
     }
 
-    private String getCurrentCode() {
+    public String getCurrentCode() {
         StringBuilder sb = new StringBuilder();
         List<Integer> rotorNotchesNum = new ArrayList<>();
         List<Integer> rotorIds = new ArrayList<>();
@@ -134,5 +134,13 @@ public class MachineProxy {
 
     public String getStatistics() {
         return machineStatistics.getStatistics();
+    }
+
+    public int getNumRotors() {
+        return machine.getNumRotors();
+    }
+
+    public int getNumReflectors() {
+        return machine.getNumReflectors();
     }
 }

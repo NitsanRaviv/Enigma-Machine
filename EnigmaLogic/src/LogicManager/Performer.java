@@ -2,11 +2,13 @@ package LogicManager;
 
 import LogicManager.InitialCode.InitialCodeParser;
 import Machine.MachineProxy;
+import Utilities.RomanInterpeter;
 import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
 
 import javax.xml.bind.JAXBException;
 import java.util.List;
+import java.util.Random;
 
 public class Performer implements LogicApi {
     public MachineProxy getMachineProxy() {
@@ -53,6 +55,37 @@ public class Performer implements LogicApi {
         machineProxy.isMachineSet(true);
     }
 
+    public String setRandomMachineCode(){
+        Random random = new Random();
+        boolean exists = false;
+        int rotorId = 0;
+        int maxRotorNum = Math.min(5, machineProxy.getNumRotors());
+        int rotorNum  = Math.abs(random.nextInt()) % maxRotorNum + 1;
+        int insertedrotors = 0;
+        if(rotorNum == 1)
+            rotorNum++;
+        Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorNum];
+        while (rotorNum > insertedrotors) {
+            rotorId = Math.abs(random.nextInt()) % machineProxy.getNumRotors() + 1;
+            for (Pair<Integer, Integer> p : rotorsAndNotchArr) {
+                if (p != null) {
+                    if (p.getKey() == rotorId)
+                        exists = true;
+                }
+            }
+                if(exists == false){
+                    rotorsAndNotchArr[insertedrotors] = new Pair<>(rotorId, Math.abs(random.nextInt()) % machineProxy.getLanguageInterpeter().getLanguageAsNumbers().size() + 1);
+                    insertedrotors++;
+                }
+                exists = false;
+        }
+        machineProxy.setChosenRotors(rotorsAndNotchArr);
+        int randomRefl = Math.abs(random.nextInt());
+        Integer reflRand = randomRefl % machineProxy.getNumReflectors() + 1;
+        machineProxy.setChosenReflector(RomanInterpeter.numToRoman(reflRand));
+        return machineProxy.getCurrentCode();
+    }
+
     @Override
     public List<String> getMachineSpecification()
     {
@@ -73,4 +106,6 @@ public class Performer implements LogicApi {
         }
         return performer;
     }
+
+
 }
