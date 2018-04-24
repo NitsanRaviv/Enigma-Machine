@@ -37,8 +37,6 @@ public class MainMenu {
             if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically)
                     && choiceSucc)
                 codeInitialized = true;
-          /*  if ((userChoice == MainMenuOptions.resetCode) && choiceSucc)
-                codeInitialized = false;*/
         }
     }
 
@@ -46,10 +44,10 @@ public class MainMenu {
         if (userChoice == MainMenuOptions.errorSign)
             return false;
 
-        if (userChoice == MainMenuOptions.readMachineFile && fileExists) {
+       /* if (userChoice == MainMenuOptions.readMachineFile && fileExists) {
             System.out.println("There is a file in the system so you can not read a new file. In order to read a new file, the system must be restarted");
             return false;
-        }
+        }*/
         if (userChoice != MainMenuOptions.readMachineFile && userChoice != MainMenuOptions.exit && !fileExists) {
             System.out.println("There is no file in the system. First, you need to read a file");
             return false;
@@ -59,11 +57,6 @@ public class MainMenu {
             System.out.println("First, you must select an initial code configuration(manually or automatically)");
             return false;
         }
-
-     /*   if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically) && codeInitialized) {
-            System.out.println("There is already an initial code in the system. To set a new one, you first need to reset the code");
-            return false;
-        }*/
 
         return true;
     }

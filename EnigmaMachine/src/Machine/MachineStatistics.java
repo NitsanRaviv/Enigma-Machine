@@ -16,7 +16,6 @@ public class MachineStatistics {
 
     public void setNewInitialCode(String initialCode){
         if(initialCodeToStat.get(initialCode) == null){
-            this.initialCodeToStat = new HashMap<>();
             this.initialCodeToStat.put(initialCode, new ArrayList<>());
         }
     }
