@@ -1,12 +1,11 @@
 public interface MainMenuOptions {
-
-    public int errorSign = -1;
-    public int readMachineFile = 1;
-    public int machineSpecifications = 2;
-    public int initialCodeManually = 3;
-    public int initialCodeAutomatically = 4;
-    public int inputProcessing = 5;
-    public int resetCode = 6;
-    public int historyAndStatistics = 7;
-    public int exit = 8;
+     int errorSign = -1;
+     int readMachineFile = 1;
+     int machineSpecifications = 2;
+     int initialCodeManually = 3;
+     int initialCodeAutomatically = 4;
+     int inputProcessing = 5;
+     int resetCode = 6;
+     int historyAndStatistics = 7;
+     int exit = 8;
 }

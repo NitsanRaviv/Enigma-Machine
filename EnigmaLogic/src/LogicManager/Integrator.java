@@ -145,7 +145,7 @@ public class Integrator implements LogicApi {
 
         for (char ch : input.toCharArray()) {
             if (machineLanguage.indexOf(ch) == -1) {
-                System.out.println("Incorrect input. you must enter input that includes only the ABC machine language");
+                System.out.println("Incorrect input. you can enter only letters from the machine׳s language.");
                 return false;
             }
         }
@@ -157,8 +157,8 @@ public class Integrator implements LogicApi {
        return  String.valueOf(Performer.getPerformer().getMachineProxy().getLanguage());
     }
 
-    public String gethistoryAndStatistics(){
-        return Performer.getPerformer().getMachineProxy().getStatistics();
+    public String getStatistics(){
+        return Performer.getPerformer().getStatistics();
     }
 
     public static Integrator getIntegrator(){

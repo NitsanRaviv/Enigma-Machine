@@ -83,6 +83,7 @@ public class Performer implements LogicApi {
         int randomRefl = Math.abs(random.nextInt());
         Integer reflRand = randomRefl % machineProxy.getNumReflectors() + 1;
         machineProxy.setChosenReflector(RomanInterpeter.numToRoman(reflRand));
+        machineProxy.isMachineSet(true);
         return machineProxy.getCurrentCode();
     }
 

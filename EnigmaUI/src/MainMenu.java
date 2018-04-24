@@ -1,6 +1,5 @@
 import LogicManager.ErrorsMessages;
 import LogicManager.Integrator;
-import LogicManager.Performer;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -109,7 +108,7 @@ public class MainMenu {
 
     private boolean gethistoryAndStatistics() {
         try {
-            System.out.println(Integrator.getIntegrator().gethistoryAndStatistics());
+            System.out.println(Integrator.getIntegrator().getStatistics());
         }
         catch (Exception e)
         {
@@ -138,7 +137,7 @@ public class MainMenu {
             while(!rotorsValid || sizeProblemR)
             {
                 if (!rotorsValid)
-                    System.out.println("You Insert invalid rotors numbers. Please Try again");
+                    System.out.println("You have inserted invalid rotor numbers. Please Try again");
                 rotors = getRotorsFromUser();
                 rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
                 sizeProblemR = false;
@@ -146,14 +145,14 @@ public class MainMenu {
             while(!rotorMapValid || sizeProblemRm)
             {
                 if(!rotorMapValid)
-                    System.out.println("You Insert invalid initial location for rotors. Please Try again");
+                    System.out.println("You have inserted invalid initial location for rotors. Please Try again");
                 rotorMap = getRotorMapFromUser();
                 rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
                 sizeProblemRm = false;
             }
             while(!reflectorValid)
             {
-                System.out.println("You Insert invalid reflector number. Please Try again");
+                System.out.println("You have inserted an invalid reflector number. Please Try again");
                 chosenReflector = getReflectorFromUser();
                 reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
             }
@@ -175,12 +174,12 @@ public class MainMenu {
     }
 
     private String[] getRotorMapFromUser() {
-        System.out.println("Please enter initial location for rotors by order without spaces(example format: ABC)");
+        System.out.println("Please enter initial location for rotors in order without spaces(example format: ABC)");
         return getInputAndMakeArr("");
     }
 
     private String[] getRotorsFromUser() {
-        System.out.println("Please enter rotors numbers by order and separate by ','(example format: 1,2,3)");
+        System.out.println("Please enter rotor numbers by order and separate by ','(example format: 1,2,3)");
         return getInputAndMakeArr(",");
     }
 
@@ -241,7 +240,7 @@ public class MainMenu {
     private boolean processInput() {
         boolean validInput;
         String msg;
-        System.out.println("Pleas enter input to process");
+        System.out.println("Please enter an input to process");
         String input = getInput.next().toUpperCase();
         validInput = Integrator.getIntegrator().checkValidOfProcessInput(input);
 
@@ -280,7 +279,7 @@ public class MainMenu {
     private void printMenu() {
         System.out.println("---------------------------------------------------------\n");
         System.out.println("Welcome to NicEnigma\n");
-        System.out.println("Please select one of the options:");
+        System.out.println("Please select one of the following options:");
 
         for (MenuItem item : theMenu)
             System.out.println(item.toString());

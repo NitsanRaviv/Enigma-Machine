@@ -15,6 +15,8 @@ public interface LogicApi {
 
      String setRandomMachineCode();
 
+     String getStatistics();
+
 }
 
 
