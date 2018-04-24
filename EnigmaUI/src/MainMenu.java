@@ -44,10 +44,6 @@ public class MainMenu {
         if (userChoice == MainMenuOptions.errorSign)
             return false;
 
-       /* if (userChoice == MainMenuOptions.readMachineFile && fileExists) {
-            System.out.println("There is a file in the system so you can not read a new file. In order to read a new file, the system must be restarted");
-            return false;
-        }*/
         if (userChoice != MainMenuOptions.readMachineFile && userChoice != MainMenuOptions.exit && !fileExists) {
             System.out.println("There is no file in the system. First, you need to read a file");
             return false;
@@ -219,7 +215,6 @@ public class MainMenu {
     private boolean readMachineFile() {
         System.out.println("Please enter a path to the xml file:");
         path = getInput.next();
-        // path = "Tests/ex1-sanity-paper-enigma.xml"; for tests
         String msg = Integrator.getIntegrator().loadMachineFromXml(path);
 
         if (msg != ErrorsMessages.noErrors) {
@@ -227,6 +222,9 @@ public class MainMenu {
             getInput.nextLine();
             return false;
         }
+        else
+            System.out.println("Reading file...");
+
         return true;
     }
 
