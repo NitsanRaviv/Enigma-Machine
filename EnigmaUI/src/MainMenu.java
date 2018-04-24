@@ -38,6 +38,8 @@ public class MainMenu {
             if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically)
                     && choiceSucc)
                 codeInitialized = true;
+            if ((userChoice == MainMenuOptions.resetCode) && choiceSucc)
+                codeInitialized = false;
         }
     }
 
@@ -59,6 +61,11 @@ public class MainMenu {
             return false;
         }
 
+        if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically) && codeInitialized) {
+            System.out.println("There is already an initial code in the system. To set a new one, you first need to reset the code");
+            return false;
+        }
+
         return true;
     }
 
@@ -73,10 +80,10 @@ public class MainMenu {
                 res = showMachineSpecification();
                 break;
             case MainMenuOptions.initialCodeManually:
-                res = initialCodeManually();
+                initialCodeManually();
                 break;
             case MainMenuOptions.initialCodeAutomatically:
-                System.out.println(Performer.getPerformer().setRandomMachineCode());//TODO
+                initialCodeAutomatically();
                 break;
             case MainMenuOptions.inputProcessing:
                 res = processInput();
@@ -94,6 +101,12 @@ public class MainMenu {
         return res;
     }
 
+    private void initialCodeAutomatically() {
+
+        String msg = Integrator.getIntegrator().setRandomMachineCode();
+        System.out.println(msg);
+    }
+
     private boolean gethistoryAndStatistics() {
         try {
             System.out.println(Integrator.getIntegrator().gethistoryAndStatistics());
@@ -106,7 +119,7 @@ public class MainMenu {
         return true;
     }
 
-    private boolean initialCodeManually() {
+    private void initialCodeManually() {
         String[] rotors;
         String[] rotorMap;
         String chosenReflector;
@@ -154,7 +167,6 @@ public class MainMenu {
         }
 
         Integrator.getIntegrator().setInitialCode(rotors,rotorMap,chosenReflector);
-        return true;
     }
 
     private String getReflectorFromUser() {
@@ -215,7 +227,7 @@ public class MainMenu {
     private boolean readMachineFile() {
         System.out.println("Please enter a path to the xml file:");
         path = getInput.next();
-        // path = "Tests/ex1-sanity-small.xml"; for tests
+        // path = "Tests/ex1-sanity-paper-enigma.xml"; for tests
         String msg = Integrator.getIntegrator().loadMachineFromXml(path);
 
         if (msg != ErrorsMessages.noErrors) {
