@@ -38,8 +38,8 @@ public class MainMenu {
             if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically)
                     && choiceSucc)
                 codeInitialized = true;
-            if ((userChoice == MainMenuOptions.resetCode) && choiceSucc)
-                codeInitialized = false;
+          /*  if ((userChoice == MainMenuOptions.resetCode) && choiceSucc)
+                codeInitialized = false;*/
         }
     }
 
@@ -61,10 +61,10 @@ public class MainMenu {
             return false;
         }
 
-        if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically) && codeInitialized) {
+     /*   if ((userChoice == MainMenuOptions.initialCodeManually || userChoice == MainMenuOptions.initialCodeAutomatically) && codeInitialized) {
             System.out.println("There is already an initial code in the system. To set a new one, you first need to reset the code");
             return false;
-        }
+        }*/
 
         return true;
     }
