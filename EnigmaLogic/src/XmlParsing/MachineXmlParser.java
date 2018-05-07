@@ -11,10 +11,11 @@ import java.util.List;
 
 
 public class MachineXmlParser {
+    private static Enigma jaxbEnigma;
 
     public static Enigma parseXmltoJaxbMachine(String filePath) throws JAXBException {
         Unmarshaller jaxbUnmarshaller = null;
-        Enigma jaxbEnigma = null;
+        jaxbEnigma = null;
         File xmlFilePath = new File(filePath);
         JAXBContext jaxbContext = null;
         jaxbContext = JAXBContext.newInstance(Enigma.class);
@@ -24,7 +25,9 @@ public class MachineXmlParser {
     }
 
     public static MachineProxy parseXmlToMachineProxy(String filePath) throws JAXBException {
-        Enigma jaxbEnigma = parseXmltoJaxbMachine(filePath);
+        if(jaxbEnigma == null){
+            parseXmltoJaxbMachine(filePath);
+        }
         Machine jaxbMachine = jaxbEnigma.getMachine();
         MachineBuilder machineBuilder = new MachineBuilder();
         machineBuilder.initMachine(jaxbMachine.getABC().trim().toCharArray(), jaxbEnigma.getMachine().getRotorsCount());
@@ -75,9 +78,9 @@ public class MachineXmlParser {
         for(Mapping mapp : mapping)
         {
             if(entry.equals("right"))
-                entries += mapp.getFrom();
+                entries += mapp.getRight();
             else if(entry.equals("left"))
-                entries += mapp.getTo();
+                entries += mapp.getLeft();
 
         }
         return entries;
