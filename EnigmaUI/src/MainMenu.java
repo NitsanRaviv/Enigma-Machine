@@ -259,7 +259,7 @@ public class MainMenu {
             return MainMenuOptions.errorSign;
         }
 
-        if (userChoice > 8 || userChoice < 1) {
+        if (userChoice > MainMenuOptions.exit || userChoice < MainMenuOptions.readMachineFile) {
             System.out.println("Out of range input! Please enter a number between 1 to 8");
             return MainMenuOptions.errorSign;
         }

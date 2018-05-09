@@ -7,5 +7,6 @@ public interface MainMenuOptions {
      int inputProcessing = 5;
      int resetCode = 6;
      int historyAndStatistics = 7;
-     int exit = 8;
+     int automaticDecoding = 8;
+     int exit = 9;
 }

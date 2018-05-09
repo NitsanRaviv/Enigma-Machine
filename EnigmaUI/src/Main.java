@@ -21,6 +21,7 @@ public class Main
         MenuItem inputProcessing = new MenuItem("inputProcessing", MainMenuOptions.inputProcessing, "Input processing");
         MenuItem resetCode = new MenuItem("resetCode", MainMenuOptions.resetCode, "Reset current code");
         MenuItem historyAndStatistics = new MenuItem("historyAndStatistics", MainMenuOptions.historyAndStatistics, "Show history and statistics");
+        MenuItem automaticDecoding = new MenuItem("automaticDecoding", MainMenuOptions.automaticDecoding, "Automaticd decoding");
         MenuItem exit = new MenuItem("exit", MainMenuOptions.exit, "Exit");
 
         mainMenu.addNewItem(readFile);
@@ -30,6 +31,7 @@ public class Main
         mainMenu.addNewItem(inputProcessing);
         mainMenu.addNewItem(resetCode);
         mainMenu.addNewItem(historyAndStatistics);
+        mainMenu.addNewItem(automaticDecoding);
         mainMenu.addNewItem(exit);
     }
 
