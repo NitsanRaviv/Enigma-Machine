@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Random;
 
-public class Performer implements LogicApi {
+public class Performer {
     public MachineProxy getMachineProxy() {
         return machineProxy;
     }
@@ -18,7 +18,7 @@ public class Performer implements LogicApi {
     private MachineProxy machineProxy;
     private static Performer performer;
 
-    @Override
+
     public String loadMachineFromXml(String path) {
         try {
             machineProxy = MachineXmlParser.parseXmlToMachineProxy(path);
@@ -29,19 +29,16 @@ public class Performer implements LogicApi {
         return ErrorsMessages.noErrors;
     }
 
-    @Override
     public String processInput(String input) {
         List<Character> processedInput =  machineProxy.encryptCode(input);
         return processedInput.toString();
     }
 
-    @Override
     public String resetCode() {
         machineProxy.setMachineToInitialState();
         return null;
     }
 
-    @Override
     public void setInitialCode(String[] rotorIds, String[] rotorMap, String chosenReflector) {
         List<Pair<Integer, Integer>> rotorsAndNotch = InitialCodeParser.parseRotors(rotorIds, rotorMap, machineProxy.getLanguageInterpeter());
         Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorsAndNotch.size()];
@@ -87,7 +84,6 @@ public class Performer implements LogicApi {
         return machineProxy.getCurrentCode();
     }
 
-    @Override
     public List<String> getMachineSpecification()
     {
         List<String> spec = machineProxy.getMachineSpecifications();

@@ -3,11 +3,10 @@ package LogicManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Integrator implements LogicApi {
+public class Integrator {
     private Tester tester;
     private static Integrator integrator ;
 
-    @Override
     public List<String> getMachineSpecification() {
         List<String> res = new ArrayList<>();
         try {
@@ -25,7 +24,6 @@ public class Integrator implements LogicApi {
         tester = new Tester();
     }
 
-    @Override
     public String loadMachineFromXml(String path) {
 
         String msg;
@@ -103,7 +101,6 @@ public class Integrator implements LogicApi {
         return ErrorsMessages.noErrors;
     }
 
-    @Override
     public String processInput(String input) {
         String res;
         try {
@@ -117,7 +114,6 @@ public class Integrator implements LogicApi {
         return res;
     }
 
-    @Override
     public String resetCode() {
         try {
             Performer.getPerformer().resetCode();
@@ -130,12 +126,10 @@ public class Integrator implements LogicApi {
         return null;
     }
 
-    @Override
     public void setInitialCode(String[] rotors, String[] rotorMap, String chosenReflector) {
         Performer.getPerformer().setInitialCode(rotors, rotorMap, chosenReflector);
     }
 
-    @Override
     public String setRandomMachineCode() {
         return Performer.getPerformer().setRandomMachineCode();
     }
