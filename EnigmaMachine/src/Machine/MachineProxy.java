@@ -143,4 +143,5 @@ public class MachineProxy {
     public int getNumReflectors() {
         return machine.getNumReflectors();
     }
+
 }

@@ -72,7 +72,7 @@ public class EnigmaMachine {
         return res;
     }
 
-    private Integer encryptLetter(Integer letterToEncrypt) {
+    public Integer encryptLetter(Integer letterToEncrypt) {
         Integer encryptedLetter = - 1;
         for(int i = chosenRotors.size() - 1; i >=0; i-- )
         {

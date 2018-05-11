@@ -21,6 +21,7 @@ public class MachineStatistics {
     }
 
     public void addOrigStringDestStringAndTime(String initialCode, String orig, String dest, long time){
+        this.setNewInitialCode(initialCode);
         this.initialCodeToStat.get(initialCode).add(new Pair(orig, new Pair(dest, time)));
     }
 
