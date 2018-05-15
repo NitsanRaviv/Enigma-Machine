@@ -152,8 +152,8 @@ public class TestPartsOfMachine {
         MachineBuilder mb = new MachineBuilder();
         MachineProxy mp = mb.initMachine(new char[]{'A', 'B', 'C', 'D', 'E', 'F'}, 2)
                 .setReflector(new int[]{1, 2, 3}, new int[]{4, 5, 6}, "I")
-                .setRotor("ABCDEF", "EBDFCA", 3, 0)
-                .setRotor("ABCDEF", "FEDCBA", 3, 1)
+                .setRotor("ABCDEF", "EBDFCA", 4, 0)
+                .setRotor("ABCDEF", "FEDCBA", 1, 1)
                 .create();
         mp.setChosenRotors(new Pair<>(0, 3), new Pair<>(1, 3)); //left to right
         mp.setChosenReflector("I");

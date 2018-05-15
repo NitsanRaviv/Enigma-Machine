@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Enigma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Enigma.xsd">
+	<Machine rotors-count="3">
+		<ABC>
+			ABCDEFGHIJKLMNOPQRSTUVWXYZ
+		</ABC>
+		<Rotors>
+			<Rotor id="1" notch="17">
+				<Mapping right="E" left="A"/>
+				<Mapping right="K" left="B"/>
+				<Mapping right="M" left="C"/>
+				<Mapping right="F" left="D"/>
+				<Mapping right="L" left="E"/>
+				<Mapping right="G" left="F"/>
+				<Mapping right="D" left="G"/>
+				<Mapping right="Q" left="H"/>
+				<Mapping right="V" left="I"/>
+				<Mapping right="Z" left="J"/>
+				<Mapping right="N" left="K"/>
+				<Mapping right="T" left="L"/>
+				<Mapping right="O" left="M"/>
+				<Mapping right="W" left="N"/>
+				<Mapping right="Y" left="O"/>
+				<Mapping right="H" left="P"/>
+				<Mapping right="X" left="Q"/>
+				<Mapping right="U" left="R"/>
+				<Mapping right="S" left="S"/>
+				<Mapping right="P" left="T"/>
+				<Mapping right="A" left="U"/>
+				<Mapping right="I" left="V"/>
+				<Mapping right="B" left="W"/>
+				<Mapping right="R" left="X"/>
+				<Mapping right="C" left="Y"/>
+				<Mapping right="J" left="Z"/>
+			</Rotor>
+			<Rotor id="2" notch="5">
+				<Mapping right="A" left="A"/>
+				<Mapping right="J" left="B"/>
+				<Mapping right="D" left="C"/>
+				<Mapping right="K" left="D"/>
+				<Mapping right="S" left="E"/>
+				<Mapping right="I" left="F"/>
+				<Mapping right="R" left="G"/>
+				<Mapping right="U" left="H"/>
+				<Mapping right="X" left="I"/>
+				<Mapping right="B" left="J"/>
+				<Mapping right="L" left="K"/>
+				<Mapping right="H" left="L"/>
+				<Mapping right="W" left="M"/>
+				<Mapping right="T" left="N"/>
+				<Mapping right="M" left="O"/>
+				<Mapping right="C" left="P"/>
+				<Mapping right="Q" left="Q"/>
+				<Mapping right="G" left="R"/>
+				<Mapping right="Z" left="S"/>
+				<Mapping right="N" left="T"/>
+				<Mapping right="P" left="U"/>
+				<Mapping right="Y" left="V"/>
+				<Mapping right="F" left="W"/>
+				<Mapping right="V" left="X"/>
+				<Mapping right="O" left="Y"/>
+				<Mapping right="E" left="Z"/>
+			</Rotor>
+			<Rotor id="3" notch="22">
+				<Mapping right="B" left="A"/>
+				<Mapping right="D" left="B"/>
+				<Mapping right="F" left="C"/>
+				<Mapping right="H" left="D"/>
+				<Mapping right="J" left="E"/>
+				<Mapping right="L" left="F"/>
+				<Mapping right="C" left="G"/>
+				<Mapping right="P" left="H"/>
+				<Mapping right="R" left="I"/>
+				<Mapping right="T" left="J"/>
+				<Mapping right="X" left="K"/>
+				<Mapping right="V" left="L"/>
+				<Mapping right="Z" left="M"/>
+				<Mapping right="N" left="N"/>
+				<Mapping right="Y" left="O"/>
+				<Mapping right="E" left="P"/>
+				<Mapping right="I" left="Q"/>
+				<Mapping right="W" left="R"/>
+				<Mapping right="G" left="S"/>
+				<Mapping right="A" left="T"/>
+				<Mapping right="K" left="U"/>
+				<Mapping right="M" left="V"/>
+				<Mapping right="U" left="W"/>
+				<Mapping right="S" left="X"/>
+				<Mapping right="Q" left="Y"/>
+				<Mapping right="O" left="Z"/>
+			</Rotor>
+		</Rotors>
+		<Reflectors>
+			<Reflector id="I">
+				<Reflect input="1" output="25"/>
+				<Reflect input="2" output="18"/>
+				<Reflect input="3" output="21"/>
+				<Reflect input="4" output="8"/>
+				<Reflect input="5" output="17"/>
+				<Reflect input="6" output="19"/>
+				<Reflect input="7" output="12"/>
+				<Reflect input="9" output="16"/>
+				<Reflect input="10" output="24"/>
+				<Reflect input="11" output="14"/>
+				<Reflect input="13" output="15"/>
+				<Reflect input="20" output="26"/>
+				<Reflect input="22" output="23"/>
+			</Reflector>
+		</Reflectors>
+	</Machine>	
+</Enigma>

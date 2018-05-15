@@ -40,16 +40,17 @@ public class Rotor {
         if (this.leftEntries != null && rightEntries != null) {
             Collections.rotate(leftEntries, leftEntries.size() - 1);
             Collections.rotate(rightEntries, rightEntries.size() - 1);
-            notch++;
+            notch--;
         }
 
-        if (notch == leftEntries.size()) // time to rotate rotor to my left
+        if (notch == 0) // time to rotate rotor to my left
         {
             if (leftRotor != null) {
                 leftRotor.rotateRotorOneRound();
             }
-            notch = 0;
         }
+        if(notch == -1)
+            notch = leftEntries.size() - 1;
     }
 
 
@@ -67,9 +68,9 @@ public class Rotor {
         while (this.rightEntries.get(0) != pos) {
             Collections.rotate(rightEntries, rightEntries.size() - 1);
             Collections.rotate(leftEntries, leftEntries.size() - 1);
-            notch++;
-            if (notch == leftEntries.size())
-                notch = 0;
+            notch--;
+            if (notch == 0)
+                notch = leftEntries.size() - 1;
         }
         this.initialPosition = pos;
     }

@@ -20,6 +20,7 @@ public class EnigmaAgent implements Runnable {
         for(int i = 0; i < easyTask.getTaskSize(); i++) {
             String processed = machineProxy.encryptCode(easyTask.getStringToEncrypt()).toString();
             try {
+                //TODO:: first, the agent will check in the dictionary if strings are nomenies
                 encryptedStringsQueue.put(processed + " num: " + i);
             }catch (Exception e){
                 System.out.println("Agent thread was interrupted");

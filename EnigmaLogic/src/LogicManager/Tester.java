@@ -108,7 +108,7 @@ public class Tester {
             for(Mapping mapp : rotorMapping)
             {
                 mappingFrom.add(mapp.getLeft());
-                mappingTO.add(mapp.getLeft());
+                mappingTO.add(mapp.getRight());
             }
             if(rotorMapping.size() != mappingFrom.size() ||
                     rotorMapping.size() != mappingTO.size())
