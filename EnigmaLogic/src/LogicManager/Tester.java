@@ -8,12 +8,16 @@ import java.util.*;
 
 public class Tester {
 
-    private Enigma enigma;
+    private static Enigma enigma;
     private Machine machine;
     private Rotors rotors;
     private List<Rotor> theRotors;
     private Reflectors reflectors;
     private List<Reflector> theReflectors;
+
+    public static Enigma getEnigma() {
+        return enigma;
+    }
 
     // first method
     public boolean theFileIsXml(String filePath){

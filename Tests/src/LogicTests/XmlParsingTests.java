@@ -1,6 +1,7 @@
 package LogicTests;
 
 import EnigmaCracking.Dictionary;
+import LogicManager.Tester;
 import Machine.MachineProxy;
 import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
@@ -54,9 +55,18 @@ public class XmlParsingTests {
 
     @Test
     public void dictionaryParserTest(){
+        Tester test = new Tester();
         Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
+        boolean temp = test.getMachine("ex2-basic.xml");
         Dictionary dictionary = new Dictionary();
 
-        System.out.println(dictionary.checkIfExists("rabbit"));
+        System.out.println(dictionary.checkIfExists("whom?"));
+        System.out.println(dictionary.checkIfExists("whom"));
+        System.out.println(dictionary.checkIfExists("KomBat"));
+        System.out.println(dictionary.checkIfExists("swap"));
+        System.out.println(dictionary.checkIfExists("Nice"));
+        System.out.println(dictionary.checkIfExists("poland"));
+
+
     }
 }
