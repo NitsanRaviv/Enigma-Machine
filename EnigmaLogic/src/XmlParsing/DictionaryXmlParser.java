@@ -1,5 +1,6 @@
 package XmlParsing;
 
+import AgentUtilities.EnigmaDictionary;
 import LogicManager.Integrator;
 import XmlParsing.JaxbClasses.Dictionary;
 
@@ -14,7 +15,7 @@ public class DictionaryXmlParser {
     private String words;
     private static DictionaryXmlParser dictionaryXmlParser;
 
-    public Set<String> getDictionary(){
+    public EnigmaDictionary getDictionary(){
 
         Set<String> resDictionary = new HashSet<>();
         jabDictionary = Integrator.getIntegrator().getDictionary();
@@ -26,7 +27,7 @@ public class DictionaryXmlParser {
         for (String word : allWords)
             resDictionary.add(word.toUpperCase());
 
-        return resDictionary;
+        return new EnigmaDictionary(resDictionary);
     }
 
     private String replaceExcludeChars(String excludeChars, String words) {

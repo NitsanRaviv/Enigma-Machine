@@ -22,6 +22,12 @@ public class MachineProxy {
     private MachineStatistics machineStatistics;
     private String machineCode;
 
+    public Pair<Integer, Integer>[] getCurrentRotorAndLocations() {
+        return currentRotorAndLocations;
+    }
+
+    private Pair<Integer, Integer>[] currentRotorAndLocations;
+
     public MachineProxy(EnigmaMachine machine, LanguageInterpeter languageInterpeter, int rotorsCount)
     {
         this.machine = machine;
@@ -55,6 +61,7 @@ public class MachineProxy {
 
     public void setChosenRotors(Pair<Integer, Integer>... rotorsAndNotch)
     {
+        currentRotorAndLocations = rotorsAndNotch;
         machine.setChosenRotors(rotorsAndNotch);
     }
 

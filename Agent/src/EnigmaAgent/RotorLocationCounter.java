@@ -27,4 +27,12 @@ public class RotorLocationCounter {
 
         return currentRotorAndNotches;
     }
+
+    public Pair<Integer,Integer>[] nextRotorsAndLocations(int count){
+        for (int i = 0; i < count; i++) {
+            nextRotorsAndLocations();
+        }
+        return currentRotorAndNotches;
+    }
+
 }
