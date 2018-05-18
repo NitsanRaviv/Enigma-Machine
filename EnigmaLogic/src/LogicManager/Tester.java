@@ -1,6 +1,7 @@
 package LogicManager;
 
 import XmlParsing.JaxbClasses.*;
+import XmlParsing.JaxbClasses.Dictionary;
 import XmlParsing.MachineXmlParser;
 
 import javax.xml.bind.JAXBException;
@@ -15,8 +16,8 @@ public class Tester {
     private Reflectors reflectors;
     private List<Reflector> theReflectors;
 
-    public static Enigma getEnigma() {
-        return enigma;
+    public static Dictionary getDictionary(){
+        return enigma.getDecipher().getDictionary();
     }
 
     // first method

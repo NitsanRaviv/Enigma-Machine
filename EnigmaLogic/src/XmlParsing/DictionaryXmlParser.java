@@ -1,6 +1,6 @@
 package XmlParsing;
 
-import LogicManager.Tester;
+import LogicManager.Integrator;
 import XmlParsing.JaxbClasses.Dictionary;
 
 import java.util.HashSet;
@@ -17,7 +17,7 @@ public class DictionaryXmlParser {
     public Set<String> getDictionary(){
 
         Set<String> resDictionary = new HashSet<>();
-        jabDictionary = Tester.getEnigma().getDecipher().getDictionary();
+        jabDictionary = Integrator.getIntegrator().getDictionary();
         excludeChars =  jabDictionary.getExcludeChars();
         words = jabDictionary.getWords();
         String wordsWithoutExcludeChars = replaceExcludeChars(excludeChars,words);

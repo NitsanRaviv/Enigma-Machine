@@ -1,11 +1,17 @@
 package LogicManager;
 
+import XmlParsing.JaxbClasses.Dictionary;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Integrator {
     private Tester tester;
     private static Integrator integrator ;
+
+    public Dictionary getDictionary(){
+        return tester.getDictionary();
+    }
 
     public List<String> getMachineSpecification() {
         List<String> res = new ArrayList<>();
