@@ -30,7 +30,7 @@ public class DictionaryXmlParser {
         return new EnigmaDictionary(resDictionary);
     }
 
-    private String replaceExcludeChars(String excludeChars, String words) {
+    public String replaceExcludeChars(String excludeChars, String words) {
 
         String res = null;
 
@@ -38,6 +38,8 @@ public class DictionaryXmlParser {
         {
            res =  words.replace("" + excludeChar,"");
         }
+
+        res = res.replaceAll("[\t\n]+","");
 
         return res;
     }

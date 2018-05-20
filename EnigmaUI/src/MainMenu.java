@@ -48,8 +48,8 @@ public class MainMenu {
             System.out.println("There is no file in the system. First, you need to read a file");
             return false;
         }
-        if ((userChoice == MainMenuOptions.inputProcessing ||userChoice == MainMenuOptions.resetCode)
-        && !codeInitialized) {
+        if ((userChoice == MainMenuOptions.inputProcessing ||userChoice == MainMenuOptions.resetCode ||
+                userChoice == MainMenuOptions.automaticDecoding) && !codeInitialized ) {
             System.out.println("First, you must select an initial code configuration(manually or automatically)");
             return false;
         }
@@ -82,11 +82,42 @@ public class MainMenu {
             case MainMenuOptions.historyAndStatistics:
                 res = gethistoryAndStatistics();
                 break;
+            case MainMenuOptions.automaticDecoding:
+                res = doAutomaticDecoding();
+                break;
             case MainMenuOptions.exit:
                 turnOff();
                 break;
         }
         return res;
+    }
+
+    //TODO
+    private boolean doAutomaticDecoding() {
+
+       String inputToProcess = getStringToProcess();
+
+       return true;
+    }
+
+    private String getStringToProcess() {
+
+        boolean validString = false;
+        String input, cleanInput = null;
+        getInput.nextLine();
+
+        while (!validString)
+        {
+            System.out.println("Please enter a string to process:");
+            input = getInput.nextLine();
+            cleanInput = Integrator.getIntegrator().cleanStringFromExcludeChars(input);
+            validString = Integrator.getIntegrator().checkStringForAutomaticDecoding(cleanInput);
+
+            if(!validString)
+                System.out.println("You enter invalid string. Try again:");
+        }
+
+        return cleanInput;
     }
 
     private void initialCodeAutomatically() {

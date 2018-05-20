@@ -105,6 +105,9 @@ public class Integrator {
         if(!(tester.lettersAmountIsEven()))
             return ErrorsMessages.errABCSize;
 
+        if(!(tester.NumberOfAgentsValid()))
+            return ErrorsMessages.errAgents;
+
         return ErrorsMessages.noErrors;
     }
 
@@ -185,5 +188,13 @@ public class Integrator {
 
     public MachineProxy getMachine() {
         return Performer.getPerformer().getMachineProxy();
+    }
+
+    public boolean checkStringForAutomaticDecoding(String input) {
+        return tester.allWordsFromDictionary(input);
+    }
+
+    public String cleanStringFromExcludeChars(String input) {
+        return tester.getCleanString(input);
     }
 }

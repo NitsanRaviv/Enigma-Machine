@@ -14,4 +14,5 @@ public interface ErrorsMessages {
      String errNotch = "Notch error";
      String errIDsReflector = "Error in reflector ids";
      String errReflect = "Reflector error";
+     String errAgents = "Invalid number of agents";
 }

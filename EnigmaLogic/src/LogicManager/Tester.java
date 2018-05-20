@@ -1,8 +1,10 @@
 package LogicManager;
 
+import XmlParsing.DictionaryXmlParser;
 import XmlParsing.JaxbClasses.*;
 import XmlParsing.JaxbClasses.Dictionary;
 import XmlParsing.MachineXmlParser;
+import agentUtilities.EnigmaDictionary;
 
 import javax.xml.bind.JAXBException;
 import java.util.*;
@@ -15,6 +17,9 @@ public class Tester {
     private List<Rotor> theRotors;
     private Reflectors reflectors;
     private List<Reflector> theReflectors;
+    private Decipher decipher;
+    private final int maxNumOfAgents = 50;
+    private final int minNumOfAgents = 2;
 
     public static Dictionary getDictionary(){
         return enigma.getDecipher().getDictionary();
@@ -47,6 +52,7 @@ public class Tester {
         theRotors = rotors.getRotor();
         reflectors = machine.getReflectors();
         theReflectors = reflectors.getReflector();
+        decipher = enigma.getDecipher();
 
         return true;
     }
@@ -243,5 +249,35 @@ public class Tester {
         }
 
         return false;
+    }
+
+    public boolean NumberOfAgentsValid(){
+
+        int numOfAgents = decipher.getAgents();
+
+        if(numOfAgents >= minNumOfAgents && numOfAgents <= maxNumOfAgents)
+            return true;
+
+        return false;
+    }
+
+    public boolean allWordsFromDictionary(String input) {
+
+        EnigmaDictionary enigmaDictionary = DictionaryXmlParser.getDictionaryXmlParser().getDictionary();
+        String [] allWords = input.split(" ");
+
+        for (String word : allWords)
+        {
+           if(!(enigmaDictionary.checkIfExists(word)))
+               return false;
+        }
+
+        return true;
+    }
+
+    String getCleanString(String input)
+    {
+        String excludeChars = decipher.getDictionary().getExcludeChars();
+        return DictionaryXmlParser.getDictionaryXmlParser().replaceExcludeChars(excludeChars,input);
     }
 }

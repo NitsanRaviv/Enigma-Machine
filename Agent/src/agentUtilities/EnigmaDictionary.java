@@ -12,4 +12,6 @@ public class EnigmaDictionary {
     public boolean checkIfExists(String word){
         return theDictionary.contains(word.toUpperCase());
     }
+
+
 }
