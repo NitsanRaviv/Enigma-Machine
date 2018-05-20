@@ -1,4 +1,4 @@
-package AgentUtilities;
+package agentUtilities;
 import java.util.Set;
 
 public class EnigmaDictionary {

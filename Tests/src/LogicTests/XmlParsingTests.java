@@ -1,7 +1,5 @@
 package LogicTests;
 
-import AgentUtilities.EnigmaDictionary;
-import LogicManager.Tester;
 import Machine.MachineProxy;
 import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
@@ -52,21 +50,21 @@ public class XmlParsingTests {
         Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
         System.out.println(Performer.getPerformer().getStatistics());
     }
-
-    @Test
-    public void dictionaryParserTest(){
-        Tester test = new Tester();
-        Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
-        boolean temp = test.getMachine("ex2-basic.xml");
-        EnigmaDictionary enigmaDictionary = new EnigmaDictionary();
-
-        System.out.println(enigmaDictionary.checkIfExists("whom?"));
-        System.out.println(enigmaDictionary.checkIfExists("whom"));
-        System.out.println(enigmaDictionary.checkIfExists("KomBat"));
-        System.out.println(enigmaDictionary.checkIfExists("swap"));
-        System.out.println(enigmaDictionary.checkIfExists("Nice"));
-        System.out.println(enigmaDictionary.checkIfExists("poland"));
-
-
-    }
+//
+//    @Test
+//    public void dictionaryParserTest(){
+//        Tester test = new Tester();
+//        Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
+//        boolean temp = test.getMachine("ex2-basic.xml");
+//        EnigmaDictionary enigmaDictionary = new EnigmaDictionary();
+//
+//        System.out.println(enigmaDictionary.checkIfExists("whom?"));
+//        System.out.println(enigmaDictionary.checkIfExists("whom"));
+//        System.out.println(enigmaDictionary.checkIfExists("KomBat"));
+//        System.out.println(enigmaDictionary.checkIfExists("swap"));
+//        System.out.println(enigmaDictionary.checkIfExists("Nice"));
+//        System.out.println(enigmaDictionary.checkIfExists("poland"));
+//
+//
+//    }
 }

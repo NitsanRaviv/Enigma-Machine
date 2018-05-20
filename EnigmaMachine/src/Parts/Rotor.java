@@ -122,6 +122,14 @@ public class Rotor {
             Collections.rotate(leftEntries, leftEntries.size() - 1);
         }
     }
+
+    @Override
+    protected Rotor clone() throws CloneNotSupportedException {
+        Rotor clone = new Rotor(new ArrayList<>(leftEntries), new ArrayList<>(rightEntries), initialNotch, id);
+        clone.leftRotor = this.leftRotor.clone();
+        return clone;
+    }
+
     @Override
     public String toString(){
         return "rotor id: " + id + " notch: " + notch;

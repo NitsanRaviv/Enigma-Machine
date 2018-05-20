@@ -5,77 +5,135 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import EnigmaAgent.EnigmaAgent;
-import EnigmaAgent.RotorLocationCounter;
+import agentUtilities.EnigmaDictionary;
+import enigmaAgent.EnigmaAgent;
+import enigmaAgent.RotorLocationCounter;
 import Machine.MachineProxy;
 import Tasks.*;
 
-public class DM {
+import static enigmaAgent.AgentConstants.AGENT_FINISHED_TASKS;
+
+public class DM extends Thread {
     private int numAgents;
-    private BlockingQueue<EasyTask> tasksQueue;
+    private List<BlockingQueue<EasyTask>> tasksQueues;
     private BlockingQueue<String> decryptedStrings;
     private List<String> decryptPotentials;
     private MachineProxy machine;
-    private int numOfTasks;
+    private int numOfEasyTasks;
     private int currentNumOfTasks;
     private int missionPerAgent;
     private int taskSize;
     private String encryptedString;
     private RotorLocationCounter rotorLocationCounter;
     private List<Thread> Agents;
-
+    private EnigmaDictionary enigmaDictionary;
+    private List<EasyTask> easyTasks;
+    private final int taksQueueSize = 10000;
+    private int finishedAgents = 0;
 
     //TODO:: add mission-level
-    public DM(int numAgents, MachineProxy machine,String encrtyptedString, int numOfTasks, int taskSize){
+    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString,int numAgents, int taskSize){
         this.numAgents = numAgents;
         this.machine = machine;
-        this.numOfTasks = numOfTasks;
-        this.currentNumOfTasks = numOfTasks;
         this.taskSize = taskSize;
         this.decryptPotentials = new ArrayList<>();
-        rotorLocationCounter = new RotorLocationCounter(machine.getLanguageInterpeter(), machine.getCurrentRotorAndLocations());
-        this.tasksQueue = new ArrayBlockingQueue(20);
+        this.easyTasks = new ArrayList<>();
+        this.Agents = new ArrayList<>();
+        rotorLocationCounter = new RotorLocationCounter(machine.getLanguageInterpeter(), machine.getAppliedRotors());
         this.decryptedStrings = new ArrayBlockingQueue(20);
         this.Agents = new ArrayList<>();
         this.encryptedString = encrtyptedString;
+        this.enigmaDictionary = dictionary;
+        calcNumOfEasyTasks();
 
-        this.Agents.add(new EnigmaAgent(machine, decryptedStrings, tasksQueue));
-        this.Agents.get(0).setDaemon(true);
-        this.Agents.get(0).start();
     }
     public void handleEasyTasks(){
-        while (numOfTasks > 0){
-            try{
-                if(numOfTasks < taskSize)
-                    taskSize = numOfTasks;
-                EasyTask easyTask = new EasyTask(rotorLocationCounter.nextRotorsAndLocations(taskSize),encryptedString,taskSize);
-                tasksQueue.put(easyTask);
-                String potential = decryptedStrings.poll();
-                if (potential!= null){
-                    decryptPotentials.add(potential);
-                }
-               }catch (InterruptedException ie) {
-                //report info to user
-            }
-            numOfTasks -= taskSize;
-        }
-        try {
-            Thread.sleep(1000);
+        this.createEasyTasks()
+                .createTasksQueues()
+                .createThreadAgents()
+                .deliverTasksToQueues()
+                .runAgents();
+
+        while (finishedAgents < numAgents) {
+            //TODO::possible better processor using here - sleep or interrupt
             String potential = decryptedStrings.poll();
-            if (potential!= null){
+            if (potential != null)
+                if(potential == AGENT_FINISHED_TASKS)
+                    finishedAgents++;
+            else
                 decryptPotentials.add(potential);
-            }
-        }catch (InterruptedException ie)
-        {
-            System.out.println("DM interrupted");
         }
     }
 
-    private void calcNumOfTasks()
+    private DM deliverTasksToQueues() {
+        int deliveredTasks = 0;
+        try {
+            for (BlockingQueue<EasyTask> tasksQueue : tasksQueues) {
+                int numOfTasksPerAgent = (numOfEasyTasks /numAgents);
+                for (int i = 0; i < numOfTasksPerAgent; i++) {
+                    tasksQueue.put(easyTasks.get(deliveredTasks));
+                    deliveredTasks++;
+                }
+            }
+            while(deliveredTasks < numOfEasyTasks){
+                tasksQueues.get(0).put(easyTasks.get(deliveredTasks));
+            }
+        }catch (InterruptedException ie){
+            ;//TODO::handle all interrupts in DM
+        }
+        return this;
+    }
+
+    private DM runAgents() {
+        for (Thread agent : Agents) {
+            agent.start();
+        }
+        return this;
+    }
+
+
+    @Override
+    public void run() {
+        //TODO::we will run on each list of levels (ask id not null) and handle the easy tasks within
+        handleEasyTasks();
+    }
+
+    private DM createThreadAgents(){
+        for (int i = 0; i < numAgents ; i++) {
+            try {
+                this.Agents.add(new EnigmaAgent(machine.clone(), decryptedStrings, tasksQueues.get(i), enigmaDictionary, i+1));
+            }catch (CloneNotSupportedException cne)
+            {
+                System.out.println("DM couldnt copy machine");
+            }
+        }
+        return this;
+    }
+
+    private void calcNumOfEasyTasks()
     {
         int numLetters = machine.getLanguage().length;
         int numRotors = machine.getAppliedRotors();
         //check this casting
-        numOfTasks =(int)Math.pow(numRotors, numLetters);
+        numOfEasyTasks =(int)Math.pow(numRotors, numLetters) / taskSize;
+        numOfEasyTasks += (int)Math.pow(numRotors, numLetters) % taskSize;
+
+    }
+
+    public DM createEasyTasks() {
+        int createdTasks = 0;
+        for (createdTasks = 0; createdTasks < numOfEasyTasks; createdTasks++) {
+            this.easyTasks.add(new EasyTask(rotorLocationCounter.getCurrentRotorsAndLocations() ,encryptedString,taskSize));
+            rotorLocationCounter.nextRotorsAndLocations(taskSize);
+        }
+        return this;
+    }
+
+    public DM createTasksQueues(){
+        this.tasksQueues = new ArrayList<>();
+        for (int i = 0; i <numAgents ; i++) {
+            this.tasksQueues.add(new ArrayBlockingQueue<>(taksQueueSize));
+        }
+        return this;
     }
 }

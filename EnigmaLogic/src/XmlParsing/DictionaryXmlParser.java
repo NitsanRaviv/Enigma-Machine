@@ -1,6 +1,6 @@
 package XmlParsing;
 
-import AgentUtilities.EnigmaDictionary;
+import agentUtilities.EnigmaDictionary;
 import LogicManager.Integrator;
 import XmlParsing.JaxbClasses.Dictionary;
 

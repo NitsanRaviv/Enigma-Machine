@@ -151,4 +151,9 @@ public class MachineProxy {
         return machine.getNumReflectors();
     }
 
+    @Override
+    public MachineProxy clone() throws CloneNotSupportedException {
+        MachineProxy clone = new MachineProxy(machine.clone(), languageInterpeter, appliedRotors);
+        return clone;
+    }
 }

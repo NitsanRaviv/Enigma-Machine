@@ -1,16 +1,18 @@
 package TimingTests;
 import EnigmaCracking.DM;
+import LogicManager.Integrator;
 import Machine.MachineProxy;
-import Tasks.EasyTask;
+import XmlParsing.DictionaryXmlParser;
 import XmlParsing.MachineXmlParser;
+import agentUtilities.EnigmaDictionary;
 import javafx.util.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import javax.xml.bind.JAXBException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import EnigmaAgent.*;
-import EnigmaCracking.DM;
+
+import enigmaAgent.*;
+
+import java.util.HashSet;
 
 public class SchedulingTests {
     private static MachineProxy mp;
@@ -59,7 +61,27 @@ public class SchedulingTests {
 
     @Test
     public void testDM(){
-       DM dm = new DM(1, mp, "BDEAFAC",10, 5);
-       dm.handleEasyTasks();
+        Integrator.getIntegrator().loadMachineFromXml("Tests/ex1-sanity-small.xml");
+        mp.setChosenReflector("I");
+        DM dm = new DM(mp, new EnigmaDictionary(new HashSet<>()), "ABCDEF", 2, 32);
+        dm.handleEasyTasks();
+    }
+
+    @Test
+    public void cloneMachine(){
+        mp.setMachineToInitialState();
+        MachineProxy mpClone = null;
+        try {
+             mpClone = mp.clone();
+             mpClone.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
+             mpClone.setChosenReflector("I");
+        }catch (CloneNotSupportedException e) {
+            System.out.println("exeption clone");
+        }
+        mpClone.encryptCode("AABBCCDDEEFF");
+        mpClone.encryptCode("AABBCCDDEEFF");
+        mpClone.encryptCode("AABBCCDDEEFF");
+        System.out.println(mp.encryptCode("AABBCCDDEEFF"));
+
     }
 }
