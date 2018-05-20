@@ -7,28 +7,22 @@ import java.util.List;
 public class RotorLocationCounter {
     private LanguageInterpeter languageInterpeter;
     private Pair<Integer,Integer>[] currentRotorAndNotches;
-    private Pair<Integer,Integer>[] initialRotorAndNotches;
 
 
     public RotorLocationCounter(LanguageInterpeter languageInterpeter, Pair<Integer,Integer>[] currentRotorAndNotches){
         this.languageInterpeter = languageInterpeter;
-        this.currentRotorAndNotches = currentRotorAndNotches;
-        //check if clone works
-        initialRotorAndNotches = currentRotorAndNotches.clone();
+        this.currentRotorAndNotches = copyRotorsAndLocations(currentRotorAndNotches);
     }
 
-    //TODO:: implement constructors for various mission level scenarios
-    public RotorLocationCounter(LanguageInterpeter languageInterpeter,int numRotors){
-        Pair<Integer,Integer>[] rotorsAndLocations = new Pair[numRotors];
-        for (int i = 0; i < numRotors; i++) {
-            rotorsAndLocations[i] = new Pair<>(i+1, languageInterpeter.getLanguageAsNumbers().get(0));
+    private Pair<Integer,Integer>[] copyRotorsAndLocations(Pair<Integer, Integer>[] toCopy) {
+        Pair<Integer, Integer>[] clone = new Pair[toCopy.length];
+        int index = 0;
+        for (Pair<Integer, Integer> copyPair : toCopy) {
+            clone[index] = new Pair(copyPair.getKey(), copyPair.getValue());
+            index++;
         }
-        this.languageInterpeter = languageInterpeter;
-        this.currentRotorAndNotches = rotorsAndLocations;
-        this.initialRotorAndNotches = rotorsAndLocations.clone();
+        return clone;
     }
-
-
 
 
     public Pair<Integer,Integer>[] nextRotorsAndLocations(){
@@ -52,16 +46,12 @@ public class RotorLocationCounter {
         return currentRotorAndNotches;
     }
 
-    public void initToFirstState(){
-        this.currentRotorAndNotches = this.initialRotorAndNotches.clone();
+
+    public Pair<Integer,Integer>[] getCurrentRotorsAndLocations() {
+        return copyRotorsAndLocations(currentRotorAndNotches);
     }
 
     public void setRotorsAndLocations(Pair<Integer,Integer>[] rotorsAndLocations) {
-        this.currentRotorAndNotches = rotorsAndLocations;
-        this.initialRotorAndNotches = rotorsAndLocations.clone();
-    }
-
-    public Pair<Integer,Integer>[] getCurrentRotorsAndLocations() {
-        return currentRotorAndNotches.clone();
+        this.currentRotorAndNotches = copyRotorsAndLocations(rotorsAndLocations);
     }
 }

@@ -5,6 +5,7 @@ import Machine.MachineProxy;
 import Tasks.EasyTask;
 import java.util.concurrent.BlockingQueue;
 
+import static enigmaAgent.AgentConstants.AGENT_FINISHED_TASKS;
 import static enigmaAgent.AgentConstants.NO_MORE_TASKS;
 
 public class EnigmaAgent extends Thread {
@@ -26,9 +27,9 @@ public class EnigmaAgent extends Thread {
             for (int i = 0; i < easyTask.getTaskSize(); i++) {
                 try {
                     String processed = machineProxy.encryptCode(easyTask.getStringToEncrypt()).toString();
-                    if(enigmaDictionary.checkIfExists(processed) == true)
+//                    if(enigmaDictionary.checkIfExists(processed) == true)
                         encryptedStringsQueue.put(processed + " num: " + i);
-                } catch (Exception e) {
+                } catch (InterruptedException ie) {
                     System.out.println("Agent thread was interrupted");
                 }
                 taskNumber++;
@@ -42,12 +43,13 @@ public class EnigmaAgent extends Thread {
             easyTask = tasksQueue.take();
             if(easyTask.getTaskSize() == NO_MORE_TASKS){
                 running = false;
+                encryptedStringsQueue.put(AGENT_FINISHED_TASKS);
             }
             else {
-                //
-                machineProxy.setChosenReflector("I");
-                //
                 machineProxy.setChosenRotors(easyTask.getRotorsAndNotches());
+                if(rotorLocationCounter == null) //first task so we need to initialize it
+                    rotorLocationCounter = new RotorLocationCounter(machineProxy.getLanguageInterpeter(), machineProxy.getCurrentRotorAndLocations());
+                else
                 rotorLocationCounter.setRotorsAndLocations(easyTask.getRotorsAndNotches());
             }
 
@@ -60,7 +62,6 @@ public class EnigmaAgent extends Thread {
         this.machineProxy = machineProxy;
         this.encryptedStringsQueue = encryptedStringsQueue;
         taskNumber = 0;
-        rotorLocationCounter = new RotorLocationCounter(machineProxy.getLanguageInterpeter(), machineProxy.getAppliedRotors());
         this.tasksQueue = tasksQueue;
         this.enigmaDictionary = dictionary;
         this.id = id;

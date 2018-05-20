@@ -69,7 +69,7 @@ public class Rotor {
             Collections.rotate(rightEntries, rightEntries.size() - 1);
             Collections.rotate(leftEntries, leftEntries.size() - 1);
             notch--;
-            if (notch == 0)
+            if (notch <= 0)
                 notch = leftEntries.size() - 1;
         }
         this.initialPosition = pos;
@@ -124,9 +124,9 @@ public class Rotor {
     }
 
     @Override
-    protected Rotor clone() throws CloneNotSupportedException {
+    public Rotor clone() throws CloneNotSupportedException {
         Rotor clone = new Rotor(new ArrayList<>(leftEntries), new ArrayList<>(rightEntries), initialNotch, id);
-        clone.leftRotor = this.leftRotor.clone();
+        clone.setInitialPosition(this.initialStateBeforeRotation);
         return clone;
     }
 

@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 
 import enigmaAgent.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class SchedulingTests {
@@ -61,15 +62,16 @@ public class SchedulingTests {
 
     @Test
     public void testDM(){
-        Integrator.getIntegrator().loadMachineFromXml("Tests/ex1-sanity-small.xml");
+        Integrator.getIntegrator().loadMachineFromXml("ex1-sanity-small.xml");
         mp.setChosenReflector("I");
-        DM dm = new DM(mp, new EnigmaDictionary(new HashSet<>()), "ABCDEF", 2, 32);
+        mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(1, 1)); //left to right
+        DM dm = new DM(mp, new EnigmaDictionary(new HashSet<>()), "ABCDE", 2, 16);
         dm.handleEasyTasks();
     }
 
     @Test
     public void cloneMachine(){
-        mp.setMachineToInitialState();
+//        mp.setMachineToInitialState();
         MachineProxy mpClone = null;
         try {
              mpClone = mp.clone();
@@ -78,10 +80,10 @@ public class SchedulingTests {
         }catch (CloneNotSupportedException e) {
             System.out.println("exeption clone");
         }
-        mpClone.encryptCode("AABBCCDDEEFF");
-        mpClone.encryptCode("AABBCCDDEEFF");
-        mpClone.encryptCode("AABBCCDDEEFF");
-        System.out.println(mp.encryptCode("AABBCCDDEEFF"));
+        mp.encryptCode("AABBCCDDEEFF");
+        mp.encryptCode("AABBCCDDEEFF");
+        mp.encryptCode("AABBCCDDEEFF");
+        System.out.println(mpClone.encryptCode("AABBCCDDEEFF"));
 
     }
 }

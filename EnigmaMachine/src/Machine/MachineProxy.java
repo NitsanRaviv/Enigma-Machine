@@ -151,6 +151,16 @@ public class MachineProxy {
         return machine.getNumReflectors();
     }
 
+    private Pair<Integer,Integer>[] copyRotorsAndLocations(Pair<Integer, Integer>[] toCopy) {
+        Pair<Integer, Integer>[] clone = new Pair[toCopy.length];
+        int index = 0;
+        for (Pair<Integer, Integer> copyPair : toCopy) {
+            clone[index] = new Pair(copyPair.getKey(), copyPair.getValue());
+            index++;
+        }
+        return clone;
+    }
+
     @Override
     public MachineProxy clone() throws CloneNotSupportedException {
         MachineProxy clone = new MachineProxy(machine.clone(), languageInterpeter, appliedRotors);

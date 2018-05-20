@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import LogicManager.Integrator;
+import XmlParsing.MachineXmlParser;
 import agentUtilities.EnigmaDictionary;
 import enigmaAgent.EnigmaAgent;
 import enigmaAgent.RotorLocationCounter;
@@ -39,7 +41,7 @@ public class DM extends Thread {
         this.decryptPotentials = new ArrayList<>();
         this.easyTasks = new ArrayList<>();
         this.Agents = new ArrayList<>();
-        rotorLocationCounter = new RotorLocationCounter(machine.getLanguageInterpeter(), machine.getAppliedRotors());
+        rotorLocationCounter = new RotorLocationCounter(machine.getLanguageInterpeter(), machine.getCurrentRotorAndLocations());
         this.decryptedStrings = new ArrayBlockingQueue(20);
         this.Agents = new ArrayList<>();
         this.encryptedString = encrtyptedString;
@@ -60,8 +62,11 @@ public class DM extends Thread {
             if (potential != null)
                 if(potential == AGENT_FINISHED_TASKS)
                     finishedAgents++;
-            else
-                decryptPotentials.add(potential);
+            else {
+                    decryptPotentials.add(potential);
+                    System.out.println(potential);
+
+                }
         }
     }
 
@@ -74,6 +79,8 @@ public class DM extends Thread {
                     tasksQueue.put(easyTasks.get(deliveredTasks));
                     deliveredTasks++;
                 }
+                //last mission for Agent to stop
+                tasksQueue.put(new EasyTask(null, null, 0));
             }
             while(deliveredTasks < numOfEasyTasks){
                 tasksQueues.get(0).put(easyTasks.get(deliveredTasks));
@@ -102,9 +109,9 @@ public class DM extends Thread {
         for (int i = 0; i < numAgents ; i++) {
             try {
                 this.Agents.add(new EnigmaAgent(machine.clone(), decryptedStrings, tasksQueues.get(i), enigmaDictionary, i+1));
-            }catch (CloneNotSupportedException cne)
+            }catch (Exception cne)
             {
-                System.out.println("DM couldnt copy machine");
+                cne.printStackTrace();
             }
         }
         return this;

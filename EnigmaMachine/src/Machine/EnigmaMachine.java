@@ -128,8 +128,13 @@ public class EnigmaMachine {
     }
 
     @Override
-    protected EnigmaMachine clone() throws CloneNotSupportedException {
-        EnigmaMachine clone = new EnigmaMachine(new ArrayList<>(rotors), new ArrayList<>(reflectors));
+    public EnigmaMachine clone() throws CloneNotSupportedException {
+        List<Rotor> cloneRotors = new ArrayList();
+        for(Rotor rotor : rotors){
+            cloneRotors.add(rotor.clone());
+        }
+        EnigmaMachine clone = new EnigmaMachine(cloneRotors, new ArrayList<>(reflectors));
+        clone.setChosenReflector(chosenReflNumber);
         return clone;
     }
 }
