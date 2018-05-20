@@ -1,5 +1,6 @@
 package LogicManager;
 
+import Machine.MachineProxy;
 import XmlParsing.JaxbClasses.Dictionary;
 
 import java.util.ArrayList;
@@ -180,5 +181,9 @@ public class Integrator {
 
     public boolean checkChosenReflector(String chosenReflector) {
         return tester.TheReflectorIdExists(chosenReflector);
+    }
+
+    public MachineProxy getMachine() {
+        return Performer.getPerformer().getMachineProxy();
     }
 }

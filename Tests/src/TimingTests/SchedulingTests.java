@@ -1,8 +1,10 @@
 package TimingTests;
 import EnigmaCracking.DM;
 import LogicManager.Integrator;
+import LogicManager.Performer;
 import Machine.MachineProxy;
 import XmlParsing.DictionaryXmlParser;
+import XmlParsing.JaxbClasses.Dictionary;
 import XmlParsing.MachineXmlParser;
 import agentUtilities.EnigmaDictionary;
 import javafx.util.Pair;
@@ -31,27 +33,6 @@ public class SchedulingTests {
         }
     }
 
-//    @Test
-//    public void testQueue()
-//    {
-//
-//        Pair<Integer,Integer> rotorsNothces[] = new Pair[]{new Pair<>(2, 3), new Pair<>(1, 3)};
-//        BlockingQueue<String> sq = new ArrayBlockingQueue<>(10);
-//        BlockingQueue<EasyTask> mq = new ArrayBlockingQueue<>(10);
-//        EasyTask bt = new EasyTask(rotorsNothces,"AABBCCDDEEFF",4);
-//        EnigmaAgent agent = new EnigmaAgent(bt, mp, sq,mq);
-//        Thread thread = new Thread(agent);
-//        thread.start();
-//        for (int i = 0; i <4 ; i++) {
-//            try {
-//                System.out.println(sq.take());
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//        }
-//
-//    }
-
     @Test
     public void testRotorCounter(){
        RotorLocationCounter rotorLocationCounter = new RotorLocationCounter(mp.getLanguageInterpeter(), mp.getCurrentRotorAndLocations());
@@ -62,16 +43,13 @@ public class SchedulingTests {
 
     @Test
     public void testDM(){
-        Integrator.getIntegrator().loadMachineFromXml("ex1-sanity-small.xml");
-        mp.setChosenReflector("I");
-        mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(1, 1)); //left to right
-        DM dm = new DM(mp, new EnigmaDictionary(new HashSet<>()), "ABCDE", 2, 16);
+        Performer.getPerformer().loadMachineFromXml(("ex2-basics.xml"));
+        DM dm = new DM(Performer.getPerformer().getMachineProxy(), DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "ABCDE", 16, 4);
         dm.handleEasyTasks();
     }
 
     @Test
     public void cloneMachine(){
-//        mp.setMachineToInitialState();
         MachineProxy mpClone = null;
         try {
              mpClone = mp.clone();
