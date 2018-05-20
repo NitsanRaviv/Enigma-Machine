@@ -4,9 +4,7 @@ import LogicManager.Integrator;
 import LogicManager.Performer;
 import Machine.MachineProxy;
 import XmlParsing.DictionaryXmlParser;
-import XmlParsing.JaxbClasses.Dictionary;
 import XmlParsing.MachineXmlParser;
-import agentUtilities.EnigmaDictionary;
 import javafx.util.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,8 +12,6 @@ import javax.xml.bind.JAXBException;
 
 import enigmaAgent.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class SchedulingTests {
     private static MachineProxy mp;
@@ -43,7 +39,11 @@ public class SchedulingTests {
 
     @Test
     public void testDM(){
-        Performer.getPerformer().loadMachineFromXml(("ex2-basics.xml"));
+      //  Tester test = new Tester();
+       // Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
+      //  boolean temp = test.getMachine("ex2-basic.xml");
+        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+
         DM dm = new DM(Performer.getPerformer().getMachineProxy(), DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "ABCDE", 16, 4);
         dm.handleEasyTasks();
     }
