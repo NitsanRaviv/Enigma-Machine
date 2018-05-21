@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class MainMenu {
 
     private ArrayList<MenuItem> theMenu = new ArrayList<>();
+    private ArrayList<MenuItem> levelsMenu = new ArrayList<>();
     private String path;
     private Scanner getInput = new Scanner(System.in);
 
@@ -20,10 +21,11 @@ public class MainMenu {
     public void start() {
         int userChoice = 0;
         boolean fileExists = false, choiceSucc, codeInitialized = false;
+        createLevelsMenu();
 
         while (userChoice != MainMenuOptions.exit) {
             printMenu();
-            userChoice = getInputFromUser();
+            userChoice = getInputFromUser(MainMenuOptions.readMachineFile,MainMenuOptions.exit);
 
             if(!(priorityChecks(userChoice,fileExists,codeInitialized)))
             {
@@ -38,6 +40,18 @@ public class MainMenu {
                     && choiceSucc)
                 codeInitialized = true;
         }
+    }
+
+    private void createLevelsMenu() {
+        MenuItem easyTask = new MenuItem(TaskLevels.levelEasy,"Easy");
+        MenuItem mediumTask = new MenuItem(TaskLevels.levelMedium,"Medium");
+        MenuItem hardTask = new MenuItem(TaskLevels.levelHard,"Haed");
+        MenuItem impossibleTask = new MenuItem(TaskLevels.levelImpossible,"Impossible");
+
+        levelsMenu.add(easyTask);
+        levelsMenu.add(mediumTask);
+        levelsMenu.add(hardTask);
+        levelsMenu.add(impossibleTask);
     }
 
     private boolean priorityChecks(int userChoice, boolean fileExists, boolean codeInitialized) {
@@ -96,8 +110,49 @@ public class MainMenu {
     private boolean doAutomaticDecoding() {
 
        String inputToProcess = getStringToProcess();
+       int chosenTaskLevel =  getTaskLevel();
+       int numberOfAgents = getNumberOfAgents();
 
        return true;
+    }
+
+    private int getNumberOfAgents() {
+
+        int maxAgents = Integrator.getIntegrator().getNumberOfAgents();
+        int res = MainMenuOptions.errorSign;
+
+        while (res == MainMenuOptions.errorSign)
+        {
+            System.out.println("Please select the number of agents for the task: (between 2 to " + maxAgents + " )");
+            res = getInputFromUser(2,maxAgents);
+            getInput.nextLine();
+        }
+
+        return res;
+    }
+
+    private int getTaskLevel() {
+        int res = MainMenuOptions.errorSign;
+
+        while (res == MainMenuOptions.errorSign)
+        {
+            printLevelsMenu();
+            res = getInputFromUser(TaskLevels.levelEasy,TaskLevels.levelImpossible);
+            getInput.nextLine();
+        }
+
+        return res;
+    }
+
+    private void printLevelsMenu() {
+        System.out.println("---------------------------------------------------------\n");
+        System.out.println("Please select the task difficulty level:");
+
+        for (MenuItem item : levelsMenu)
+            System.out.println(item.toString());
+
+
+        System.out.println("---------------------------------------------------------\n");
     }
 
     private String getStringToProcess() {
@@ -277,21 +332,21 @@ public class MainMenu {
         return true;
     }
 
-    private int getInputFromUser() {
+    private int getInputFromUser(int minNumber, int maxNumber) {
         int userChoice;
 
         try {
             userChoice = getInput.nextInt();
         } catch (IllegalArgumentException ilae) {
-            System.out.println("Invaild input! Please enter a number between 1 to 8");
+            System.out.println("Invaild input! Please enter a number between " + minNumber + " to " + maxNumber );
             return MainMenuOptions.errorSign;
         } catch (InputMismatchException ime) {
-            System.out.println("Invaild input! Please enter a number between 1 to 8");
+            System.out.println("Invaild input! Please enter a number between " + minNumber + " to " + maxNumber);
             return MainMenuOptions.errorSign;
         }
 
-        if (userChoice > MainMenuOptions.exit || userChoice < MainMenuOptions.readMachineFile) {
-            System.out.println("Out of range input! Please enter a number between 1 to 8");
+        if (userChoice > maxNumber || userChoice < minNumber) {
+            System.out.println("Out of range input! Please enter a number between "+ minNumber + " to " + maxNumber);
             return MainMenuOptions.errorSign;
         }
 

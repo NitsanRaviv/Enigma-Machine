@@ -280,4 +280,8 @@ public class Tester {
         String excludeChars = decipher.getDictionary().getExcludeChars();
         return DictionaryXmlParser.getDictionaryXmlParser().replaceExcludeChars(excludeChars,input);
     }
+
+    public int getNumberOfAgents() {
+        return decipher.getAgents();
+    }
 }

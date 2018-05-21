@@ -197,4 +197,8 @@ public class Integrator {
     public String cleanStringFromExcludeChars(String input) {
         return tester.getCleanString(input);
     }
+
+    public int getNumberOfAgents() {
+        return tester.getNumberOfAgents();
+    }
 }
