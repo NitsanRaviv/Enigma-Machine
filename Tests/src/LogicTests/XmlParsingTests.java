@@ -26,7 +26,6 @@ public class XmlParsingTests {
         mp.setChosenReflector("I");
         resCharacters = mp.encryptCode("AABBCCDDEEFF");
         Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
-
         mp.setMachineToInitialState();
         resCharacters = mp.encryptCode("AABBCCDDEEFF");
         Assert.assertEquals(resCharacters.toString(), "[B, D, E, A, B, D, A, C, D, F, A, C]");
@@ -47,6 +46,7 @@ public class XmlParsingTests {
     public void testInitialCodeParserAndPerformer(){
         Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
         Performer.getPerformer().setInitialCode("2,1".split(","), "C,C".split(","),"I");
+        String a = String.valueOf(Performer.getPerformer().processInput("AABBCCDDEEFF"));
         Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
         System.out.println(Performer.getPerformer().getStatistics());
     }

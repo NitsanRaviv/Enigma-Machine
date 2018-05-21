@@ -65,7 +65,6 @@ public class DM extends Thread {
             else {
                     decryptPotentials.add(potential);
                     System.out.println(potential);
-
                 }
         }
     }
@@ -122,8 +121,8 @@ public class DM extends Thread {
         int numLetters = machine.getLanguage().length;
         int numRotors = machine.getAppliedRotors();
         //check this casting
-        numOfEasyTasks =(int)Math.pow(numRotors, numLetters) / taskSize;
-        numOfEasyTasks += (int)Math.pow(numRotors, numLetters) % taskSize;
+        numOfEasyTasks =(int)Math.pow(numLetters, numRotors) / taskSize;
+        numOfEasyTasks += (int)Math.pow(numLetters, numRotors) % taskSize;
 
     }
 

@@ -26,8 +26,8 @@ public class EnigmaAgent extends Thread {
             getNewTask();
             for (int i = 0; i < easyTask.getTaskSize(); i++) {
                 try {
-                    String processed = machineProxy.encryptCode(easyTask.getStringToEncrypt()).toString();
-//                    if(enigmaDictionary.checkIfExists(processed) == true)
+                    String processed = machineProxy.encryptCodeToString(easyTask.getStringToEncrypt());
+                    if(enigmaDictionary.checkIfExists(processed) == true)
                         encryptedStringsQueue.put(processed + " num: " + taskNumber);
                 } catch (InterruptedException ie) {
                     System.out.println("Agent thread was interrupted");

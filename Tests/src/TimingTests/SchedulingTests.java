@@ -21,7 +21,7 @@ public class SchedulingTests {
     {
          mp = null;
         try {
-            mp = MachineXmlParser.parseXmlToMachineProxy("ex1-sanity-small.xml");
+            mp = MachineXmlParser.parseXmlToMachineProxy("ex2-basic.xml");
             mp.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
             mp.setChosenReflector("I");
         } catch (JAXBException e) {
@@ -43,8 +43,9 @@ public class SchedulingTests {
        // Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
       //  boolean temp = test.getMachine("ex2-basic.xml");
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
-
-        DM dm = new DM(Performer.getPerformer().getMachineProxy(), DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "ABCDE", 16, 4);
+        mp.setChosenRotors(new Pair<>(4, 10), new Pair<>(2, 24)); //left to right
+        mp.setChosenReflector("I");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "FIWUP'RUS!", 1, 500);
         dm.handleEasyTasks();
     }
 

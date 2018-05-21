@@ -47,6 +47,15 @@ public class MachineProxy {
         return encrypted;
     }
 
+    public String encryptCodeToString(String codeToEncrypt){
+        List<Character> encryptedArr = encryptCode(codeToEncrypt);
+        StringBuilder sb = new StringBuilder();
+        for (Character character : encryptedArr) {
+            sb.append(character);
+        }
+        return sb.toString();
+    }
+
     private void updateStatistics(String codeToEncrypt, String encrypted, long timeToProcess) {
         if(machineStatistics == null){
             machineStatistics = new MachineStatistics(getCurrentCode());
