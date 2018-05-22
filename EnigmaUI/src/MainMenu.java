@@ -110,10 +110,33 @@ public class MainMenu {
     private boolean doAutomaticDecoding() {
 
        String inputToProcess = getStringToProcess();
-       int chosenTaskLevel =  getTaskLevel();
+       int chosenTaskLevel = getTaskLevel();
+       showTaskSize(chosenTaskLevel);//TODO in preformer
        int numberOfAgents = getNumberOfAgents();
+       int missionSize = getMissionSize(); // TODO: there is any limit?? if no-> Nice need to add to getInputFromUser also get without limits
+       System.out.println("To confirm the beginning of the automatic decryption process, please press any key");
+       getInput.next();
 
+       // START here the balagan!!!!!!!!!!
        return true;
+    }
+
+    private int getMissionSize() {
+        int res = MainMenuOptions.errorSign;
+
+        while (res == MainMenuOptions.errorSign)
+        {
+            System.out.println("Please select the mission size:");
+            res = getInputFromUser(2,1000000); // need limits?
+            getInput.nextLine();
+        }
+
+        return res;
+    }
+
+    private void showTaskSize(int chosenTaskLevel) {
+       long res =  Integrator.getIntegrator().getTaskSize(chosenTaskLevel);
+       System.out.println("The difficulty of the task is: " + res);
     }
 
     private int getNumberOfAgents() {

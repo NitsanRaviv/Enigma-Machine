@@ -94,8 +94,6 @@ public class Performer {
         return this.machineProxy.getStatistics();
     }
 
-
-
     public static Performer getPerformer(){
         if(performer == null)
         {
@@ -104,5 +102,8 @@ public class Performer {
         return performer;
     }
 
-
+// TODO:
+    public long getTaskSize(int chosenTaskLevel) {
+        return 1;
+    }
 }

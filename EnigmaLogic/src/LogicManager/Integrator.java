@@ -201,4 +201,8 @@ public class Integrator {
     public int getNumberOfAgents() {
         return tester.getNumberOfAgents();
     }
+
+    public long getTaskSize(int chosenTaskLevel) {
+        return Performer.getPerformer().getTaskSize(chosenTaskLevel);
+    }
 }
