@@ -13,6 +13,9 @@ import javax.xml.bind.JAXBException;
 
 import enigmaAgent.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SchedulingTests {
     private static MachineProxy mp;
@@ -44,7 +47,16 @@ public class SchedulingTests {
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
        // mp.setChosenReflector("II");
         DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelMedium);
-        dm.handleMediumTasks();
+        dm.run();
+    }
+
+    @Test
+    public void testDMhard(){
+        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        mp.setChosenRotors(new Pair<>(3, 1), new Pair<>(5, 1), new Pair(2, 1)); //left to right
+        // mp.setChosenReflector("II");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelHard);
+        dm.run();
     }
 
     @Test
@@ -53,7 +65,7 @@ public class SchedulingTests {
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
         mp.setChosenReflector("II");
         DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelEasy);
-        dm.handleMediumTasks();
+        dm.run();
     }
 
 
@@ -73,4 +85,5 @@ public class SchedulingTests {
         System.out.println(mpClone.encryptCode("AABBCCDDEEFF"));
 
     }
+
 }

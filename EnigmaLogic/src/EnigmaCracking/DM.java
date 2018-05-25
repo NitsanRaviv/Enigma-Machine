@@ -7,11 +7,8 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import EnigmaCracking.Tasks.TaskLevels;
-import LogicManager.Integrator;
-import Parts.Reflector;
+import Parts.*;
 import Utilities.RomanInterpeter;
-import XmlParsing.MachineXmlParser;
 import agentUtilities.EnigmaDictionary;
 import enigmaAgent.EnigmaAgent;
 import enigmaAgent.RotorLocationCounter;
@@ -40,6 +37,7 @@ public class DM extends Thread {
     private int finishedAgents = 0;
     private List<Reflector> reflectors;
     private List<Runnable> levels;
+    private List<List<Integer>> rotorIdsPermutations;
     private int wantedLevel;
 
     //TODO:: add mission-level
@@ -48,7 +46,6 @@ public class DM extends Thread {
         this.machine = machine;
         this.taskSize = taskSize;
         this.decryptPotentials = new HashSet<>();
-        this.easyTasks = new ArrayList<>();
         this.Agents = new ArrayList<>(numAgents);
         this.decryptedStrings = new ArrayBlockingQueue(10000);
         this.encryptedString = encrtyptedString;
@@ -61,17 +58,18 @@ public class DM extends Thread {
 
     public DM init(){
         this.calcNumOfEasyTasks()
-                .createEasyTasks()
                 .createTasksQueues();
+        this.levels.add(() ->this.handleEasyTasks());
+        this.levels.add(() ->this.handleMediumTasks());
+        this.levels.add(() -> this.handleHardTasks());
         return this;
     }
 
     public void handleEasyTasks(){
-               this.createThreadAgents()
+        this.createEasyTasks()
+                .createThreadAgents()
                 .deliverTasksToQueues()
                 .runAgents();
-        this.levels.add(() ->this.handleEasyTasks());
-        this.levels.add(() ->this.handleMediumTasks());
 
         while (finishedAgents < numAgents) {
             //TODO::possible better processor using here - sleep or interrupt
@@ -79,11 +77,12 @@ public class DM extends Thread {
             if (potential != null)
                 if(potential == AGENT_FINISHED_TASKS)
                     finishedAgents++;
-            else {
-                    decryptPotentials.add(potential);
-                    System.out.println(potential);
+            else{
+                    if(decryptPotentials.contains(potential) == false)
+                      decryptPotentials.add(potential);
                 }
         }
+        System.out.println(decryptPotentials);
     }
 
     public void handleMediumTasks(){
@@ -94,10 +93,25 @@ public class DM extends Thread {
     }
 
 
+    //this method assumes ids in machine are allready known
     public void handleHardTasks(){
-      ///foreach permutation of the arrangement of rotors (ids are known!)
-        //set machine rotors, position doesnt matter!
-        //than call handelMediumTasks
+        rotorIdsPermutations = new ArrayList<>();
+
+        List<Integer> chosenRotorIds = new ArrayList<>();
+
+        for (Pair<Integer, Integer> rotorAndLoc : machine.getCurrentRotorAndLocations()) {
+            chosenRotorIds.add(rotorAndLoc.getKey());
+        }
+        setPermutationsForRotorIds(chosenRotorIds, 0);
+
+        Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
+        for (List<Integer> rotorIdsPermutation : rotorIdsPermutations) {
+            for (int i = 0; i <machine.getAppliedRotors() ; i++) {
+                rotorsAndLocations[i] = new Pair<>(rotorIdsPermutation.get(i), 1);
+            }
+            machine.setChosenRotors(rotorsAndLocations);
+            handleMediumTasks();
+        }
     }
 
     private DM deliverTasksToQueues() {
@@ -156,10 +170,10 @@ public class DM extends Thread {
         numOfEasyTasks =(int)Math.pow(numLetters, numRotors) / taskSize;
         numOfEasyTasks += (int)Math.pow(numLetters, numRotors) % taskSize;
         return this;
-
     }
 
     public DM createEasyTasks() {
+        this.easyTasks = new ArrayList<>();
         rotorLocationCounter = new RotorLocationCounter(machine.getLanguageInterpeter(), getInitialSettingsOfMachine());
         int createdTasks = 0;
         for (createdTasks = 0; createdTasks < numOfEasyTasks; createdTasks++) {
@@ -184,5 +198,16 @@ public class DM extends Thread {
             initialRotorsAndLocations[i] = new Pair(machine.getCurrentRotorAndLocations()[i].getKey(), machine.getLanguageInterpeter().getLanguageAsNumbers().get(0));
         }
         return initialRotorsAndLocations;
+    }
+
+    public void setPermutationsForRotorIds(List<Integer> chosenRotorIds, int currentCreatedSize){
+        for(int i = currentCreatedSize; i < chosenRotorIds.size(); i++){
+            java.util.Collections.swap(chosenRotorIds, i, currentCreatedSize);
+            setPermutationsForRotorIds(chosenRotorIds, currentCreatedSize+1);
+            java.util.Collections.swap(chosenRotorIds, currentCreatedSize, i);
+        }
+        if (currentCreatedSize == chosenRotorIds.size() -1){
+            rotorIdsPermutations.add(new ArrayList<>(chosenRotorIds));
+        }
     }
 }
