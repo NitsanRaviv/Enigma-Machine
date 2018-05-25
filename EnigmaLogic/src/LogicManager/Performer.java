@@ -19,6 +19,17 @@ public class Performer {
     private static Performer performer;
 
 
+    private int calcNumOfEasyTasks(int taskSize)
+    {
+        int numLetters = machineProxy.getLanguage().length;
+        int numRotors = machineProxy.getAppliedRotors();
+        int numOfEasyTasks = 0;
+        numOfEasyTasks =(int)Math.pow(numLetters, numRotors) / taskSize;
+        numOfEasyTasks += (int)Math.pow(numLetters, numRotors) % taskSize;
+        return numOfEasyTasks;
+    }
+
+
     public String loadMachineFromXml(String path) {
         try {
             machineProxy = MachineXmlParser.parseXmlToMachineProxy(path);
@@ -57,10 +68,8 @@ public class Performer {
         boolean exists = false;
         int rotorId = 0;
         int maxRotorNum = Math.min(5, machineProxy.getNumRotors());
-        int rotorNum  = Math.abs(random.nextInt()) % maxRotorNum + 1;
+        int rotorNum  = machineProxy.getAppliedRotors();
         int insertedrotors = 0;
-        if(rotorNum == 1)
-            rotorNum++;
         Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorNum];
         while (rotorNum > insertedrotors) {
             rotorId = Math.abs(random.nextInt()) % machineProxy.getNumRotors() + 1;

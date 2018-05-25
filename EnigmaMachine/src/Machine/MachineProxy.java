@@ -1,5 +1,6 @@
 package Machine;
 
+import Parts.Reflector;
 import Parts.Rotor;
 import Utilities.RomanInterpeter;
 import Utilities.LanguageInterpeter;
@@ -21,12 +22,12 @@ public class MachineProxy {
     private boolean machineIsSet;
     private MachineStatistics machineStatistics;
     private String machineCode;
+    private Pair<Integer, Integer>[] currentRotorAndLocations;
 
     public Pair<Integer, Integer>[] getCurrentRotorAndLocations() {
         return currentRotorAndLocations;
     }
 
-    private Pair<Integer, Integer>[] currentRotorAndLocations;
 
     public MachineProxy(EnigmaMachine machine, LanguageInterpeter languageInterpeter, int rotorsCount)
     {
@@ -168,6 +169,10 @@ public class MachineProxy {
             index++;
         }
         return clone;
+    }
+
+    public List<Reflector> getReflectors() {
+        return machine.getReflectors();
     }
 
     @Override

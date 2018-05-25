@@ -1,3 +1,4 @@
+import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.ErrorsMessages;
 import LogicManager.Integrator;
 

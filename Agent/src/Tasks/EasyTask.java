@@ -4,7 +4,7 @@ import javafx.util.Pair;
 
 import java.util.List;
 
-public class EasyTask implements BasicTask {
+public class EasyTask {
 
     private int taskSize;
     private String stringToEncrypt;

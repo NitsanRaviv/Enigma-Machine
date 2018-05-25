@@ -127,6 +127,10 @@ public class EnigmaMachine {
         return this.reflectors.size();
     }
 
+    public List<Reflector> getReflectors() {
+        return reflectors;
+    }
+
     @Override
     public EnigmaMachine clone() throws CloneNotSupportedException {
         List<Rotor> cloneRotors = new ArrayList();

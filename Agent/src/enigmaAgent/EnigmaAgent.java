@@ -27,13 +27,16 @@ public class EnigmaAgent extends Thread {
             for (int i = 0; i < easyTask.getTaskSize(); i++) {
                 try {
                     String processed = machineProxy.encryptCodeToString(easyTask.getStringToEncrypt());
-                    if(enigmaDictionary.checkIfExists(processed) == true)
-                        encryptedStringsQueue.put(processed + " num: " + taskNumber);
+                    String[] processedArr = processed.split(" ");
+                    for (String processedString : processedArr) {
+                        if(enigmaDictionary.checkIfExists(processedString) == true)
+                            encryptedStringsQueue.put(processedString);
+                    }
                 } catch (InterruptedException ie) {
                     System.out.println("Agent thread was interrupted");
                 }
                 taskNumber++;
-                setNewPermutation();
+                setNewPositionOfRotorsInMachine();
             }
         }
     }
@@ -67,7 +70,7 @@ public class EnigmaAgent extends Thread {
         this.id = id;
     }
 
-    public void setNewPermutation(){
+    public void setNewPositionOfRotorsInMachine(){
         machineProxy.setMachineToInitialState();
         machineProxy.setChosenRotors(rotorLocationCounter.nextRotorsAndLocations());
     }

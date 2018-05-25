@@ -1,5 +1,6 @@
 package TimingTests;
 import EnigmaCracking.DM;
+import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.Integrator;
 import LogicManager.Performer;
 import Machine.MachineProxy;
@@ -38,22 +39,29 @@ public class SchedulingTests {
     }
 
     @Test
-    public void testDM(){
-      //  Tester test = new Tester();
-       // Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
-      //  boolean temp = test.getMachine("ex2-basic.xml");
+    public void testDMmedium(){
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
-        mp.setChosenRotors(new Pair<>(4, 10), new Pair<>(2, 24)); //left to right
-        mp.setChosenReflector("I");
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "FIWUP'RUS!", 1, 500);
-        dm.handleEasyTasks();
+        mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
+       // mp.setChosenReflector("II");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelMedium);
+        dm.handleMediumTasks();
     }
+
+    @Test
+    public void testDMeasy(){
+        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
+        mp.setChosenReflector("II");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelEasy);
+        dm.handleMediumTasks();
+    }
+
 
     @Test
     public void cloneMachine(){
         MachineProxy mpClone = null;
         try {
-             mpClone = mp.clone();
+             mpClone = mp.clone(); 
              mpClone.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
              mpClone.setChosenReflector("I");
         }catch (CloneNotSupportedException e) {

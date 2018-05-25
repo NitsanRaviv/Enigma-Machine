@@ -1,3 +1,5 @@
+package EnigmaCracking.Tasks;
+
 public interface TaskLevels {
 
     int levelEasy = 1;
