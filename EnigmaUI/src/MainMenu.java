@@ -46,7 +46,7 @@ public class MainMenu {
     private void createLevelsMenu() {
         MenuItem easyTask = new MenuItem(TaskLevels.levelEasy,"Easy");
         MenuItem mediumTask = new MenuItem(TaskLevels.levelMedium,"Medium");
-        MenuItem hardTask = new MenuItem(TaskLevels.levelHard,"Haed");
+        MenuItem hardTask = new MenuItem(TaskLevels.levelHard,"Hard");
         MenuItem impossibleTask = new MenuItem(TaskLevels.levelImpossible,"Impossible");
 
         levelsMenu.add(easyTask);
@@ -112,13 +112,14 @@ public class MainMenu {
 
        String inputToProcess = getStringToProcess();
        int chosenTaskLevel = getTaskLevel();
-       showTaskSize(chosenTaskLevel);//TODO in preformer
+       showTaskDifficulty(chosenTaskLevel);
        int numberOfAgents = getNumberOfAgents();
-       int missionSize = getMissionSize(); // TODO: there is any limit?? if no-> Nice need to add to getInputFromUser also get without limits
-       System.out.println("To confirm the beginning of the automatic decryption process, please press any key");
+       int missionSize = getMissionSize();// get here number without any limit
+       System.out.println("To confirm the beginning of the automatic decryption process, please press Y and then enter");
        getInput.next();
 
-       // START here the balagan!!!!!!!!!!
+        Integrator.getIntegrator().startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
+
        return true;
     }
 
@@ -128,15 +129,31 @@ public class MainMenu {
         while (res == MainMenuOptions.errorSign)
         {
             System.out.println("Please select the mission size:");
-            res = getInputFromUser(2,1000000); // need limits?
+            res = getInputFromUserNoLimits();
             getInput.nextLine();
         }
 
         return res;
     }
 
-    private void showTaskSize(int chosenTaskLevel) {
-       long res =  Integrator.getIntegrator().getTaskSize(chosenTaskLevel);
+    private int getInputFromUserNoLimits() {
+        int userChoice;
+
+        try {
+            userChoice = getInput.nextInt();
+        } catch (IllegalArgumentException ilae) {
+            System.out.println("Invalid input! Please enter a number");
+            return MainMenuOptions.errorSign;
+        } catch (InputMismatchException ime) {
+            System.out.println("Invalid input! Please enter a number between");
+            return MainMenuOptions.errorSign;
+        }
+
+        return userChoice;
+    }
+
+    private void showTaskDifficulty(int chosenTaskLevel) {
+       long res =  Integrator.getIntegrator().getTaskDifficulty(chosenTaskLevel);
        System.out.println("The difficulty of the task is: " + res);
     }
 
@@ -362,10 +379,10 @@ public class MainMenu {
         try {
             userChoice = getInput.nextInt();
         } catch (IllegalArgumentException ilae) {
-            System.out.println("Invaild input! Please enter a number between " + minNumber + " to " + maxNumber );
+            System.out.println("Invalid input! Please enter a number between " + minNumber + " to " + maxNumber );
             return MainMenuOptions.errorSign;
         } catch (InputMismatchException ime) {
-            System.out.println("Invaild input! Please enter a number between " + minNumber + " to " + maxNumber);
+            System.out.println("Invalid input! Please enter a number between " + minNumber + " to " + maxNumber);
             return MainMenuOptions.errorSign;
         }
 

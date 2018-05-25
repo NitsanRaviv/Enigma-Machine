@@ -202,7 +202,11 @@ public class Integrator {
         return tester.getNumberOfAgents();
     }
 
-    public long getTaskSize(int chosenTaskLevel) {
-        return Performer.getPerformer().getTaskSize(chosenTaskLevel);
+    public long getTaskDifficulty(int chosenTaskLevel) {
+        return Performer.getPerformer().getTaskDifficulty(chosenTaskLevel);
+    }
+
+    public void startTheDecrypt(String stringToDecrypt, int numberOfAgents, int missionSize, int chosenTaskLevel) {
+        Performer.getPerformer().startDM(stringToDecrypt,numberOfAgents,missionSize,chosenTaskLevel);
     }
 }

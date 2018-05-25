@@ -1,12 +1,17 @@
 package LogicManager;
 
+import EnigmaCracking.DM;
+import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.InitialCode.InitialCodeParser;
 import Machine.MachineProxy;
 import Utilities.RomanInterpeter;
+import XmlParsing.DictionaryXmlParser;
 import XmlParsing.MachineXmlParser;
 import javafx.util.Pair;
+import sun.nio.cs.ext.MacThai;
 
 import javax.xml.bind.JAXBException;
+import java.math.MathContext;
 import java.util.List;
 import java.util.Random;
 
@@ -17,6 +22,7 @@ public class Performer {
 
     private MachineProxy machineProxy;
     private static Performer performer;
+    private DM dm;
 
 
     private int calcNumOfEasyTasks(int taskSize)
@@ -111,8 +117,80 @@ public class Performer {
         return performer;
     }
 
-// TODO:
-    public long getTaskSize(int chosenTaskLevel) {
-        return 1;
+    public long getTaskDifficulty(int chosenTaskLevel) {
+        long res;
+        int abcSize = machineProxy.getLanguage().length;
+        int selectedRotorsQuantity = machineProxy.getAppliedRotors();
+        int allRotorsQuantity = machineProxy.getNumRotors();
+        int reflectorsQuantity = machineProxy.getNumReflectors();
+        int factorial = getFactorial(selectedRotorsQuantity);
+        int rotorosOptions = binomialCoefficient(selectedRotorsQuantity, allRotorsQuantity);
+        res = (long) Math.pow(abcSize, selectedRotorsQuantity);
+
+        switch (chosenTaskLevel) {
+            case TaskLevels.levelEasy:
+                break;
+            case TaskLevels.levelMedium:
+                res *= reflectorsQuantity;
+                break;
+            case TaskLevels.levelHard:
+                res *= factorial * reflectorsQuantity;
+                break;
+            case TaskLevels.levelImpossible:
+                res *= rotorosOptions * factorial * reflectorsQuantity;
+                break;
+
+        }
+
+        return res;
     }
+
+    private int binomialCoefficient(int k, int n) {
+        int nFactoial = getFactorial(n);
+        int kFactoial = getFactorial(k);
+        int nMinuskFactoial = getFactorial(n-k);
+
+        return (nFactoial / (kFactoial*nMinuskFactoial));
+    }
+
+    private int getFactorial(int selectedRotorsQuantity) {
+        int res = 1;
+        while (selectedRotorsQuantity > 1) {
+            res *= selectedRotorsQuantity;
+            selectedRotorsQuantity--;
+        }
+
+        return res;
+    }
+
+    public void startDM(String stringToDecrypt, int numberOfAgents, int missionSize, int chosenTaskLevel) {
+
+        int taskSize = getTaskSize(missionSize,chosenTaskLevel);
+        dm = new DM(machineProxy, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(),
+                stringToDecrypt,numberOfAgents,taskSize,chosenTaskLevel);
+
+        dm.run();
+    }
+//TODO:
+    private int getTaskSize(int missionSize, int chosenTaskLevel) {
+        int res = 0;
+        switch (chosenTaskLevel){
+            case TaskLevels.levelEasy:
+                res = calcNumOfEasyTasks(missionSize);
+                break;
+            case TaskLevels.levelMedium:
+
+                break;
+            case TaskLevels.levelHard:
+
+                break;
+            case TaskLevels.levelImpossible:
+
+                break;
+        }
+
+        return res;
+    }
+
+
 }
