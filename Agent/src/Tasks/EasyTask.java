@@ -24,7 +24,7 @@ public class EasyTask {
         return taskSize;
     }
 
-    public String getStringToEncrypt() {
+    public String getStringToDecrypt() {
         return stringToEncrypt;
     }
 }

@@ -165,7 +165,8 @@ public class MainMenu {
         while (res == MainMenuOptions.errorSign)
         {
             System.out.println("Please select the number of agents for the task: (between 2 to " + maxAgents + " )");
-            res = getInputFromUser(2,maxAgents);
+           // res = getInputFromUser(2,maxAgents);
+            res = getInputFromUserNoLimits();
             getInput.nextLine();
         }
 

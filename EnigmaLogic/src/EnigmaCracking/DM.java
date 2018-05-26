@@ -106,7 +106,7 @@ public class DM extends Thread {
 
         Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (List<Integer> rotorIdsPermutation : rotorIdsPermutations) {
-            for (int i = 0; i <machine.getAppliedRotors() ; i++) {
+            for (int i = 0; i < machine.getAppliedRotors() ; i++) {
                 rotorsAndLocations[i] = new Pair<>(rotorIdsPermutation.get(i), 1);
             }
             machine.setChosenRotors(rotorsAndLocations);
@@ -126,8 +126,14 @@ public class DM extends Thread {
                 //last mission for Agent to stop
                 tasksQueue.put(new EasyTask(null, null, 0));
             }
-            while(deliveredTasks < numOfEasyTasks){
-                tasksQueues.get(0).put(easyTasks.get(deliveredTasks));
+
+            if(deliveredTasks < numOfEasyTasks) {
+                tasksQueues.get(0).take();
+                while (deliveredTasks < numOfEasyTasks) {
+                    tasksQueues.get(0).put(easyTasks.get(deliveredTasks));
+                    deliveredTasks++;
+                }
+                tasksQueues.get(0).put(new EasyTask(null, null, 0));
             }
         }catch (InterruptedException ie){
             ;//TODO::handle all interrupts in DM

@@ -3,6 +3,8 @@ package enigmaAgent;
 import agentUtilities.EnigmaDictionary;
 import Machine.MachineProxy;
 import Tasks.EasyTask;
+
+import javax.swing.plaf.synth.SynthDesktopIconUI;
 import java.util.concurrent.BlockingQueue;
 
 import static enigmaAgent.AgentConstants.AGENT_FINISHED_TASKS;
@@ -26,7 +28,10 @@ public class EnigmaAgent extends Thread {
             getNewTask();
             for (int i = 0; i < easyTask.getTaskSize(); i++) {
                 try {
-                    String processed = machineProxy.encryptCodeToString(easyTask.getStringToEncrypt());
+                    String processed = machineProxy.encryptCodeToString(easyTask.getStringToDecrypt());
+                    //
+                    //System.out.println(processed);
+                    //
                     String[] processedArr = processed.split(" ");
                     for (String processedString : processedArr) {
                         if(enigmaDictionary.checkIfExists(processedString) == true)
@@ -51,7 +56,7 @@ public class EnigmaAgent extends Thread {
             else {
                 machineProxy.setChosenRotors(easyTask.getRotorsAndNotches());
                 if(rotorLocationCounter == null) //first task so we need to initialize it
-                    rotorLocationCounter = new RotorLocationCounter(machineProxy.getLanguageInterpeter(), machineProxy.getCurrentRotorAndLocations());
+                    rotorLocationCounter = new RotorLocationCounter(machineProxy.getLanguageInterpeter(), easyTask.getRotorsAndNotches());
                 else
                 rotorLocationCounter.setRotorsAndLocations(easyTask.getRotorsAndNotches());
             }

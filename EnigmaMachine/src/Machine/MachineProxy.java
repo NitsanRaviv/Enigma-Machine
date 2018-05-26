@@ -71,7 +71,7 @@ public class MachineProxy {
 
     public void setChosenRotors(Pair<Integer, Integer>... rotorsAndNotch)
     {
-        currentRotorAndLocations = rotorsAndNotch;
+        currentRotorAndLocations = copyRotorsAndLocations(rotorsAndNotch);
         machine.setChosenRotors(rotorsAndNotch);
     }
 

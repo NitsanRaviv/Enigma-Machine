@@ -17,6 +17,8 @@ public class Rotor {
     private int initialStateBeforeRotation;
     private int id;
     private static int runningId = 0;
+    private List<Integer> origLeftEntries;
+    private List<Integer> origRightEntries;
 
     public Rotor(List<Integer> leftEntries, List<Integer> rightEntries) {
         this(leftEntries, rightEntries, MachineConstants.DEFAULT_NOTCH_INDEX, runningId++);
@@ -30,6 +32,8 @@ public class Rotor {
     public Rotor(List<Integer> leftEntries, List<Integer> rightEntries, int notch, int id) {
         this.leftEntries = new ArrayList<>(leftEntries);
         this.rightEntries = new ArrayList<>(rightEntries);
+        this.origLeftEntries = new ArrayList<>(leftEntries);
+        this.origRightEntries = new ArrayList<>(rightEntries);
         this.notch = notch;
         this.initialNotch = notch;
         this.initialStateBeforeRotation = rightEntries.get(0);
@@ -125,8 +129,7 @@ public class Rotor {
 
     @Override
     public Rotor clone() throws CloneNotSupportedException {
-        Rotor clone = new Rotor(new ArrayList<>(leftEntries), new ArrayList<>(rightEntries), initialNotch, id);
-        clone.setInitialPosition(this.initialStateBeforeRotation);
+        Rotor clone = new Rotor(new ArrayList<>(origLeftEntries), new ArrayList<>(origRightEntries), initialNotch, id);
         return clone;
     }
 
