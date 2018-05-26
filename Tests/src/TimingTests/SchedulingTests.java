@@ -46,7 +46,8 @@ public class SchedulingTests {
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
        // mp.setChosenReflector("II");
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelMedium);
+        String test = mp.encryptCodeToString("DOLPHINE");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), test, 10, 20, TaskLevels.levelMedium);
         dm.run();
     }
 

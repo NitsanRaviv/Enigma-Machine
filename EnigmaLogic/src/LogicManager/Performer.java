@@ -163,11 +163,10 @@ public class Performer {
         return res;
     }
 
-    public void startDM(String stringToDecrypt, int numberOfAgents, int missionSize, int chosenTaskLevel) {
-
-        int taskSize = getTaskSize(missionSize,chosenTaskLevel);
+    public void startDM(String stringToEncrypt, int numberOfAgents, int missionSize, int chosenTaskLevel) {
+        String stringToDecrypt = machineProxy.encryptCodeToString(stringToEncrypt.toUpperCase());
         dm = new DM(machineProxy, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(),
-                stringToDecrypt,numberOfAgents,taskSize,chosenTaskLevel);
+                stringToDecrypt,numberOfAgents,missionSize,chosenTaskLevel);
 
         dm.run();
     }
