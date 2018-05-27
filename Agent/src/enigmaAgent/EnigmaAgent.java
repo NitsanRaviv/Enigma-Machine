@@ -3,8 +3,10 @@ package enigmaAgent;
 import agentUtilities.EnigmaDictionary;
 import Machine.MachineProxy;
 import Tasks.EasyTask;
+import sun.awt.Mutex;
 
-import javax.swing.plaf.synth.SynthDesktopIconUI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import static enigmaAgent.AgentConstants.AGENT_FINISHED_TASKS;
@@ -14,44 +16,63 @@ public class EnigmaAgent extends Thread {
     private EnigmaDictionary enigmaDictionary;
     private EasyTask easyTask;
     private MachineProxy machineProxy;
-    private BlockingQueue<String> encryptedStringsQueue;
+    private BlockingQueue<AgentAnswer> agentAnsewerQueue;
     private BlockingQueue<EasyTask> tasksQueue;
     private int id;
     private int taskNumber;
     private RotorLocationCounter rotorLocationCounter;
     private boolean running = true;
+    private List<String> goodStrings;
+    private Mutex agentLock;
+    private InterruptReason interruptReason;
 
 
     @Override
     public void run() {
         while (running) {
             getNewTask();
+            this.goodStrings = new ArrayList<>();
+            long startTime = System.nanoTime();
             for (int i = 0; i < easyTask.getTaskSize(); i++) {
-                try {
                     String processed = machineProxy.encryptCodeToString(easyTask.getStringToDecrypt());
-                    //
-                    //System.out.println(processed);
-                    //
                     String[] processedArr = processed.split(" ");
                     for (String processedString : processedArr) {
-                        if(enigmaDictionary.checkIfExists(processedString) == true)
-                            encryptedStringsQueue.put(processedString);
+                        if(enigmaDictionary.checkIfExists(processedString) == true){
+                            goodStrings.add(processedString);
+                        }
                     }
-                } catch (InterruptedException ie) {
-                    System.out.println("Agent thread was interrupted");
-                }
                 taskNumber++;
                 setNewPositionOfRotorsInMachine();
             }
+            if(Thread.currentThread().interrupted() == true){
+                handleInterrupt();
+            }
+            long endTime = System.nanoTime();
+            try {
+                for (String goodString : goodStrings) {
+                    agentAnsewerQueue.put(new AgentAnswer(goodString, easyTask.getStringToDecrypt(), endTime - startTime, id));
+                }
+            }catch (InterruptedException ie){
+                ;
+            }
+
         }
     }
+
+    private void handleInterrupt() {
+        if(interruptReason == InterruptReason.SUSPEND){
+            agentLock.lock();
+            agentLock.unlock();
+        }
+    }
+
 
     private void getNewTask() {
         try {
             easyTask = tasksQueue.take();
             if(easyTask.getTaskSize() == NO_MORE_TASKS){
                 running = false;
-                encryptedStringsQueue.put(AGENT_FINISHED_TASKS);
+                agentAnsewerQueue.put(new AgentAnswer(AGENT_FINISHED_TASKS, "", 0, id));
             }
             else {
                 machineProxy.setChosenRotors(easyTask.getRotorsAndNotches());
@@ -66,17 +87,28 @@ public class EnigmaAgent extends Thread {
         }
     }
 
-    public EnigmaAgent(MachineProxy machineProxy, BlockingQueue<String> encryptedStringsQueue, BlockingQueue<EasyTask> tasksQueue, EnigmaDictionary dictionary, int id) {
+    public EnigmaAgent(MachineProxy machineProxy, BlockingQueue<AgentAnswer> agentAnsewerQueue, BlockingQueue<EasyTask> tasksQueue, EnigmaDictionary dictionary, int id, Mutex lock) {
         this.machineProxy = machineProxy;
-        this.encryptedStringsQueue = encryptedStringsQueue;
+        this.agentAnsewerQueue = agentAnsewerQueue;
         taskNumber = 0;
         this.tasksQueue = tasksQueue;
         this.enigmaDictionary = dictionary;
         this.id = id;
+        this.agentLock = lock;
     }
 
     public void setNewPositionOfRotorsInMachine(){
         machineProxy.setMachineToInitialState();
         machineProxy.setChosenRotors(rotorLocationCounter.nextRotorsAndLocations());
     }
+
+    public enum InterruptReason{
+        FREE, SUSPEND, INFOS;
+    }
+
+    public void setInterruptReason(InterruptReason ie){
+        this.interruptReason = ie;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package Tasks;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EasyTask {
@@ -26,5 +27,13 @@ public class EasyTask {
 
     public String getStringToDecrypt() {
         return stringToEncrypt;
+    }
+
+    public List<Integer> getNumberLocations() {
+        List<Integer> numbers = new ArrayList<>();
+        for (Pair<Integer, Integer> rotorsAndNotch : rotorsAndNotches) {
+            numbers.add(rotorsAndNotch.getValue());
+        }
+        return numbers;
     }
 }

@@ -1,6 +1,7 @@
 package TimingTests;
 import EnigmaCracking.DM;
 import EnigmaCracking.DMadapter;
+import EnigmaCracking.HalfWayInfo;
 import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.Integrator;
 import Machine.MachineProxy;
@@ -12,14 +13,15 @@ import org.junit.Test;
 import javax.xml.bind.JAXBException;
 import enigmaAgent.*;
 
+import java.util.List;
+
 
 public class SchedulingTests {
     private static MachineProxy mp;
 
     @BeforeClass
-    public static void init()
-    {
-         mp = null;
+    public static void init() {
+        mp = null;
         try {
             mp = MachineXmlParser.parseXmlToMachineProxy("ex2-basic.xml");
             mp.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
@@ -30,25 +32,25 @@ public class SchedulingTests {
     }
 
     @Test
-    public void testRotorCounter(){
-       RotorLocationCounter rotorLocationCounter = new RotorLocationCounter(mp.getLanguageInterpeter(), mp.getCurrentRotorAndLocations());
+    public void testRotorCounter() {
+        RotorLocationCounter rotorLocationCounter = new RotorLocationCounter(mp.getLanguageInterpeter(), mp.getCurrentRotorAndLocations());
         for (Pair<Integer, Integer> pair : rotorLocationCounter.nextRotorsAndLocations(4)) {
             System.out.println(pair.getValue());
         }
     }
 
     @Test
-    public void testDMmedium(){
+    public void testDMmedium() {
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(3, 1), new Pair(5, 1)); //left to right
-       // mp.setChosenReflector("II");
+        // mp.setChosenReflector("II");
         String test = mp.encryptCodeToString("encapsulation".toUpperCase());
         DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), test, 1, 20, TaskLevels.levelMedium);
         dm.run();
     }
 
     @Test
-    public void testDMhard(){
+    public void testDMhard() {
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(3, 1), new Pair<>(5, 1), new Pair(2, 1)); //left to right
         // mp.setChosenReflector("II");
@@ -57,7 +59,7 @@ public class SchedulingTests {
     }
 
     @Test
-    public void testDMeasy(){
+    public void testDMeasy() {
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
         mp.setChosenReflector("II");
@@ -66,20 +68,20 @@ public class SchedulingTests {
     }
 
     @Test
-    public void testDMImpossible(){
+    public void testDMImpossible() {
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
         DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelImpossible);
         dm.run();
     }
 
     @Test
-    public void cloneMachine(){
+    public void cloneMachine() {
         MachineProxy mpClone = null;
         try {
-             mpClone = mp.clone(); 
-             mpClone.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
-             mpClone.setChosenReflector("I");
-        }catch (CloneNotSupportedException e) {
+            mpClone = mp.clone();
+            mpClone.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
+            mpClone.setChosenReflector("I");
+        } catch (CloneNotSupportedException e) {
             System.out.println("exeption clone");
         }
         mp.encryptCode("AABBCCDDEEFF");
@@ -89,28 +91,25 @@ public class SchedulingTests {
     }
 
     @Test
-    public void testSuspend()
-    {
+    public void testSuspend() {
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
-        //mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
+        mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
         //mp.setChosenReflector("II");
-        DMadapter dMadapter = new DMadapter(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelImpossible);
+        DMadapter dMadapter = new DMadapter(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelHard);
         dMadapter.start();
-        dMadapter.suspendDM();
         try {
-            Thread.sleep(1000);
-        }catch (InterruptedException ie){
+            Thread.sleep(100);
+        } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
 
-        dMadapter.unSuspendDM();
-
+        HalfWayInfo halfWayInfo = dMadapter.getHalfWayInfos();
+        System.out.println(halfWayInfo);
         try {
-            Thread.sleep(100000);
-        }catch (InterruptedException ie){
+            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
     }
-
 
 }

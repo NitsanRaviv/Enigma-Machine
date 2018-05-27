@@ -6,24 +6,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
 
+import EnigmaCracking.Tasks.TaskLevels;
 import Parts.*;
 import Utilities.RomanInterpeter;
 import agentUtilities.EnigmaDictionary;
+import enigmaAgent.AgentAnswer;
 import enigmaAgent.EnigmaAgent;
 import enigmaAgent.RotorLocationCounter;
 import Machine.MachineProxy;
 import Tasks.*;
 import javafx.util.Pair;
+import sun.awt.Mutex;
 
 import static enigmaAgent.AgentConstants.AGENT_FINISHED_TASKS;
 
 public class DM extends Thread {
     private int numAgents;
     private List<BlockingQueue<EasyTask>> tasksQueues;
-    private BlockingQueue<String> decryptedStrings;
-    private Set<String> decryptPotentials;
+    private BlockingQueue<AgentAnswer> decryptedStrings;
+    private Set<AgentAnswer> decryptPotentials;
     private MachineProxy machine;
     private int numOfEasyTasks;
     private int currentNumOfTasks;
@@ -31,7 +33,7 @@ public class DM extends Thread {
     private int taskSize;
     private String encryptedString;
     private RotorLocationCounter rotorLocationCounter;
-    private List<Thread> Agents;
+    private List<EnigmaAgent> Agents;
     private EnigmaDictionary enigmaDictionary;
     private List<EasyTask> easyTasks;
     private final int taksQueueSize = 10000;
@@ -41,15 +43,18 @@ public class DM extends Thread {
     private List<List<Integer>> rotorIdsPermutations;
     private List<List<Integer>> rotorIdsNoverK;
     private int wantedLevel;
-    private Semaphore mainSemaphore;
+    private Mutex mainMutex;
+    private EnigmaAgent.InterruptReason interruptReason = EnigmaAgent.InterruptReason.FREE;
+    private Mutex agentLock;
+    private BlockingQueue<HalfWayInfo> halfWayInfoQueue;
+    private int totalTasksDelivered = 0;
 
-    public InterruptReason getInterruptReason() {
+
+    public EnigmaAgent.InterruptReason getInterruptReason() {
         return interruptReason;
     }
 
-    private InterruptReason interruptReason;
-
-    public void setInterruptReason(InterruptReason interruptReason) {
+    public void setInterruptReason(EnigmaAgent.InterruptReason interruptReason) {
         this.interruptReason = interruptReason;
     }
 
@@ -67,10 +72,17 @@ public class DM extends Thread {
         this.reflectors = new ArrayList<>(machine.getReflectors());
         this.levels = new ArrayList<>();
         this.wantedLevel = level;
+        this.agentLock = new Mutex();
         this.init();
     }
 
-    public DM init(){
+    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level, Mutex mutex){
+        this(machine, dictionary, encrtyptedString, numAgents,taskSize, level);
+        this.mainMutex = mutex;
+    }
+
+
+        public DM init(){
         this.calcNumOfEasyTasks()
                 .createTasksQueues();
         this.levels.add(() ->this.handleEasyTasks());
@@ -88,25 +100,43 @@ public class DM extends Thread {
 
             while (finishedAgents < numAgents) {
                 //TODO::possible better processor using here - sleep or interrupt
-                String potential = decryptedStrings.poll();
+                AgentAnswer potential = decryptedStrings.poll();
                 if (potential != null)
-                    if (potential == AGENT_FINISHED_TASKS)
+                    if (potential.getEncryptedString() == AGENT_FINISHED_TASKS)
                         finishedAgents++;
                     else {
-                        if (decryptPotentials.contains(potential) == false)
+                        if (decryptPotentials.contains(potential.getEncryptedString()) == false)
                             decryptPotentials.add(potential);
                     }
-                    if(isInterrupted()){
-                        try {
-                           interruptReason.wait();
-                        }catch (InterruptedException ie){
-                            ie.printStackTrace();
-                        }
-                    }
+
+
+                if (interruptReason != EnigmaAgent.InterruptReason.FREE) {
+                    if (interruptReason == EnigmaAgent.InterruptReason.SUSPEND)
+                        stopProcessing();
+
+                    if (interruptReason == EnigmaAgent.InterruptReason.INFOS)
+                        createInfosHalfWay();
+                }
+
             }
 
+            if(wantedLevel == TaskLevels.levelEasy)
+               System.out.println(decryptPotentials);
+    }
 
-            System.out.println(decryptPotentials);
+    private void stopProcessing() {
+        System.out.println("i was suspended");
+        agentLock.lock();
+        for (EnigmaAgent agent : Agents) {
+            agent.interrupt();
+            agent.setInterruptReason(EnigmaAgent.InterruptReason.SUSPEND);
+        }
+        mainMutex.lock();
+        mainMutex.unlock();
+        agentLock.unlock();
+        for (EnigmaAgent agent : Agents) {
+            agent.setInterruptReason(EnigmaAgent.InterruptReason.FREE);
+        }
     }
 
     public void handleMediumTasks(){
@@ -114,6 +144,9 @@ public class DM extends Thread {
             this.machine.setChosenReflector(RomanInterpeter.numToRoman(reflector.getId()));
             handleEasyTasks();
         }
+
+        if(wantedLevel == TaskLevels.levelMedium)
+            System.out.println(decryptPotentials);
     }
 
     public void setPermutationForRotorIdsHelper(){
@@ -139,6 +172,9 @@ public class DM extends Thread {
             machine.setChosenRotors(rotorsAndLocations);
             handleMediumTasks();
         }
+
+        if(wantedLevel == TaskLevels.levelHard)
+            System.out.println(decryptPotentials);
     }
 
 
@@ -173,6 +209,9 @@ public class DM extends Thread {
             machine.setChosenRotors(rotorsAndLocations);
             handleHardTasks();
         }
+
+        if(wantedLevel == TaskLevels.levelImpossible)
+            System.out.println(decryptPotentials);
     }
 
     private DM deliverTasksToQueues() {
@@ -196,6 +235,7 @@ public class DM extends Thread {
                 }
                 tasksQueues.get(0).put(new EasyTask(null, null, 0));
             }
+            this.totalTasksDelivered += deliveredTasks * taskSize;
         }catch (InterruptedException ie){
             ;//TODO::handle all interrupts in DM
         }
@@ -220,7 +260,7 @@ public class DM extends Thread {
         this.Agents = new ArrayList<>(numAgents);
         for (int i = 0; i < numAgents ; i++) {
             try {
-                this.Agents.add(new EnigmaAgent(machine.clone(), decryptedStrings, tasksQueues.get(i), enigmaDictionary, i+1));
+                this.Agents.add(new EnigmaAgent(machine.clone(), decryptedStrings, tasksQueues.get(i), enigmaDictionary, i+1, agentLock));
             }catch (Exception cne)
             {
                 cne.printStackTrace();
@@ -278,13 +318,42 @@ public class DM extends Thread {
         }
     }
 
-    public void setMainSemaphore(Semaphore sem) {
-        this.mainSemaphore = sem;
+    public void setMainMutex(Mutex mutex) {
+        this.mainMutex = mutex;
     }
 
 
-    public enum InterruptReason{
-        SUSPEND, INFOS;
+    private void createInfosHalfWay() {
+        List<String> missionsForAgent = new ArrayList<>();
+        int id = 1;
+        for (BlockingQueue<EasyTask> tasksQueue : tasksQueues) {
+            for (EasyTask easyTask : tasksQueue) {
+                if(easyTask.getRotorsAndNotches() != null) {
+                    missionsForAgent.add("Agent id: " + id + " mission: " + machine.getLanguageInterpeter().numberToLetters(easyTask.getNumberLocations()) + "\n");
+                }
+            }
+            id++;
+        }
+        List<AgentAnswer> tempAgentAnsewer = new ArrayList<>();
+
+        int index = 0;
+        for (AgentAnswer decryptPotential : decryptPotentials) {
+            tempAgentAnsewer.add(decryptPotential);
+            index++;
+            if(index == 10)
+                break;
+        }
+
+        ////calculate percentage!!!
+        HalfWayInfo halfWayInfo = new HalfWayInfo(tempAgentAnsewer, 0, missionsForAgent);
+        try {
+            halfWayInfoQueue.put(halfWayInfo);
+        }catch (InterruptedException ie){
+            ;
+        }
     }
 
+    public void setHalfWayInfoQueue(BlockingQueue<HalfWayInfo> halfWayInfoQueue) {
+        this.halfWayInfoQueue = halfWayInfoQueue;
+    }
 }
