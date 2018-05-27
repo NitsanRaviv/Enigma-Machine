@@ -5,11 +5,13 @@ public class AgentAnswer {
     private long missionTime;
     private int agentId;
     private String decryptedString;
+    private String machineCode;
 
-    public AgentAnswer(String encryptedString, String decryptedString, long missionTime, int agentId) {
+    public AgentAnswer(String encryptedString, String decryptedString, long missionTime, int agentId, String machineCode) {
         this.encryptedString = encryptedString;
         this.missionTime = missionTime;
         this.agentId = agentId;
+        this.machineCode = machineCode;
         this.decryptedString = decryptedString;
     }
 
@@ -32,7 +34,8 @@ public class AgentAnswer {
 
     @Override
     public String toString(){
-        String res = "Agent ID: " + agentId + ", Mission Time: " + missionTime + ", Encrypted String: " + encryptedString + "\n";
+        String res =  "Encrypted String: " + encryptedString + ", Agent ID: " + agentId + ", Mission Time: " + missionTime  +
+                ", Machine Code: " + machineCode + "\n";
         return res;
     }
 }

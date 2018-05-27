@@ -37,7 +37,6 @@ public class DMadapter extends Thread {
         suspendDmLock.lock();
         interruptReason = EnigmaAgent.InterruptReason.SUSPEND;
         dm.setInterruptReason(EnigmaAgent.InterruptReason.SUSPEND);
-        dm.interrupt();
     }
 
     public void unSuspendDM(){
@@ -58,5 +57,10 @@ public class DMadapter extends Thread {
         interruptReason = EnigmaAgent.InterruptReason.FREE;
         dm.setInterruptReason(EnigmaAgent.InterruptReason.FREE);
         return halfWayInfo;
+    }
+
+    public void stopDM(){
+        interruptReason = EnigmaAgent.InterruptReason.STOP;
+        dm.setInterruptReason(EnigmaAgent.InterruptReason.STOP);
     }
 }

@@ -40,9 +40,9 @@ public class MachineProxy {
 
     public List<Character> encryptCode(String codeToEncrypt)
     {
-        long start = System.nanoTime();
+        long start = System.currentTimeMillis();
         List<Character> encrypted =  languageInterpeter.numberToLetters(machine.encryptCode(languageInterpeter.lettersToNumbers(codeToEncrypt.toCharArray())));
-        long end = System.nanoTime();
+        long end = System.currentTimeMillis();
         updateStatistics(codeToEncrypt, encrypted.toString(), end - start);
         inputMsgNum++;
         return encrypted;

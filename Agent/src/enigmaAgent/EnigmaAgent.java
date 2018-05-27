@@ -32,7 +32,7 @@ public class EnigmaAgent extends Thread {
         while (running) {
             getNewTask();
             this.goodStrings = new ArrayList<>();
-            long startTime = System.nanoTime();
+            long startTime = System.currentTimeMillis();
             for (int i = 0; i < easyTask.getTaskSize(); i++) {
                     String processed = machineProxy.encryptCodeToString(easyTask.getStringToDecrypt());
                     String[] processedArr = processed.split(" ");
@@ -47,10 +47,10 @@ public class EnigmaAgent extends Thread {
             if(Thread.currentThread().interrupted() == true){
                 handleInterrupt();
             }
-            long endTime = System.nanoTime();
+            long endTime = System.currentTimeMillis();
             try {
                 for (String goodString : goodStrings) {
-                    agentAnsewerQueue.put(new AgentAnswer(goodString, easyTask.getStringToDecrypt(), endTime - startTime, id));
+                    agentAnsewerQueue.put(new AgentAnswer(goodString, easyTask.getStringToDecrypt(), endTime - startTime, id, machineProxy.getCurrentCode()));
                 }
             }catch (InterruptedException ie){
                 ;
@@ -64,6 +64,8 @@ public class EnigmaAgent extends Thread {
             agentLock.lock();
             agentLock.unlock();
         }
+        if(interruptReason == interruptReason.STOP)
+            running = false;
     }
 
 
@@ -72,7 +74,7 @@ public class EnigmaAgent extends Thread {
             easyTask = tasksQueue.take();
             if(easyTask.getTaskSize() == NO_MORE_TASKS){
                 running = false;
-                agentAnsewerQueue.put(new AgentAnswer(AGENT_FINISHED_TASKS, "", 0, id));
+                agentAnsewerQueue.put(new AgentAnswer(AGENT_FINISHED_TASKS, "", 0, id, ""));
             }
             else {
                 machineProxy.setChosenRotors(easyTask.getRotorsAndNotches());
@@ -102,8 +104,12 @@ public class EnigmaAgent extends Thread {
         machineProxy.setChosenRotors(rotorLocationCounter.nextRotorsAndLocations());
     }
 
+    public int getAgentId() {
+        return id;
+    }
+
     public enum InterruptReason{
-        FREE, SUSPEND, INFOS;
+        FREE, SUSPEND, INFOS, STOP;
     }
 
     public void setInterruptReason(InterruptReason ie){

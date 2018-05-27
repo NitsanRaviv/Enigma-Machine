@@ -103,8 +103,8 @@ public class SchedulingTests {
             ie.printStackTrace();
         }
 
-        HalfWayInfo halfWayInfo = dMadapter.getHalfWayInfos();
-        System.out.println(halfWayInfo);
+        dMadapter.stopDM();
+
         try {
             Thread.sleep(10000);
         } catch (InterruptedException ie) {

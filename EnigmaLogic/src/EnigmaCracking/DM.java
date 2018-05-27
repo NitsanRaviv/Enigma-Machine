@@ -48,6 +48,7 @@ public class DM extends Thread {
     private Mutex agentLock;
     private BlockingQueue<HalfWayInfo> halfWayInfoQueue;
     private int totalTasksDelivered = 0;
+    private long startTime;
 
 
     public EnigmaAgent.InterruptReason getInterruptReason() {
@@ -92,7 +93,7 @@ public class DM extends Thread {
         return this;
     }
 
-    public void handleEasyTasks(){
+    public boolean handleEasyTasks(){
         this.createEasyTasks()
                 .createThreadAgents()
                 .deliverTasksToQueues()
@@ -116,12 +117,50 @@ public class DM extends Thread {
 
                     if (interruptReason == EnigmaAgent.InterruptReason.INFOS)
                         createInfosHalfWay();
+
+                    if(interruptReason == EnigmaAgent.InterruptReason.STOP){
+                        finishDmProcess();
+                        return false;
+                    }
                 }
 
             }
 
             if(wantedLevel == TaskLevels.levelEasy)
-               System.out.println(decryptPotentials);
+               System.out.println(createEndOfDecryptionInfo());
+
+            return true;
+    }
+
+    private void finishDmProcess() {
+        System.out.println(createEndOfDecryptionInfo());
+        wantedLevel = -1; //so printing wont happen again
+        for (EnigmaAgent agent : Agents) {
+            agent.setInterruptReason(EnigmaAgent.InterruptReason.STOP);
+            agent.interrupt();
+        }
+    }
+
+    public List<String> createEndOfDecryptionInfo(){
+        List<String> endOfDecryptionInfo = new ArrayList<>();
+        endOfDecryptionInfo.add("total processing time = " + calcTotalTime()  + "\n");
+        endOfDecryptionInfo.add("total number of processed strings = " + totalTasksDelivered + "\n");
+        int tasksPerAgent = totalTasksDelivered /taskSize / numAgents;
+        for (EnigmaAgent agent : Agents) {
+            endOfDecryptionInfo.add("Agent id: " + agent.getAgentId() + " number of tasks: " + tasksPerAgent + "\n");
+        }
+        endOfDecryptionInfo.add("Encrypted Strings: \n " + decryptPotentials.toString());
+
+        return endOfDecryptionInfo;
+
+    }
+
+    private String calcTotalTime() {
+        long totalMili = System.currentTimeMillis() - startTime;
+        long seconds = totalMili / 1000;
+        long leftMili = totalMili % 1000;
+        String res = seconds + ":" + leftMili;
+        return res;
     }
 
     private void stopProcessing() {
@@ -139,14 +178,18 @@ public class DM extends Thread {
         }
     }
 
-    public void handleMediumTasks(){
+    public boolean handleMediumTasks(){
         for (Reflector reflector : reflectors) {
             this.machine.setChosenReflector(RomanInterpeter.numToRoman(reflector.getId()));
-            handleEasyTasks();
+            if(handleEasyTasks() == false){
+                return false;
+            }
         }
-
         if(wantedLevel == TaskLevels.levelMedium)
-            System.out.println(decryptPotentials);
+            System.out.println(createEndOfDecryptionInfo());
+
+        return true;
+
     }
 
     public void setPermutationForRotorIdsHelper(){
@@ -162,7 +205,7 @@ public class DM extends Thread {
 
 
     //this method assumes ids in machine are allready known
-    public void handleHardTasks(){
+    public boolean handleHardTasks(){
         setPermutationForRotorIdsHelper();
         Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (List<Integer> rotorIdsPermutation : rotorIdsPermutations) {
@@ -170,11 +213,16 @@ public class DM extends Thread {
                 rotorsAndLocations[i] = new Pair<>(rotorIdsPermutation.get(i), 1);
             }
             machine.setChosenRotors(rotorsAndLocations);
-            handleMediumTasks();
+            if(handleMediumTasks() == false){
+                return false;
+            }
         }
 
         if(wantedLevel == TaskLevels.levelHard)
-            System.out.println(decryptPotentials);
+            System.out.println(createEndOfDecryptionInfo());
+
+        return true;
+
     }
 
 
@@ -199,7 +247,7 @@ public class DM extends Thread {
     }
 
 
-    public void handleImpossibleTasks(){
+    public boolean handleImpossibleTasks(){
         setNoverKForRotorIdsHelper();
         Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (List<Integer> rotoridsNoverKOneOption : rotorIdsNoverK) {
@@ -207,11 +255,15 @@ public class DM extends Thread {
                 rotorsAndLocations[i] = new Pair<>(rotoridsNoverKOneOption.get(i), 1);
             }
             machine.setChosenRotors(rotorsAndLocations);
-            handleHardTasks();
+            if(handleHardTasks() == false){
+                return false;
+            }
         }
 
         if(wantedLevel == TaskLevels.levelImpossible)
-            System.out.println(decryptPotentials);
+            System.out.println(createEndOfDecryptionInfo());
+
+        return true;
     }
 
     private DM deliverTasksToQueues() {
@@ -252,6 +304,7 @@ public class DM extends Thread {
 
     @Override
     public void run() {
+        startTime = System.currentTimeMillis();
         this.levels.get(wantedLevel - 1).run();
     }
 
