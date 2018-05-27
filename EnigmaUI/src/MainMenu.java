@@ -200,7 +200,7 @@ public class MainMenu {
             return MainMenuOptions.errorSign;
         }
 
-        if((numberOfTaskOptions / userChoice) > numberOfAgents) {
+        if((numberOfTaskOptions / userChoice) < numberOfAgents) {
             System.out.println("Invalid mission size!");
             return MainMenuOptions.errorSign;
         }

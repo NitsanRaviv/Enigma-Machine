@@ -138,7 +138,7 @@ public class Tester {
 
         for(Rotor rotor : theRotors)
         {
-            if(rotor.getNotch() >= numOfLetters)
+            if(rotor.getNotch() > numOfLetters)
                 return false;
         }
 
