@@ -12,6 +12,7 @@ public class MainMenu {
 
     private ArrayList<MenuItem> theMenu = new ArrayList<>();
     private ArrayList<MenuItem> levelsMenu = new ArrayList<>();
+    private ArrayList<MenuItem> communicationMenu = new ArrayList<>();
     private String path;
     private Scanner getInput = new Scanner(System.in);
 
@@ -114,30 +115,80 @@ public class MainMenu {
        int chosenTaskLevel = getTaskLevel();
        showTaskDifficulty(chosenTaskLevel);
        int numberOfAgents = getNumberOfAgents();
-       int missionSize = getMissionSize();// get here number without any limit
+       int missionSize = getMissionSize(numberOfAgents, chosenTaskLevel);
        System.out.println("To confirm the beginning of the automatic decryption process, please press Y and then enter");
        getInput.next();
 
-        Integrator.getIntegrator().startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
-
+       Integrator.getIntegrator().startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
+       //showCommunicationMenu();
        return true;
     }
 
-    private int getMissionSize() {
+    //TODO: get from DM when Process over
+    private void showCommunicationMenu() {
+        createCommunicationMenu();
+
+        while(true)
+        {
+            printCommunicationMenu();
+            int res = getInputFromUser(CommunicationMenuOptions.statusOfCurrentDecryption,CommunicationMenuOptions.stopProcess);
+            getInput.nextLine();
+
+            communicationMenuDoOption(res);
+        }
+    }
+
+    // TODO:
+    private void communicationMenuDoOption(int res) {
+        switch (res){
+            case CommunicationMenuOptions.statusOfCurrentDecryption:
+                //give status
+                break;
+            case CommunicationMenuOptions.delayOrResumeProcess:
+                //delay resume
+                break;
+            case CommunicationMenuOptions.stopProcess:
+                //stop
+                break;
+        }
+    }
+
+    private void printCommunicationMenu() {
+        System.out.println("---------------------------------------------------------\n");
+        System.out.println("Please select one of the following options:");
+
+        for (MenuItem item : communicationMenu)
+            System.out.println(item.toString());
+
+        System.out.println("---------------------------------------------------------\n");
+    }
+
+    private void createCommunicationMenu() {
+        MenuItem statusOfCurrentDecryption = new MenuItem(CommunicationMenuOptions.statusOfCurrentDecryption,"Get current decryption status");
+        MenuItem delayOrResumeProcess = new MenuItem(CommunicationMenuOptions.delayOrResumeProcess,"Delay/Resume Process");
+        MenuItem stopProcess = new MenuItem(CommunicationMenuOptions.stopProcess,"Stop Process");
+
+        communicationMenu.add(statusOfCurrentDecryption);
+        communicationMenu.add(delayOrResumeProcess);
+        communicationMenu.add(stopProcess);
+    }
+
+    private int getMissionSize(int numberOfAgents, int chosenTaskLevel) {
         int res = MainMenuOptions.errorSign;
 
         while (res == MainMenuOptions.errorSign)
         {
             System.out.println("Please select the mission size:");
-            res = getInputFromUserNoLimits();
+            res = getMissionSizeFromUser(numberOfAgents,chosenTaskLevel);
             getInput.nextLine();
         }
 
         return res;
     }
 
-    private int getInputFromUserNoLimits() {
+    private int getMissionSizeFromUser(int numberOfAgents, int chosenTaskLevel) {
         int userChoice;
+        long numberOfTaskOptions = Integrator.getIntegrator().getTaskDifficulty(chosenTaskLevel);
 
         try {
             userChoice = getInput.nextInt();
@@ -145,7 +196,12 @@ public class MainMenu {
             System.out.println("Invalid input! Please enter a number");
             return MainMenuOptions.errorSign;
         } catch (InputMismatchException ime) {
-            System.out.println("Invalid input! Please enter a number between");
+            System.out.println("Invalid input! Please enter a number");
+            return MainMenuOptions.errorSign;
+        }
+
+        if((numberOfTaskOptions / userChoice) > numberOfAgents) {
+            System.out.println("Invalid mission size!");
             return MainMenuOptions.errorSign;
         }
 
@@ -165,8 +221,7 @@ public class MainMenu {
         while (res == MainMenuOptions.errorSign)
         {
             System.out.println("Please select the number of agents for the task: (between 2 to " + maxAgents + " )");
-           // res = getInputFromUser(2,maxAgents);
-            res = getInputFromUserNoLimits();
+            res = getInputFromUser(2,maxAgents);
             getInput.nextLine();
         }
 
