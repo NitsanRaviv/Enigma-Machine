@@ -32,16 +32,14 @@ public class DictionaryXmlParser {
 
     public String replaceExcludeChars(String excludeChars, String words) {
 
-        String res = null;
-
         for(char excludeChar : excludeChars.toCharArray())
         {
-           res =  words.replace("" + excludeChar,"");
+            words =  words.replace("" + excludeChar,"");
         }
 
-        res = res.replaceAll("[\t\n]+","");
+        words = words.replaceAll("[\t\n]+","");
 
-        return res;
+        return words;
     }
 
     public static DictionaryXmlParser getDictionaryXmlParser(){
