@@ -141,4 +141,12 @@ public class EnigmaMachine {
         clone.setChosenReflector(chosenReflNumber);
         return clone;
     }
+
+    public List<Integer> getRotorIds() {
+        List<Integer> rotorIds = new ArrayList<>();
+        for (Rotor rotor : rotors) {
+            rotorIds.add(rotor.getId());
+        }
+        return rotorIds;
+    }
 }

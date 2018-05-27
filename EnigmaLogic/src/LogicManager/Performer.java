@@ -24,7 +24,7 @@ public class Performer {
     private static Performer performer;
     private DM dm;
 
-    
+
 
     public String loadMachineFromXml(String path) {
         try {
@@ -161,8 +161,6 @@ public class Performer {
                     stringToDecrypt, numberOfAgents, missionSize, chosenTaskLevel);
 
             dm.run();
-
     }
-
 
 }

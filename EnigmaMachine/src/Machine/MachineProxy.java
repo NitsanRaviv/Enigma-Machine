@@ -180,4 +180,8 @@ public class MachineProxy {
         MachineProxy clone = new MachineProxy(machine.clone(), languageInterpeter, appliedRotors);
         return clone;
     }
+
+    public List<Integer> getRotorIds() {
+        return machine.getRotorIds();
+    }
 }

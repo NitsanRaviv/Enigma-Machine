@@ -1,8 +1,8 @@
 package TimingTests;
 import EnigmaCracking.DM;
+import EnigmaCracking.DMadapter;
 import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.Integrator;
-import LogicManager.Performer;
 import Machine.MachineProxy;
 import XmlParsing.DictionaryXmlParser;
 import XmlParsing.MachineXmlParser;
@@ -10,11 +10,7 @@ import javafx.util.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import javax.xml.bind.JAXBException;
-
 import enigmaAgent.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class SchedulingTests {
@@ -69,6 +65,12 @@ public class SchedulingTests {
         dm.run();
     }
 
+    @Test
+    public void testDMImpossible(){
+        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelImpossible);
+        dm.run();
+    }
 
     @Test
     public void cloneMachine(){
@@ -84,7 +86,31 @@ public class SchedulingTests {
         mp.encryptCode("AABBCCDDEEFF");
         mp.encryptCode("AABBCCDDEEFF");
         System.out.println(mpClone.encryptCode("AABBCCDDEEFF"));
-
     }
+
+    @Test
+    public void testSuspend()
+    {
+        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        //mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
+        //mp.setChosenReflector("II");
+        DMadapter dMadapter = new DMadapter(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelImpossible);
+        dMadapter.start();
+        dMadapter.suspendDM();
+        try {
+            Thread.sleep(1000);
+        }catch (InterruptedException ie){
+            ie.printStackTrace();
+        }
+
+        dMadapter.unSuspendDM();
+
+        try {
+            Thread.sleep(100000);
+        }catch (InterruptedException ie){
+            ie.printStackTrace();
+        }
+    }
+
 
 }

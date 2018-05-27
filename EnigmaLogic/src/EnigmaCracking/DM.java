@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 
 import Parts.*;
 import Utilities.RomanInterpeter;
@@ -38,7 +39,20 @@ public class DM extends Thread {
     private List<Reflector> reflectors;
     private List<Runnable> levels;
     private List<List<Integer>> rotorIdsPermutations;
+    private List<List<Integer>> rotorIdsNoverK;
     private int wantedLevel;
+    private Semaphore mainSemaphore;
+
+    public InterruptReason getInterruptReason() {
+        return interruptReason;
+    }
+
+    private InterruptReason interruptReason;
+
+    public void setInterruptReason(InterruptReason interruptReason) {
+        this.interruptReason = interruptReason;
+    }
+
 
     //TODO:: add mission-level
     public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level){
@@ -62,6 +76,7 @@ public class DM extends Thread {
         this.levels.add(() ->this.handleEasyTasks());
         this.levels.add(() ->this.handleMediumTasks());
         this.levels.add(() -> this.handleHardTasks());
+        this.levels.add(() ->this.handleImpossibleTasks());
         return this;
     }
 
@@ -71,18 +86,27 @@ public class DM extends Thread {
                 .deliverTasksToQueues()
                 .runAgents();
 
-        while (finishedAgents < numAgents) {
-            //TODO::possible better processor using here - sleep or interrupt
-            String potential = decryptedStrings.poll();
-            if (potential != null)
-                if(potential == AGENT_FINISHED_TASKS)
-                    finishedAgents++;
-            else{
-                    if(decryptPotentials.contains(potential) == false)
-                      decryptPotentials.add(potential);
-                }
-        }
-        System.out.println(decryptPotentials);
+            while (finishedAgents < numAgents) {
+                //TODO::possible better processor using here - sleep or interrupt
+                String potential = decryptedStrings.poll();
+                if (potential != null)
+                    if (potential == AGENT_FINISHED_TASKS)
+                        finishedAgents++;
+                    else {
+                        if (decryptPotentials.contains(potential) == false)
+                            decryptPotentials.add(potential);
+                    }
+                    if(isInterrupted()){
+                        try {
+                           interruptReason.wait();
+                        }catch (InterruptedException ie){
+                            ie.printStackTrace();
+                        }
+                    }
+            }
+
+
+            System.out.println(decryptPotentials);
     }
 
     public void handleMediumTasks(){
@@ -92,9 +116,7 @@ public class DM extends Thread {
         }
     }
 
-
-    //this method assumes ids in machine are allready known
-    public void handleHardTasks(){
+    public void setPermutationForRotorIdsHelper(){
         rotorIdsPermutations = new ArrayList<>();
 
         List<Integer> chosenRotorIds = new ArrayList<>();
@@ -103,7 +125,12 @@ public class DM extends Thread {
             chosenRotorIds.add(rotorAndLoc.getKey());
         }
         setPermutationsForRotorIds(chosenRotorIds, 0);
+    }
 
+
+    //this method assumes ids in machine are allready known
+    public void handleHardTasks(){
+        setPermutationForRotorIdsHelper();
         Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (List<Integer> rotorIdsPermutation : rotorIdsPermutations) {
             for (int i = 0; i < machine.getAppliedRotors() ; i++) {
@@ -111,6 +138,40 @@ public class DM extends Thread {
             }
             machine.setChosenRotors(rotorsAndLocations);
             handleMediumTasks();
+        }
+    }
+
+
+    private void setNoverKForRotorIds(List<Integer> rotors, int len, int startPosition, List<Integer> result){
+        if (len == 0){
+            rotorIdsNoverK.add(new ArrayList<>(result));
+            return;
+        }
+        for (int i = startPosition; i <= rotors.size()-len; i++){
+            result.set(result.size() - len, rotors.get(i));
+            setNoverKForRotorIds(rotors, len-1, i+1, result);
+        }
+    }
+
+    private void setNoverKForRotorIdsHelper(){
+        rotorIdsNoverK = new ArrayList<>();
+        List<Integer> resultNOverK = new ArrayList();
+        for (int i = 0; i < machine.getAppliedRotors() ; i++) {
+            resultNOverK.add(0);
+        }
+        setNoverKForRotorIds(machine.getRotorIds(), machine.getAppliedRotors(),0,resultNOverK);
+    }
+
+
+    public void handleImpossibleTasks(){
+        setNoverKForRotorIdsHelper();
+        Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
+        for (List<Integer> rotoridsNoverKOneOption : rotorIdsNoverK) {
+            for (int i = 0; i < machine.getAppliedRotors(); i++) {
+                rotorsAndLocations[i] = new Pair<>(rotoridsNoverKOneOption.get(i), 1);
+            }
+            machine.setChosenRotors(rotorsAndLocations);
+            handleHardTasks();
         }
     }
 
@@ -216,4 +277,14 @@ public class DM extends Thread {
             rotorIdsPermutations.add(new ArrayList<>(chosenRotorIds));
         }
     }
+
+    public void setMainSemaphore(Semaphore sem) {
+        this.mainSemaphore = sem;
+    }
+
+
+    public enum InterruptReason{
+        SUSPEND, INFOS;
+    }
+
 }
