@@ -24,17 +24,7 @@ public class Performer {
     private static Performer performer;
     private DM dm;
 
-
-    private int calcNumOfEasyTasks(int taskSize)
-    {
-        int numLetters = machineProxy.getLanguage().length;
-        int numRotors = machineProxy.getAppliedRotors();
-        int numOfEasyTasks = 0;
-        numOfEasyTasks =(int)Math.pow(numLetters, numRotors) / taskSize;
-        numOfEasyTasks += (int)Math.pow(numLetters, numRotors) % taskSize;
-        return numOfEasyTasks;
-    }
-
+    
 
     public String loadMachineFromXml(String path) {
         try {
@@ -172,26 +162,6 @@ public class Performer {
 
             dm.run();
 
-    }
-//TODO:
-    private int getTaskSize(int missionSize, int chosenTaskLevel) {
-        int res = 0;
-        switch (chosenTaskLevel){
-            case TaskLevels.levelEasy:
-                res = calcNumOfEasyTasks(missionSize);
-                break;
-            case TaskLevels.levelMedium:
-
-                break;
-            case TaskLevels.levelHard:
-
-                break;
-            case TaskLevels.levelImpossible:
-
-                break;
-        }
-
-        return res;
     }
 
 

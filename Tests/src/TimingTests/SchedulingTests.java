@@ -25,7 +25,7 @@ public class SchedulingTests {
     {
          mp = null;
         try {
-            mp = MachineXmlParser.parseXmlToMachineProxy("ex1-sanity-small.xml");
+            mp = MachineXmlParser.parseXmlToMachineProxy("ex2-basic.xml");
             mp.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
             mp.setChosenReflector("I");
         } catch (JAXBException e) {
@@ -44,7 +44,7 @@ public class SchedulingTests {
     @Test
     public void testDMmedium(){
         Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
-        mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(3, 1), new Pair(4, 1)); //left to right
+        mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(3, 1), new Pair(5, 1)); //left to right
        // mp.setChosenReflector("II");
         String test = mp.encryptCodeToString("encapsulation".toUpperCase());
         DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), test, 1, 20, TaskLevels.levelMedium);
