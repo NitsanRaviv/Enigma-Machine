@@ -59,6 +59,10 @@ public class DM extends Thread {
         this.interruptReason = interruptReason;
     }
 
+    public EnigmaAgent.InterruptReason getInterruptReason(EnigmaAgent.InterruptReason interruptReason) {
+        return this.interruptReason;
+    }
+
 
     //TODO:: add mission-level
     public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level){
@@ -126,8 +130,10 @@ public class DM extends Thread {
 
             }
 
-            if(wantedLevel == TaskLevels.levelEasy)
-               System.out.println(createEndOfDecryptionInfo());
+            if(wantedLevel == TaskLevels.levelEasy) {
+                System.out.println(createEndOfDecryptionInfo());
+                this.interruptReason = EnigmaAgent.InterruptReason.STOP;
+            }
 
             return true;
     }
@@ -185,10 +191,12 @@ public class DM extends Thread {
                 return false;
             }
         }
-        if(wantedLevel == TaskLevels.levelMedium)
+        if(wantedLevel == TaskLevels.levelMedium) {
             System.out.println(createEndOfDecryptionInfo());
+            this.interruptReason = EnigmaAgent.InterruptReason.STOP;
+        }
 
-        return true;
+            return true;
 
     }
 
@@ -218,10 +226,12 @@ public class DM extends Thread {
             }
         }
 
-        if(wantedLevel == TaskLevels.levelHard)
+        if(wantedLevel == TaskLevels.levelHard) {
             System.out.println(createEndOfDecryptionInfo());
+            this.interruptReason = EnigmaAgent.InterruptReason.STOP;
+        }
 
-        return true;
+            return true;
 
     }
 
@@ -260,10 +270,13 @@ public class DM extends Thread {
             }
         }
 
-        if(wantedLevel == TaskLevels.levelImpossible)
+        if(wantedLevel == TaskLevels.levelImpossible) {
             System.out.println(createEndOfDecryptionInfo());
+            this.interruptReason = EnigmaAgent.InterruptReason.STOP;
+        }
 
-        return true;
+
+            return true;
     }
 
     private DM deliverTasksToQueues() {
