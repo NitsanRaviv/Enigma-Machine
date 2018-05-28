@@ -1,6 +1,8 @@
+import EnigmaCracking.DM;
 import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.ErrorsMessages;
 import LogicManager.Integrator;
+import sun.management.Agent;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -113,42 +115,56 @@ public class MainMenu {
 
        String inputToProcess = getStringToProcess();
        int chosenTaskLevel = getTaskLevel();
-       showTaskDifficulty(chosenTaskLevel);
+       int taskDifficulty = showTaskDifficulty(chosenTaskLevel);
        int numberOfAgents = getNumberOfAgents();
        int missionSize = getMissionSize(numberOfAgents, chosenTaskLevel);
-       System.out.println("To confirm the beginning of the automatic decryption process, please press Y and then enter");
+       System.out.println("To confirm the beginning of the automatic decryption process, please press any key and then enter");
        getInput.next();
 
        Integrator.getIntegrator().startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
-       //showCommunicationMenu();
+       Integrator.getIntegrator().setTotalTasksOptions(taskDifficulty);
+       System.out.println("just for debug");//TODO : remove this line
+       showCommunicationMenu();
        return true;
     }
 
     //TODO: get from DM when Process over
     private void showCommunicationMenu() {
         createCommunicationMenu();
+        boolean dmRunning = true;
 
-        while(true)
+        while(Integrator.getIntegrator().dmStillRunning())
         {
             printCommunicationMenu();
             int res = getInputFromUser(CommunicationMenuOptions.statusOfCurrentDecryption,CommunicationMenuOptions.stopProcess);
             getInput.nextLine();
 
-            communicationMenuDoOption(res);
+            if(Integrator.getIntegrator().dmStillRunning())
+                communicationMenuDoOption(res,dmRunning);
+
+            if(res == CommunicationMenuOptions.delayOrResumeProcess){
+                if(dmRunning)
+                    dmRunning = false;
+                else
+                    dmRunning = true;
+            }
         }
     }
 
     // TODO:
-    private void communicationMenuDoOption(int res) {
+    private void communicationMenuDoOption(int res, boolean dmRunning) {
         switch (res){
             case CommunicationMenuOptions.statusOfCurrentDecryption:
-                //give status
+                System.out.println(Integrator.getIntegrator().getStatusOfDecryption());
                 break;
             case CommunicationMenuOptions.delayOrResumeProcess:
-                //delay resume
+                if(dmRunning)
+                    Integrator.getIntegrator().delayProcess();
+                else
+                    Integrator.getIntegrator().resumeProcess();
                 break;
             case CommunicationMenuOptions.stopProcess:
-                //stop
+                Integrator.getIntegrator().stopProcess();
                 break;
         }
     }
@@ -208,9 +224,10 @@ public class MainMenu {
         return userChoice;
     }
 
-    private void showTaskDifficulty(int chosenTaskLevel) {
-       long res =  Integrator.getIntegrator().getTaskDifficulty(chosenTaskLevel);
+    private int showTaskDifficulty(int chosenTaskLevel) {
+       int res =  Integrator.getIntegrator().getTaskDifficulty(chosenTaskLevel);
        System.out.println("The difficulty of the task is: " + res);
+       return res;
     }
 
     private int getNumberOfAgents() {

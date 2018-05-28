@@ -1,6 +1,7 @@
 package LogicManager;
 
 import EnigmaCracking.DM;
+import EnigmaCracking.DMadapter;
 import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.InitialCode.InitialCodeParser;
 import Machine.MachineProxy;
@@ -22,7 +23,7 @@ public class Performer {
 
     private MachineProxy machineProxy;
     private static Performer performer;
-    private DM dm;
+    private DMadapter dmAdapter;
 
 
 
@@ -107,15 +108,15 @@ public class Performer {
         return performer;
     }
 
-    public long getTaskDifficulty(int chosenTaskLevel) {
-        long res;
+    public int getTaskDifficulty(int chosenTaskLevel) {
+        int res;
         int abcSize = machineProxy.getLanguage().length;
         int selectedRotorsQuantity = machineProxy.getAppliedRotors();
         int allRotorsQuantity = machineProxy.getNumRotors();
         int reflectorsQuantity = machineProxy.getNumReflectors();
         int factorial = getFactorial(selectedRotorsQuantity);
         int rotorosOptions = binomialCoefficient(selectedRotorsQuantity, allRotorsQuantity);
-        res = (long) Math.pow(abcSize, selectedRotorsQuantity);
+        res = (int)Math.pow(abcSize, selectedRotorsQuantity);
 
         switch (chosenTaskLevel) {
             case TaskLevels.levelEasy:
@@ -157,10 +158,34 @@ public class Performer {
         machineProxy.setMachineToInitialState();
         String stringToDecrypt = machineProxy.encryptCodeToString(stringToEncrypt.toUpperCase());
         machineProxy.setMachineToInitialState();
-            dm = new DM(machineProxy, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(),
-                    stringToDecrypt, numberOfAgents, missionSize, chosenTaskLevel);
+        dmAdapter = new DMadapter(machineProxy,DictionaryXmlParser.getDictionaryXmlParser().getDictionary(),
+                stringToDecrypt, numberOfAgents,missionSize, chosenTaskLevel);
 
-            dm.run();
+        dmAdapter.start();
     }
 
+
+    public boolean dmStillRunning() {
+        return dmAdapter.dmStillRunning();
+    }
+
+    public void setTotalTasksOptions(int numberOfTotalTasks) {
+        dmAdapter.setTotalTasksOptions(numberOfTotalTasks);
+    }
+
+    public String getStatusOfDecryption() {
+        return dmAdapter.getHalfWayInfos().toString();
+    }
+
+    public void delayProcess() {
+        dmAdapter.suspendDM();
+    }
+
+    public void resumeProcess() {
+        dmAdapter.unSuspendDM();
+    }
+
+    public void stopDM() {
+        dmAdapter.stopDM();
+    }
 }

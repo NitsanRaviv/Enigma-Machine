@@ -202,11 +202,36 @@ public class Integrator {
         return tester.getNumberOfAgents();
     }
 
-    public long getTaskDifficulty(int chosenTaskLevel) {
+    public int getTaskDifficulty(int chosenTaskLevel) {
         return Performer.getPerformer().getTaskDifficulty(chosenTaskLevel);
     }
 
     public void startTheDecrypt(String stringToDecrypt, int numberOfAgents, int missionSize, int chosenTaskLevel) {
         Performer.getPerformer().startDM(stringToDecrypt,numberOfAgents,missionSize,chosenTaskLevel);
     }
+
+    public String getStatusOfDecryption() {
+       return Performer.getPerformer().getStatusOfDecryption();
+    }
+
+    public boolean dmStillRunning() {
+       return Performer.getPerformer().dmStillRunning();
+    }
+
+    public void setTotalTasksOptions(int numberOfTotalTasks) {
+        Performer.getPerformer().setTotalTasksOptions(numberOfTotalTasks);
+    }
+
+    public void delayProcess() {
+        Performer.getPerformer().delayProcess();
+    }
+
+    public void resumeProcess() {
+        Performer.getPerformer().resumeProcess();
+    }
+
+    public void stopProcess() {
+        Performer.getPerformer().stopDM();
+    }
+
 }

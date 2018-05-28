@@ -63,4 +63,12 @@ public class DMadapter extends Thread {
         interruptReason = EnigmaAgent.InterruptReason.STOP;
         dm.setInterruptReason(EnigmaAgent.InterruptReason.STOP);
     }
+
+    public boolean dmStillRunning() {
+        return dm.isAlive();
+    }
+
+    public void setTotalTasksOptions(int numberOfTotalTasks) {
+        dm.setTotalTasksOptions(numberOfTotalTasks);
+    }
 }

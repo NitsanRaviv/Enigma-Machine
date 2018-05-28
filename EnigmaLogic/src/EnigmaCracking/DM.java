@@ -48,8 +48,8 @@ public class DM extends Thread {
     private Mutex agentLock;
     private BlockingQueue<HalfWayInfo> halfWayInfoQueue;
     private int totalTasksDelivered = 0;
+    private int totalTasksOptions = 0;
     private long startTime;
-
 
     public EnigmaAgent.InterruptReason getInterruptReason() {
         return interruptReason;
@@ -83,7 +83,7 @@ public class DM extends Thread {
     }
 
 
-        public DM init(){
+    public DM init(){
         this.calcNumOfEasyTasks()
                 .createTasksQueues();
         this.levels.add(() ->this.handleEasyTasks());
@@ -398,15 +398,18 @@ public class DM extends Thread {
         }
 
         ////calculate percentage!!!
-        HalfWayInfo halfWayInfo = new HalfWayInfo(tempAgentAnsewer, 0, missionsForAgent);
+        int percentageLeft = ((totalTasksDelivered * 100) / totalTasksOptions);
+        HalfWayInfo halfWayInfo = new HalfWayInfo(tempAgentAnsewer, percentageLeft, missionsForAgent);
         try {
             halfWayInfoQueue.put(halfWayInfo);
-        }catch (InterruptedException ie){
-            ;
-        }
+        }catch (InterruptedException ie){}
     }
 
     public void setHalfWayInfoQueue(BlockingQueue<HalfWayInfo> halfWayInfoQueue) {
         this.halfWayInfoQueue = halfWayInfoQueue;
+    }
+
+    public void setTotalTasksOptions(int totalTasksOptions) {
+        this.totalTasksOptions = totalTasksOptions;
     }
 }
