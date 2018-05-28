@@ -26,6 +26,7 @@ public class MainMenu {
         int userChoice = 0;
         boolean fileExists = false, choiceSucc, codeInitialized = false;
         createLevelsMenu();
+        createCommunicationMenu();
 
         while (userChoice != MainMenuOptions.exit) {
             printMenu();
@@ -123,14 +124,12 @@ public class MainMenu {
 
        Integrator.getIntegrator().startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
        Integrator.getIntegrator().setTotalTasksOptions(taskDifficulty);
-       System.out.println("just for debug");//TODO : remove this line
        showCommunicationMenu();
        return true;
     }
 
-    //TODO: get from DM when Process over
+
     private void showCommunicationMenu() {
-        createCommunicationMenu();
         boolean dmRunning = true;
 
         while(Integrator.getIntegrator().dmStillRunning())
@@ -148,10 +147,11 @@ public class MainMenu {
                 else
                     dmRunning = true;
             }
+
         }
     }
 
-    // TODO:
+
     private void communicationMenuDoOption(int res, boolean dmRunning) {
         switch (res){
             case CommunicationMenuOptions.statusOfCurrentDecryption:

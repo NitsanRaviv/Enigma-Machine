@@ -410,8 +410,11 @@ public class DM extends Thread {
                 break;
         }
 
-        ////calculate percentage!!!
+
         int percentageLeft = ((totalTasksDelivered * 100) / totalTasksOptions);
+        while(percentageLeft > 99)
+                percentageLeft = percentageLeft / 10;
+
         HalfWayInfo halfWayInfo = new HalfWayInfo(tempAgentAnsewer, percentageLeft, missionsForAgent);
         try {
             halfWayInfoQueue.put(halfWayInfo);
