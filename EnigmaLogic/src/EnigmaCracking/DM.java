@@ -170,7 +170,6 @@ public class DM extends Thread {
     }
 
     private void stopProcessing() {
-        System.out.println("i was suspended");
         agentLock.lock();
         for (EnigmaAgent agent : Agents) {
             agent.interrupt();

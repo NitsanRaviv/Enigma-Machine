@@ -50,6 +50,7 @@ public class XmlParsingTests {
         Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
         System.out.println(Performer.getPerformer().getStatistics());
     }
+
 //
 //    @Test
 //    public void dictionaryParserTest(){

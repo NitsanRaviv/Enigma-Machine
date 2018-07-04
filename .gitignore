@@ -5,9 +5,7 @@
 
 # Intellij
 .idea/
-*.iml
 *.iws
-.out/
 *.class
 
 # Mac
@@ -16,12 +14,3 @@
 # Maven
 log/
 target/
-
-logs
-
-log-agent-parent/log-agent/logs
-log-agent-parent/log-agent-mini/logs
-log-agent-parent/log-agent/console.out
-logs/*
-
-derby.log

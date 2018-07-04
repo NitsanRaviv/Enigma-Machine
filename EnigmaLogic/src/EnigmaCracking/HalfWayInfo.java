@@ -20,7 +20,7 @@ public class HalfWayInfo {
     public String toString() {
         return "Half Way Info{" + "\n" +
                 "Agent Answers = " + agentAnswers + "\n" +
-                ", Percentage Left=" + percentageLeft + "%" + "\n" +
+                ", Percentage Completion=" + percentageLeft + "%" + "\n" +
                 ", Left Mission Per Agent=" + leftMissionPerAgent +
                 '}';
     }
