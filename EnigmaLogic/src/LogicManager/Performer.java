@@ -5,6 +5,7 @@ import EnigmaCracking.DMadapter;
 import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.InitialCode.InitialCodeParser;
 import Machine.MachineProxy;
+import Utilities.LanguageInterpeter;
 import Utilities.RomanInterpeter;
 import XmlParsing.DictionaryXmlParser;
 import XmlParsing.MachineXmlParser;
@@ -187,5 +188,9 @@ public class Performer {
 
     public void stopDM() {
         dmAdapter.stopDM();
+    }
+
+    public LanguageInterpeter getLanguageInterpeter() {
+        return machineProxy.getLanguageInterpeter();
     }
 }

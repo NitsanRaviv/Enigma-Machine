@@ -2,6 +2,7 @@ package LogicTests;
 
 import Machine.MachineProxy;
 import XmlParsing.*;
+import XmlParsing.JaxbClasses.Battlefield;
 import XmlParsing.JaxbClasses.Decipher;
 import javafx.util.Pair;
 import org.junit.Assert;
@@ -54,14 +55,14 @@ public class XmlParsingTests {
 
     @Test
     public void testEx3Parser(){
-        Decipher decipher = null;
+        Battlefield battlefield = null;
         try {
-             decipher = Ex3XmlParser.parseXmltoJaxbDecipher("ex3-basic.xml");
+            battlefield = Ex3XmlParser.parseXmltoJaxbBattlefield("ex3-basic.xml");
         }catch (Exception e)
         {
-            ;
+            System.out.println("hii");
         }
-        System.out.println(decipher.toString());
+        System.out.println(battlefield.toString());
 
     }
 

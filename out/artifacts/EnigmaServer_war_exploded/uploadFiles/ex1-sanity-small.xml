@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Enigma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Desktop/Enigma.xsd">
+	<Machine rotors-count="2">
+		<ABC>
+			ABCDEF
+		</ABC>
+		<Rotors>
+			<Rotor id="1" notch="4">
+				<Mapping right="A" left="F"/>
+				<Mapping right="B" left="E"/>
+				<Mapping right="C" left="D"/>
+				<Mapping right="D" left="C"/>
+				<Mapping right="E" left="B"/>
+				<Mapping right="F" left="A"/>
+			</Rotor>
+			<Rotor id="3" notch="6">
+				<Mapping right="A" left="B"/>
+				<Mapping right="B" left="A"/>
+				<Mapping right="C" left="D"/>
+				<Mapping right="D" left="C"/>
+				<Mapping right="E" left="F"/>
+				<Mapping right="F" left="E"/>
+			</Rotor>
+			<Rotor id="2" notch="1">
+				<Mapping right="A" left="E"/>
+				<Mapping right="B" left="B"/>
+				<Mapping right="C" left="D"/>
+				<Mapping right="D" left="F"/>
+				<Mapping right="E" left="C"/>
+				<Mapping right="F" left="A"/>
+			</Rotor>
+		</Rotors>
+		<Reflectors>
+			<Reflector id="I">
+				<Reflect input="1" output="4"/>
+				<Reflect input="2" output="5"/>
+				<Reflect input="3" output="6"/>
+			</Reflector>
+			<Reflector id="II">
+				<Reflect input="1" output="2"/>
+				<Reflect input="3" output="4"/>
+				<Reflect input="5" output="6"/>
+			</Reflector>
+		</Reflectors>
+	</Machine>	
+</Enigma>

@@ -12,12 +12,10 @@ import java.io.File;
 
 public class Ex3XmlParser {
 
-    public static Decipher parseXmltoJaxbDecipher(String filePath) throws JAXBException {
+    public static Battlefield parseXmltoJaxbBattlefield(String filePath) throws JAXBException {
         Enigma enigma = MachineXmlParser.parseXmltoJaxbMachine(filePath);
-        return enigma.getDecipher();
+        return enigma.getBattlefield();
     }
 
 
-
-    }
 }

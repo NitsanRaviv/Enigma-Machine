@@ -1,6 +1,7 @@
 package LogicManager;
 
 import Machine.MachineProxy;
+import Utilities.LanguageInterpeter;
 import XmlParsing.JaxbClasses.Dictionary;
 
 import java.util.ArrayList;
@@ -159,6 +160,9 @@ public class Integrator {
 
     public String getMachineLanguage(){
        return  String.valueOf(Performer.getPerformer().getMachineProxy().getLanguage());
+    }
+    public LanguageInterpeter getLanguageInterpeter(){
+        return Performer.getPerformer().getLanguageInterpeter();
     }
 
     public String getStatistics(){

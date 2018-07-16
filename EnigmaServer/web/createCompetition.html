@@ -18,12 +18,10 @@
                 <h2>Creat a new game</h2>
             </header>
 
-            <form action="checkFileServlet">
-                <div class="container">
-                    <label for="msg"><b>Plese upload competition definition file (XMl type)</b></label>
-                    <label for="upload"> <input type="file" id="myFile"> </label>
-                    <button type="submit">Continue</button>
-                </div>
+            <form method="post" action="UploadServlet"
+                  enctype="multipart/form-data">
+                Select file to upload: <input type="file" name="file" size="60" /><br />
+                <br /> <input type="submit" value="Upload" />
             </form>
         </div>
     </article>
