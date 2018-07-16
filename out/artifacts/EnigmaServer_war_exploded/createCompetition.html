@@ -1,9 +1,9 @@
 <html>
 <head>
-    <title>Welcome To NicEnigma</title>
+    <title>NicEnigma</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="Static%20Pages/assets/css/index.css"/>
+    <link rel="stylesheet" href="Static%20Pages/assets/css/createCompetition.css"/>
 </head>
 <body>
 
@@ -15,14 +15,14 @@
         <div class="inner">
             <header>
                 <p>Created by Nice & Swap team</p>
-                <h2>NicEnigma Login</h2>
+                <h2>Creat a new game</h2>
             </header>
-            <form action="signUp">
 
+            <form action="checkFileServlet">
                 <div class="container">
-                    <label for="uname"><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="uname" required>
-                    <button type="submit">LoginLogin</button>
+                    <label for="msg"><b>Plese upload competition definition file (XMl type)</b></label>
+                    <label for="upload"> <input type="file" id="myFile"> </label>
+                    <button type="submit">Continue</button>
                 </div>
             </form>
         </div>
@@ -31,6 +31,11 @@
 
 
 <!-- Scripts -->
+<script>
+    function myFunction() {
+        var theFile = document.getElementById("myFile");
+    }
+</script>
 <script src="Static%20Pages/assets/js/jquery.min.js"></script>
 <script src="Static%20Pages/assets/js/jquery.scrollex.min.js"></script>
 <script src="Static%20Pages/assets/js/skel.min.js"></script>

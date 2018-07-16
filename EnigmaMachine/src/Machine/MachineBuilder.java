@@ -17,7 +17,7 @@ public class MachineBuilder {
     private  LanguageInterpeter languageInterpeter;
     private int appliedRotorsNum;
 
-    public  MachineBuilder initMachine(char[] language, int rotorsCount)
+    public MachineBuilder initMachine(char[] language, int rotorsCount)
     {
         rotors = new ArrayList<>();
         reflectors = new ArrayList<>();

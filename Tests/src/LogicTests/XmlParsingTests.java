@@ -1,7 +1,8 @@
 package LogicTests;
 
 import Machine.MachineProxy;
-import XmlParsing.MachineXmlParser;
+import XmlParsing.*;
+import XmlParsing.JaxbClasses.Decipher;
 import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,6 +50,19 @@ public class XmlParsingTests {
         String a = String.valueOf(Performer.getPerformer().processInput("AABBCCDDEEFF"));
         Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
         System.out.println(Performer.getPerformer().getStatistics());
+    }
+
+    @Test
+    public void testEx3Parser(){
+        Decipher decipher = null;
+        try {
+             decipher = Ex3XmlParser.parseXmltoJaxbDecipher("ex3-basic.xml");
+        }catch (Exception e)
+        {
+            ;
+        }
+        System.out.println(decipher.toString());
+
     }
 
 //
