@@ -2,6 +2,7 @@ package XmlParsing;
 
 import XmlParsing.JaxbClasses.Decipher;
 import XmlParsing.JaxbClasses.Battlefield;
+import XmlParsing.JaxbClasses.Enigma;
 
 
 import javax.xml.bind.JAXBContext;
@@ -12,24 +13,11 @@ import java.io.File;
 public class Ex3XmlParser {
 
     public static Decipher parseXmltoJaxbDecipher(String filePath) throws JAXBException {
-        Unmarshaller jaxbUnmarshaller = null;
-        Decipher decipher = null;
-        File xmlFilePath = new File(filePath);
-        JAXBContext jaxbContext = null;
-        jaxbContext = JAXBContext.newInstance(Decipher.class);
-        jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        decipher = (Decipher) jaxbUnmarshaller.unmarshal(xmlFilePath);
-        return decipher;
+        Enigma enigma = MachineXmlParser.parseXmltoJaxbMachine(filePath);
+        return enigma.getDecipher();
     }
 
-    public static Battlefield parseXmltoJaxbBattlefield(String filePath) throws JAXBException {
-        Unmarshaller jaxbUnmarshaller = null;
-        Battlefield battlefield = null;
-        File xmlFilePath = new File(filePath);
-        JAXBContext jaxbContext = null;
-        jaxbContext = JAXBContext.newInstance(Decipher.class);
-        jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        battlefield = (Battlefield) jaxbUnmarshaller.unmarshal(xmlFilePath);
-        return battlefield;
+
+
     }
 }
