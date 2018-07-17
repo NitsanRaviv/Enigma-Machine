@@ -54,6 +54,7 @@ public class UploadServlet extends HttpServlet {
         createNewUboat(request);
         setIntegratorForCompetition(pathToNewFile);
         //TODO:: check xml is valid
+        request.getSession().setAttribute("stam", "stamt");
         response.sendRedirect("/defineCompetition.html");
     }
 

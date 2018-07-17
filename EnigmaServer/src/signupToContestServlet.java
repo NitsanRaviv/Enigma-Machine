@@ -3,6 +3,7 @@ import EnigmaCompetition.Competition;
 import EnigmaCompetition.Ubout;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,9 @@ public class signupToContestServlet extends HttpServlet {
         //TODO:: save user name
         //need to change this flow - competition is created only when a uboat is signed in
         getServletContext().setAttribute(req.getParameter("uname"), new Competition());
+        req.getSession(true).setAttribute("stam", "stamt");
         //open a session to know who is the username
+        resp.addCookie(new Cookie("uname", "roy"));
         resp.sendRedirect("/signUpToContest.html");
     }
 }
