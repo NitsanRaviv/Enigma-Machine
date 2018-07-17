@@ -8,7 +8,7 @@
 *.iws
 *.class
 *.iml
-*.out
+*.out/
 
 # Mac
 .DS_Store

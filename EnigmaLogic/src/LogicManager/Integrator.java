@@ -9,8 +9,7 @@ import java.util.List;
 
 public class Integrator {
     private Tester tester;
-    private static Integrator integrator ;
-
+    private Performer performer;
     public Dictionary getDictionary(){
         return tester.getDictionary();
     }
@@ -18,7 +17,7 @@ public class Integrator {
     public List<String> getMachineSpecification() {
         List<String> res = new ArrayList<>();
         try {
-            res = Performer.getPerformer().getMachineSpecification();
+            res = performer.getMachineSpecification();
         }
         catch (Exception e)
         {
@@ -28,8 +27,9 @@ public class Integrator {
         return res;
     }
 
-    private Integrator(){
+    public Integrator(){
         tester = new Tester();
+        performer = new Performer();
     }
 
     public String loadMachineFromXml(String path) {
@@ -40,7 +40,7 @@ public class Integrator {
         if(msg != ErrorsMessages.noErrors)
             return msg;
 
-        msg = Performer.getPerformer().loadMachineFromXml(path);
+        msg = performer.loadMachineFromXml(path);
         if(msg != ErrorsMessages.noErrors)
             return msg;
 
@@ -115,7 +115,7 @@ public class Integrator {
     public String processInput(String input) {
         String res;
         try {
-            res = Performer.getPerformer().processInput(input);
+            res = performer.processInput(input);
         }
         catch (Exception e)
         {
@@ -127,7 +127,7 @@ public class Integrator {
 
     public String resetCode() {
         try {
-            Performer.getPerformer().resetCode();
+            performer.resetCode();
         }
         catch (Exception e)
         {
@@ -138,15 +138,15 @@ public class Integrator {
     }
 
     public void setInitialCode(String[] rotors, String[] rotorMap, String chosenReflector) {
-        Performer.getPerformer().setInitialCode(rotors, rotorMap, chosenReflector);
+        performer.setInitialCode(rotors, rotorMap, chosenReflector);
     }
 
     public String setRandomMachineCode() {
-        return Performer.getPerformer().setRandomMachineCode();
+        return performer.setRandomMachineCode();
     }
 
     public boolean checkValidOfProcessInput(String input) {
-        String machineLanguage = integrator.getMachineLanguage();
+        String machineLanguage = getMachineLanguage();
 
         for (char ch : input.toCharArray()) {
             if (machineLanguage.indexOf(ch) == -1) {
@@ -159,30 +159,23 @@ public class Integrator {
     }
 
     public String getMachineLanguage(){
-       return  String.valueOf(Performer.getPerformer().getMachineProxy().getLanguage());
+       return  String.valueOf(performer.getMachineProxy().getLanguage());
     }
     public LanguageInterpeter getLanguageInterpeter(){
-        return Performer.getPerformer().getLanguageInterpeter();
+        return performer.getLanguageInterpeter();
     }
 
     public String getStatistics(){
-        return Performer.getPerformer().getStatistics();
+        return performer.getStatistics();
     }
 
-    public static Integrator getIntegrator(){
-        if(integrator == null)
-        {
-            integrator = new Integrator();
-        }
-        return integrator;
-    }
 
     public boolean checkInitialRotors(String[] rotors) {
         return tester.allTheRotorIdsExists(rotors);
     }
 
     public boolean checkInitialRotorsMap(String[] rotorMap) {
-       char[] lang = Performer.getPerformer().getMachineProxy().getLanguage();
+       char[] lang = performer.getMachineProxy().getLanguage();
         return tester.allTheRotorsInitialValid(rotorMap,lang);
     }
 
@@ -191,7 +184,7 @@ public class Integrator {
     }
 
     public MachineProxy getMachine() {
-        return Performer.getPerformer().getMachineProxy();
+        return performer.getMachineProxy();
     }
 
     public boolean checkStringForAutomaticDecoding(String input) {
@@ -207,35 +200,35 @@ public class Integrator {
     }
 
     public int getTaskDifficulty(int chosenTaskLevel) {
-        return Performer.getPerformer().getTaskDifficulty(chosenTaskLevel);
+        return performer.getTaskDifficulty(chosenTaskLevel);
     }
 
     public void startTheDecrypt(String stringToDecrypt, int numberOfAgents, int missionSize, int chosenTaskLevel) {
-        Performer.getPerformer().startDM(stringToDecrypt,numberOfAgents,missionSize,chosenTaskLevel);
+        performer.startDM(stringToDecrypt,numberOfAgents,missionSize,chosenTaskLevel);
     }
 
     public String getStatusOfDecryption() {
-       return Performer.getPerformer().getStatusOfDecryption();
+       return performer.getStatusOfDecryption();
     }
 
     public boolean dmStillRunning() {
-       return Performer.getPerformer().dmStillRunning();
+       return performer.dmStillRunning();
     }
 
     public void setTotalTasksOptions(int numberOfTotalTasks) {
-        Performer.getPerformer().setTotalTasksOptions(numberOfTotalTasks);
+        performer.setTotalTasksOptions(numberOfTotalTasks);
     }
 
     public void delayProcess() {
-        Performer.getPerformer().delayProcess();
+        performer.delayProcess();
     }
 
     public void resumeProcess() {
-        Performer.getPerformer().resumeProcess();
+        performer.resumeProcess();
     }
 
     public void stopProcess() {
-        Performer.getPerformer().stopDM();
+        performer.stopDM();
     }
 
 }

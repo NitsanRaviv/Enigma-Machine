@@ -23,9 +23,8 @@ public class Performer {
     }
 
     private MachineProxy machineProxy;
-    private static Performer performer;
     private DMadapter dmAdapter;
-
+    private String xmlFilePath;
 
 
     public String loadMachineFromXml(String path) {
@@ -34,7 +33,7 @@ public class Performer {
         }catch (JAXBException je) {
             return ErrorsMessages.errGetMachine;
         }
-
+        xmlFilePath = path;
         return ErrorsMessages.noErrors;
     }
 
@@ -101,13 +100,6 @@ public class Performer {
         return this.machineProxy.getStatistics();
     }
 
-    public static Performer getPerformer(){
-        if(performer == null)
-        {
-            performer = new Performer();
-        }
-        return performer;
-    }
 
     public int getTaskDifficulty(int chosenTaskLevel) {
         int res;
@@ -159,7 +151,7 @@ public class Performer {
         machineProxy.setMachineToInitialState();
         String stringToDecrypt = machineProxy.encryptCodeToString(stringToEncrypt.toUpperCase());
         machineProxy.setMachineToInitialState();
-        dmAdapter = new DMadapter(machineProxy,DictionaryXmlParser.getDictionaryXmlParser().getDictionary(),
+        dmAdapter = new DMadapter(machineProxy,DictionaryXmlParser.getDictionaryXmlParser().getDictionary(xmlFilePath),
                 stringToDecrypt, numberOfAgents,missionSize, chosenTaskLevel);
 
         dmAdapter.start();

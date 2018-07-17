@@ -14,13 +14,10 @@ import javax.servlet.ServletContext;
 public class signupToContestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String uboutName = req.getParameter("uname");
-        Ubout ubout = new Ubout(uboutName);
-        Competition competition = new Competition();
-        competition.setUboat(ubout);
-        getServletContext().setAttribute(uboutName, competition);
-        req.getSession().setAttribute("user", "roy");
-        resp.addCookie(req.getCookies()[0]);
+        //TODO:: save user name
+        //need to change this flow - competition is created only when a uboat is signed in
+        getServletContext().setAttribute(req.getParameter("uname"), new Competition());
+        //open a session to know who is the username
         resp.sendRedirect("/signUpToContest.html");
     }
 }

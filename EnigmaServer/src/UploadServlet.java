@@ -9,13 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import EnigmaCompetition.Competition;
+import EnigmaCompetition.Ubout;
 import LogicManager.*;
 
 
 @WebServlet("/UploadServlet")
-@MultipartConfig(fileSizeThreshold=1024*1024*2, // 2MB
-        maxFileSize=1024*1024*10,      // 10MB
-        maxRequestSize=1024*1024*50)   // 50MB
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10,      // 10MB
+        maxRequestSize = 1024 * 1024 * 50)   // 50MB
 public class UploadServlet extends HttpServlet {
     /**
      * Name of the directory where uploaded files will be saved, relative to
@@ -39,21 +40,32 @@ public class UploadServlet extends HttpServlet {
             fileSaveDir.mkdir();
         }
 
+        String pathToNewFile = null;
+
+        //XML files only, so only one part
         for (Part part : request.getParts()) {
             String fileName = extractFileName(part);
             // refines the fileName in case it is an absolute path
             fileName = new File(fileName).getName();
-            part.write(savePath + File.separator + fileName);
-        }
+            pathToNewFile = savePath + File.separator + fileName;
+            part.write(pathToNewFile);
 
-        setIntegratorForCompetition(savePath);
+        }
+        createNewUboat(request);
+        setIntegratorForCompetition(pathToNewFile);
         //TODO:: check xml is valid
         response.sendRedirect("/defineCompetition.html");
     }
 
+    private void createNewUboat(HttpServletRequest req) {
+        Ubout ubout = new Ubout("roy");
+        Competition competition = (Competition) getServletContext().getAttribute("roy");
+        competition.setUboat(ubout);
+    }
+
     private void setIntegratorForCompetition(String xmlPath) {
-        Competition competition = (Competition)getServletContext().getAttribute("roy");
-        Integrator integrator = Integrator.getIntegrator(); //TODO make un-static!
+        Competition competition = (Competition) getServletContext().getAttribute("roy");
+        Integrator integrator = new Integrator();
         integrator.loadMachineFromXml(xmlPath);
         competition.setIntegrator(integrator);
         getServletContext().setAttribute("roy", competition);
@@ -67,7 +79,7 @@ public class UploadServlet extends HttpServlet {
         String[] items = contentDisp.split(";");
         for (String s : items) {
             if (s.trim().startsWith("filename")) {
-                return s.substring(s.indexOf("=") + 2, s.length()-1);
+                return s.substring(s.indexOf("=") + 2, s.length() - 1);
             }
         }
         return "";

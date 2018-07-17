@@ -18,6 +18,7 @@ import java.util.List;
 
 public class SchedulingTests {
     private static MachineProxy mp;
+    private Integrator integrator = new Integrator();
 
     @BeforeClass
     public static void init() {
@@ -41,36 +42,36 @@ public class SchedulingTests {
 
     @Test
     public void testDMmedium() {
-        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        integrator.loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(3, 1), new Pair(5, 1)); //left to right
         // mp.setChosenReflector("II");
         String test = mp.encryptCodeToString("encapsulation".toUpperCase());
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), test, 1, 20, TaskLevels.levelMedium);
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex2-basic.xml"), test, 1, 20, TaskLevels.levelMedium);
         dm.run();
     }
 
     @Test
     public void testDMhard() {
-        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        integrator.loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(3, 1), new Pair<>(5, 1), new Pair(2, 1)); //left to right
         // mp.setChosenReflector("II");
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelHard);
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex2-basic.xml"), "?KUUCYVAQS", 10, 20, TaskLevels.levelHard);
         dm.run();
     }
 
     @Test
     public void testDMeasy() {
-        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        integrator.loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
         mp.setChosenReflector("II");
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelEasy);
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex2-basic.xml"), "?KUUCYVAQS", 10, 20, TaskLevels.levelEasy);
         dm.run();
     }
 
     @Test
     public void testDMImpossible() {
-        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelImpossible);
+        integrator.loadMachineFromXml("ex2-basic.xml");
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex2-basic.xml"), "?KUUCYVAQS", 10, 20, TaskLevels.levelImpossible);
         dm.run();
     }
 
@@ -92,10 +93,10 @@ public class SchedulingTests {
 
     @Test
     public void testSuspend() {
-        Integrator.getIntegrator().loadMachineFromXml("ex2-basic.xml");
+        integrator.loadMachineFromXml("ex2-basic.xml");
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
         //mp.setChosenReflector("II");
-        DMadapter dMadapter = new DMadapter(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary(), "?KUUCYVAQS", 10, 20, TaskLevels.levelHard);
+        DMadapter dMadapter = new DMadapter(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex2-basic.xml"), "?KUUCYVAQS", 10, 20, TaskLevels.levelHard);
         dMadapter.start();
         try {
             Thread.sleep(100);

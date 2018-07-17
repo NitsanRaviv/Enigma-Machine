@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 
 public class XmlParsingTests {
+    private Performer performer = new Performer();
     @Test
     public void testMachineJaxbParser()
     {
@@ -36,21 +37,21 @@ public class XmlParsingTests {
     @Test
     public void loadMachineWithLogicApi() {
         try {
-            Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
+            performer.loadMachineFromXml("ex1-sanity-small.xml");
         }catch (Exception e) {
             e.printStackTrace();
         }
-        //Performer.getPerformer().setInitialCode("1,3".split(","), "2,3".split(","),"I");
-        System.out.println(Performer.getPerformer().getMachineSpecification());
+        //performer.setInitialCode("1,3".split(","), "2,3".split(","),"I");
+        System.out.println(performer.getMachineSpecification());
     }
 
     @Test
     public void testInitialCodeParserAndPerformer(){
-        Performer.getPerformer().loadMachineFromXml("ex1-sanity-small.xml");
-        Performer.getPerformer().setInitialCode("2,1".split(","), "C,C".split(","),"I");
-        String a = String.valueOf(Performer.getPerformer().processInput("AABBCCDDEEFF"));
-        Assert.assertEquals(Performer.getPerformer().processInput("AABBCCDDEEFF"), "[B, D, E, A, B, D, A, C, D, F, A, C]");
-        System.out.println(Performer.getPerformer().getStatistics());
+        performer.loadMachineFromXml("ex1-sanity-small.xml");
+        performer.setInitialCode("2,1".split(","), "C,C".split(","),"I");
+        String a = String.valueOf(performer.processInput("AABBCCDDEEFF"));
+        Assert.assertEquals(a, "[B, D, E, A, B, D, A, C, D, F, A, C]");
+        System.out.println(performer.getStatistics());
     }
 
     @Test
@@ -70,7 +71,7 @@ public class XmlParsingTests {
 //    @Test
 //    public void dictionaryParserTest(){
 //        Tester test = new Tester();
-//        Performer.getPerformer().loadMachineFromXml("ex2-basic.xml");
+//        performer.loadMachineFromXml("ex2-basic.xml");
 //        boolean temp = test.getMachine("ex2-basic.xml");
 //        EnigmaDictionary enigmaDictionary = new EnigmaDictionary();
 //

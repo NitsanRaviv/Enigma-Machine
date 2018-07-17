@@ -4,6 +4,7 @@ import agentUtilities.EnigmaDictionary;
 import LogicManager.Integrator;
 import XmlParsing.JaxbClasses.Dictionary;
 
+import javax.xml.bind.JAXBException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,10 +16,15 @@ public class DictionaryXmlParser {
     private String words;
     private static DictionaryXmlParser dictionaryXmlParser;
 
-    public EnigmaDictionary getDictionary(){
+    public EnigmaDictionary getDictionary(String filepPath){
 
         Set<String> resDictionary = new HashSet<>();
-        jabDictionary = Integrator.getIntegrator().getDictionary();
+        try {
+            jabDictionary = MachineXmlParser.parseXmltoJaxbMachine(filepPath).getDecipher().getDictionary();
+        }catch (JAXBException e){
+            e.printStackTrace();
+        }
+
         excludeChars =  jabDictionary.getExcludeChars();
         words = jabDictionary.getWords();
         String wordsWithoutExcludeChars = replaceExcludeChars(excludeChars,words);

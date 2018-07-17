@@ -11,7 +11,7 @@ import java.util.*;
 
 public class Tester {
 
-    private static Enigma enigma;
+    private Enigma enigma;
     private Machine machine;
     private Rotors rotors;
     private List<Rotor> theRotors;
@@ -20,8 +20,9 @@ public class Tester {
     private Decipher decipher;
     private final int maxNumOfAgents = 50;
     private final int minNumOfAgents = 2;
+    private String xmlFilePath;
 
-    public static Dictionary getDictionary(){
+    public Dictionary getDictionary(){
         return enigma.getDecipher().getDictionary();
     }
 
@@ -30,8 +31,10 @@ public class Tester {
 
         String extension = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
 
-        if(extension.equals("xml"))
+        if(extension.equals("xml")){
+            xmlFilePath = filePath;
             return true;
+        }
 
         return false;
     }
@@ -263,7 +266,7 @@ public class Tester {
 
     public boolean allWordsFromDictionary(String input) {
 
-        EnigmaDictionary enigmaDictionary = DictionaryXmlParser.getDictionaryXmlParser().getDictionary();
+        EnigmaDictionary enigmaDictionary = DictionaryXmlParser.getDictionaryXmlParser().getDictionary(xmlFilePath);
         String [] allWords = input.split(" ");
 
         for (String word : allWords)

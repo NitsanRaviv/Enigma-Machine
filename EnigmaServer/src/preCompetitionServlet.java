@@ -31,7 +31,7 @@ public class preCompetitionServlet extends HttpServlet {
         Competition competition = (Competition) getServletContext().getAttribute("roy");
         String stringToEncrypt = req.getParameter("stringToProcess");
         competition.setDecryptedString(stringToEncrypt);
-        competition.setEncryptedString(competition.getIntegrator().getMachine().encryptCodeToString(stringToEncrypt));
+        competition.setEncryptedString(competition.getIntegrator().processInput(stringToEncrypt));
         getServletContext().setAttribute("roy", competition);
 
     }

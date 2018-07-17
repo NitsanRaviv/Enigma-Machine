@@ -17,6 +17,8 @@ public class MainMenu {
     private ArrayList<MenuItem> communicationMenu = new ArrayList<>();
     private String path;
     private Scanner getInput = new Scanner(System.in);
+    private Integrator integrator = new Integrator();
+
 
     public void addNewItem(MenuItem newItem) {
         theMenu.add(newItem);
@@ -122,8 +124,8 @@ public class MainMenu {
        System.out.println("To confirm the beginning of the automatic decryption process, please press any key and then enter");
        getInput.next();
 
-       Integrator.getIntegrator().startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
-       Integrator.getIntegrator().setTotalTasksOptions(taskDifficulty);
+       integrator.startTheDecrypt(inputToProcess,numberOfAgents,missionSize,chosenTaskLevel);
+       integrator.setTotalTasksOptions(taskDifficulty);
        showCommunicationMenu();
        return true;
     }
@@ -132,13 +134,13 @@ public class MainMenu {
     private void showCommunicationMenu() {
         boolean dmRunning = true;
 
-        while(Integrator.getIntegrator().dmStillRunning())
+        while(integrator.dmStillRunning())
         {
             printCommunicationMenu();
             int res = getInputFromUser(CommunicationMenuOptions.statusOfCurrentDecryption,CommunicationMenuOptions.stopProcess);
             getInput.nextLine();
 
-            if(Integrator.getIntegrator().dmStillRunning())
+            if(integrator.dmStillRunning())
                 communicationMenuDoOption(res,dmRunning);
 
             if(res == CommunicationMenuOptions.delayOrResumeProcess){
@@ -155,16 +157,16 @@ public class MainMenu {
     private void communicationMenuDoOption(int res, boolean dmRunning) {
         switch (res){
             case CommunicationMenuOptions.statusOfCurrentDecryption:
-                System.out.println(Integrator.getIntegrator().getStatusOfDecryption());
+                System.out.println(integrator.getStatusOfDecryption());
                 break;
             case CommunicationMenuOptions.delayOrResumeProcess:
                 if(dmRunning)
-                    Integrator.getIntegrator().delayProcess();
+                    integrator.delayProcess();
                 else
-                    Integrator.getIntegrator().resumeProcess();
+                    integrator.resumeProcess();
                 break;
             case CommunicationMenuOptions.stopProcess:
-                Integrator.getIntegrator().stopProcess();
+                integrator.stopProcess();
                 break;
         }
     }
@@ -204,7 +206,7 @@ public class MainMenu {
 
     private int getMissionSizeFromUser(int numberOfAgents, int chosenTaskLevel) {
         int userChoice;
-        long numberOfTaskOptions = Integrator.getIntegrator().getTaskDifficulty(chosenTaskLevel);
+        long numberOfTaskOptions = integrator.getTaskDifficulty(chosenTaskLevel);
 
         try {
             userChoice = getInput.nextInt();
@@ -225,14 +227,14 @@ public class MainMenu {
     }
 
     private int showTaskDifficulty(int chosenTaskLevel) {
-       int res =  Integrator.getIntegrator().getTaskDifficulty(chosenTaskLevel);
+       int res =  integrator.getTaskDifficulty(chosenTaskLevel);
        System.out.println("The difficulty of the task is: " + res);
        return res;
     }
 
     private int getNumberOfAgents() {
 
-        int maxAgents = Integrator.getIntegrator().getNumberOfAgents();
+        int maxAgents = integrator.getNumberOfAgents();
         int res = MainMenuOptions.errorSign;
 
         while (res == MainMenuOptions.errorSign)
@@ -279,8 +281,8 @@ public class MainMenu {
         {
             System.out.println("Please enter a string to process:");
             input = getInput.nextLine();
-            cleanInput = Integrator.getIntegrator().cleanStringFromExcludeChars(input);
-            validString = Integrator.getIntegrator().checkStringForAutomaticDecoding(cleanInput);
+            cleanInput = integrator.cleanStringFromExcludeChars(input);
+            validString = integrator.checkStringForAutomaticDecoding(cleanInput);
 
             if(!validString)
                 System.out.println("You enter invalid string. Try again:");
@@ -291,13 +293,13 @@ public class MainMenu {
 
     private void initialCodeAutomatically() {
 
-        String msg = Integrator.getIntegrator().setRandomMachineCode();
+        String msg = integrator.setRandomMachineCode();
         System.out.println(msg);
     }
 
     private boolean gethistoryAndStatistics() {
         try {
-            System.out.println(Integrator.getIntegrator().getStatistics());
+            System.out.println(integrator.getStatistics());
         }
         catch (Exception e)
         {
@@ -316,9 +318,9 @@ public class MainMenu {
         rotors = getRotorsFromUser();
         rotorMap = getRotorMapFromUser();
         chosenReflector = getReflectorFromUser();
-        rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
-        rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
-        reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
+        rotorsValid = integrator.checkInitialRotors(rotors);
+        rotorMapValid = integrator.checkInitialRotorsMap(rotorMap);
+        reflectorValid = integrator.checkChosenReflector(chosenReflector);
 
         while(!sizeWasValid)
         {
@@ -328,7 +330,7 @@ public class MainMenu {
                 if (!rotorsValid)
                     System.out.println("You have inserted invalid rotor numbers. Please Try again");
                 rotors = getRotorsFromUser();
-                rotorsValid = Integrator.getIntegrator().checkInitialRotors(rotors);
+                rotorsValid = integrator.checkInitialRotors(rotors);
                 sizeProblemR = false;
             }
             while(!rotorMapValid || sizeProblemRm)
@@ -336,14 +338,14 @@ public class MainMenu {
                 if(!rotorMapValid)
                     System.out.println("You have inserted invalid initial location for rotors. Please Try again");
                 rotorMap = getRotorMapFromUser();
-                rotorMapValid = Integrator.getIntegrator().checkInitialRotorsMap(rotorMap);
+                rotorMapValid = integrator.checkInitialRotorsMap(rotorMap);
                 sizeProblemRm = false;
             }
             while(!reflectorValid)
             {
                 System.out.println("You have inserted an invalid reflector number. Please Try again");
                 chosenReflector = getReflectorFromUser();
-                reflectorValid = Integrator.getIntegrator().checkChosenReflector(chosenReflector);
+                reflectorValid = integrator.checkChosenReflector(chosenReflector);
             }
             if (rotors.length != rotorMap.length)
             {
@@ -354,7 +356,7 @@ public class MainMenu {
             }
         }
 
-        Integrator.getIntegrator().setInitialCode(rotors,rotorMap,chosenReflector);
+        integrator.setInitialCode(rotors,rotorMap,chosenReflector);
     }
 
     private String getReflectorFromUser() {
@@ -392,7 +394,7 @@ public class MainMenu {
     }
 
     private boolean resetCurrentCode() {
-        String msg = Integrator.getIntegrator().resetCode();
+        String msg = integrator.resetCode();
 
         if (msg == ErrorsMessages.errNoMachine) {
             System.out.println(msg);
@@ -403,7 +405,7 @@ public class MainMenu {
     }
 
     private boolean showMachineSpecification() {
-        List<String> msgs = Integrator.getIntegrator().getMachineSpecification();
+        List<String> msgs = integrator.getMachineSpecification();
         System.out.println(msgs);
 
         if (msgs.get(0) == ErrorsMessages.errNoMachine)
@@ -415,7 +417,7 @@ public class MainMenu {
     private boolean readMachineFile() {
         System.out.println("Please enter a path to the xml file:");
         path = getInput.next();
-        String msg = Integrator.getIntegrator().loadMachineFromXml(path);
+        String msg = integrator.loadMachineFromXml(path);
 
         if (msg != ErrorsMessages.noErrors) {
             System.out.println(msg);
@@ -433,10 +435,10 @@ public class MainMenu {
         String msg;
         System.out.println("Please enter an input to process");
         String input = getInput.next().toUpperCase();
-        validInput = Integrator.getIntegrator().checkValidOfProcessInput(input);
+        validInput = integrator.checkValidOfProcessInput(input);
 
         if (validInput) {
-            msg = Integrator.getIntegrator().processInput(input);
+            msg = integrator.processInput(input);
             System.out.println(msg);
             if (msg == ErrorsMessages.errNoMachine)
                 return false;
