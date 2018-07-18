@@ -15,12 +15,7 @@ import javax.servlet.ServletContext;
 public class signupToContestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //TODO:: save user name
-        //need to change this flow - competition is created only when a uboat is signed in
-        getServletContext().setAttribute(req.getParameter("uname"), new Competition());
-        req.getSession(true).setAttribute("stam", "stamt");
-        //open a session to know who is the username
-        resp.addCookie(new Cookie("uname", "roy"));
+        resp.addCookie(new Cookie("uname", req.getParameter("uname")));
         resp.sendRedirect("/signUpToContest.html");
     }
 }

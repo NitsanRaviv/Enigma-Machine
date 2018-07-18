@@ -1,6 +1,7 @@
 package EnigmaCompetition;
 
 import LogicManager.Integrator;
+import XmlParsing.JaxbClasses.Battlefield;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Competition {
     private Integrator integrator;
     private String decryptedString;
     private String encryptedString;
+    private Battlefield battlefield;
 
 
     public void setAllies(Ally ally) {
@@ -39,5 +41,13 @@ public class Competition {
 
     public void setEncryptedString(String encryptedString) {
         this.encryptedString = encryptedString;
+    }
+
+    public Battlefield getBattlefield() {
+        return battlefield;
+    }
+
+    public void setBattlefield(Battlefield battlefield) {
+        this.battlefield = battlefield;
     }
 }

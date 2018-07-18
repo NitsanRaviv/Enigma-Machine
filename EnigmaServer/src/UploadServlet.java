@@ -11,6 +11,8 @@ import javax.servlet.http.Part;
 import EnigmaCompetition.Competition;
 import EnigmaCompetition.Ubout;
 import LogicManager.*;
+import XmlParsing.Ex3XmlParser;
+import XmlParsing.JaxbClasses.Battlefield;
 
 
 @WebServlet("/UploadServlet")
@@ -51,25 +53,44 @@ public class UploadServlet extends HttpServlet {
             part.write(pathToNewFile);
 
         }
-        createNewUboat(request);
-        setIntegratorForCompetition(pathToNewFile);
+
         //TODO:: check xml is valid
-        request.getSession().setAttribute("stam", "stamt");
+        setCompetitionFromFile(pathToNewFile, request);
         response.sendRedirect("/defineCompetition.html");
     }
 
-    private void createNewUboat(HttpServletRequest req) {
-        Ubout ubout = new Ubout("roy");
-        Competition competition = (Competition) getServletContext().getAttribute("roy");
-        competition.setUboat(ubout);
+    private void setCompetitionFromFile(String pathToNewFile, HttpServletRequest request) {
+        createNewUboat(request);
+        setIntegratorForCompetition(pathToNewFile, request);
+        setBattlefieldForCompetition(pathToNewFile, request);
     }
 
-    private void setIntegratorForCompetition(String xmlPath) {
-        Competition competition = (Competition) getServletContext().getAttribute("roy");
+    private void createNewUboat(HttpServletRequest req) {
+        Ubout ubout = new Ubout(Utils.CookieUtils.getUserCookie(req.getCookies()).getValue());
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
+        competition.setUboat(ubout);
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
+    }
+
+    private void setIntegratorForCompetition(String xmlPath, HttpServletRequest req) {
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
         Integrator integrator = new Integrator();
         integrator.loadMachineFromXml(xmlPath);
         competition.setIntegrator(integrator);
-        getServletContext().setAttribute("roy", competition);
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
+    }
+
+    private void setBattlefieldForCompetition(String xmlPath, HttpServletRequest req){
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
+        Battlefield battlefield = null;
+        try {
+            battlefield = Ex3XmlParser.parseXmltoJaxbBattlefield(xmlPath);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        competition.setBattlefield(battlefield);
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 
     /**

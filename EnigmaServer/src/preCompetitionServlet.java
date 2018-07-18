@@ -19,20 +19,19 @@ public class preCompetitionServlet extends HttpServlet {
     }
 
     private void setInitialCode(HttpServletRequest req) {
-        Competition competition = (Competition) getServletContext().getAttribute("roy");
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
         String[] rotorIds = req.getParameter("rotorNumbers").split(",");
         String[] initialLoc = req.getParameter("initialLocation").split(",");
         String chosenRefl = req.getParameter("reflector");
         competition.getIntegrator().setInitialCode(rotorIds, initialLoc, chosenRefl);
-        getServletContext().setAttribute("roy", competition);
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 
     private void setStringToDecrypt(HttpServletRequest req) {
-        Competition competition = (Competition) getServletContext().getAttribute("roy");
-        String stringToEncrypt = req.getParameter("stringToProcess");
-        competition.setDecryptedString(stringToEncrypt);
-        competition.setEncryptedString(competition.getIntegrator().processInput(stringToEncrypt));
-        getServletContext().setAttribute("roy", competition);
-
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
+        String stringToEncrypt = req.getParameter("stringToProcess").toUpperCase();
+        competition.setDecryptedString(stringToEncrypt.toUpperCase());
+        competition.setEncryptedString(competition.getIntegrator().processInput(stringToEncrypt.toUpperCase()).toUpperCase());
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 }
