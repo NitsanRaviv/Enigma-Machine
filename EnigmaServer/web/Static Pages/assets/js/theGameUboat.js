@@ -13,8 +13,6 @@ $(function () {
     getMembersInfo();
     getOptionalStrings();
     gameOver();
-    
-
 });
 
 function competitionStart() {
