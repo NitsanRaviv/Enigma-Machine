@@ -30,33 +30,39 @@ public class EnigmaAgent extends Thread {
     @Override
     public void run() {
         while (running) {
-            getNewTask();
-            this.goodStrings = new ArrayList<>();
-            long startTime = System.currentTimeMillis();
-            for (int i = 0; i < easyTask.getTaskSize(); i++) {
+            try {
+                getNewTask();
+                this.goodStrings = new ArrayList<>();
+                long startTime = System.currentTimeMillis();
+                for (int i = 0; i < easyTask.getTaskSize(); i++) {
                     String processed = machineProxy.encryptCodeToString(easyTask.getStringToDecrypt());
                     String[] processedArr = processed.split(" ");
                     for (String processedString : processedArr) {
-                        if(enigmaDictionary.checkIfExists(processedString) == true){
+                        if (enigmaDictionary.checkIfExists(processedString) == true) {
                             goodStrings.add(processedString);
                         }
                     }
-                taskNumber++;
-                setNewPositionOfRotorsInMachine();
-            }
-            if(Thread.currentThread().interrupted() == true){
-                handleInterrupt();
-            }
-            long endTime = System.currentTimeMillis();
-            try {
-                for (String goodString : goodStrings) {
-                    agentAnsewerQueue.put(new AgentAnswer(goodString, easyTask.getStringToDecrypt(), endTime - startTime, id, machineProxy.getCurrentCode()));
+                    taskNumber++;
+                    setNewPositionOfRotorsInMachine();
                 }
-            }catch (InterruptedException ie){
-                ;
+                if (Thread.currentThread().interrupted() == true) {
+                    handleInterrupt();
+                }
+                long endTime = System.currentTimeMillis();
+                try {
+                    for (String goodString : goodStrings) {
+                        agentAnsewerQueue.put(new AgentAnswer(goodString, easyTask.getStringToDecrypt(), endTime - startTime, id, machineProxy.getCurrentCode()));
+                    }
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }catch (Exception e)
+            {
+                e.printStackTrace();
             }
-
         }
+        System.out.println("finished my work as an agent thread, WebAgent will decide whats next. bye! my id: " + this.id);
+
     }
 
     private void handleInterrupt() {

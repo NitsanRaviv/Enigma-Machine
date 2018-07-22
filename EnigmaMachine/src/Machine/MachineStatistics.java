@@ -2,12 +2,13 @@ package Machine;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MachineStatistics {
+public class MachineStatistics implements Serializable {
     private Map<String,List<Pair<String,Pair<String,Long>>>> initialCodeToStat;
     public MachineStatistics(String initialCode){
         this.initialCodeToStat = new HashMap<>();

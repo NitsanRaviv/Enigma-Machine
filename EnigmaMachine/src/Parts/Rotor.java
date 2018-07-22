@@ -1,5 +1,6 @@
 package Parts;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,7 @@ import Constants.*;
 
 
 
-public class Rotor {
+public class Rotor implements Serializable {
     private List<Integer> leftEntries;
     private List<Integer> rightEntries;
     private int notch;
@@ -69,13 +70,16 @@ public class Rotor {
     }
 
     public void setPosition(Integer pos) {
-        while (this.rightEntries.get(0) != pos) {
+        int tooMuch = rightEntries.size();
+        while (this.rightEntries.get(0).equals(pos) == false && tooMuch >=-2) {
             Collections.rotate(rightEntries, rightEntries.size() - 1);
             Collections.rotate(leftEntries, leftEntries.size() - 1);
             notch--;
             if (notch <= 0)
                 notch = leftEntries.size() - 1;
         }
+        if(tooMuch < -1)
+          System.out.println("no pos" + pos + "in rightEntries: " + rightEntries.toString());
         this.initialPosition = pos;
     }
 
@@ -121,7 +125,7 @@ public class Rotor {
     }
 
     private void setInitialPosition(int initialPos) {
-        while (this.rightEntries.get(0) != initialPos) {
+        while (this.rightEntries.get(0).equals(initialPos) == false) {
             Collections.rotate(rightEntries, rightEntries.size() - 1);
             Collections.rotate(leftEntries, leftEntries.size() - 1);
         }

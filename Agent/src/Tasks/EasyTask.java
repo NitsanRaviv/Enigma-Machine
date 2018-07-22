@@ -2,10 +2,11 @@ package Tasks;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EasyTask {
+public class EasyTask implements Serializable{
 
     private int taskSize;
     private String stringToEncrypt;

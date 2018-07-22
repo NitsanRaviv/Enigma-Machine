@@ -1,7 +1,8 @@
 package agentUtilities;
+import java.io.Serializable;
 import java.util.Set;
 
-public class EnigmaDictionary {
+public class EnigmaDictionary implements Serializable {
 
     private Set<String> theDictionary;
 
@@ -12,6 +13,5 @@ public class EnigmaDictionary {
     public boolean checkIfExists(String word){
         return theDictionary.contains(word.toUpperCase());
     }
-
 
 }

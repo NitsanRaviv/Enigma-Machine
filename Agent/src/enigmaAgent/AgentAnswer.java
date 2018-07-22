@@ -1,6 +1,8 @@
 package enigmaAgent;
 
-public class AgentAnswer {
+import java.io.Serializable;
+
+public class AgentAnswer implements Serializable {
     private String encryptedString;
     private long missionTime;
     private int agentId;

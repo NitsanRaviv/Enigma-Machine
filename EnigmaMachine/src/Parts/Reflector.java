@@ -1,9 +1,10 @@
 package Parts;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reflector {
+public class Reflector implements Serializable {
     private Map<Integer, Integer> relectedValues;
     private int id;
 

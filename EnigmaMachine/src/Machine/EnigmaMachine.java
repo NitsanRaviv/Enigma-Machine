@@ -3,11 +3,12 @@ package Machine;
 import Parts.*;
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class EnigmaMachine {
+public class EnigmaMachine implements Serializable {
    private List<Rotor> rotors;
    private List<Reflector> reflectors;
    private List<Rotor> chosenRotors;

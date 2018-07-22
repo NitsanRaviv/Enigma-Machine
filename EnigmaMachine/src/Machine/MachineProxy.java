@@ -5,10 +5,12 @@ import Parts.Rotor;
 import Utilities.RomanInterpeter;
 import Utilities.LanguageInterpeter;
 import javafx.util.Pair;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MachineProxy {
+public class MachineProxy implements Serializable {
     private EnigmaMachine machine;
 
     public LanguageInterpeter getLanguageInterpeter() {

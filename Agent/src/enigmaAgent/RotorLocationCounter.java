@@ -28,7 +28,7 @@ public class RotorLocationCounter {
     public Pair<Integer,Integer>[] nextRotorsAndLocations(){
        List<Integer> language = languageInterpeter.getLanguageAsNumbers();
         for (int i = currentRotorAndNotches.length - 1; i >= 0; i--) {
-            if (currentRotorAndNotches[i].getValue() != language.get(language.size() - 1)){
+            if (currentRotorAndNotches[i].getValue() .equals(language.get(language.size() - 1)) == false){
                 currentRotorAndNotches[i] = new Pair(currentRotorAndNotches[i].getKey(), currentRotorAndNotches[i].getValue() + 1);
                 break;
             }
