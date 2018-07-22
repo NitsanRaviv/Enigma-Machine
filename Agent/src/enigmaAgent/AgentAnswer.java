@@ -30,8 +30,14 @@ public class AgentAnswer implements Serializable {
     }
 
     @Override
-    public boolean equals(Object decryptedString) {
-        return this.decryptedString.equals(decryptedString);
+    public boolean equals(Object agentAnswer) {
+        try {
+            return this.decryptedString.equals(((AgentAnswer) agentAnswer).getEncryptedString());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -39,5 +45,10 @@ public class AgentAnswer implements Serializable {
         String res =  "Encrypted String: " + encryptedString + ", Agent ID: " + agentId + ", Mission Time: " + missionTime  +
                 ", Machine Code: " + machineCode + "\n";
         return res;
+    }
+
+
+    public String getDecryptedString() {
+        return decryptedString;
     }
 }

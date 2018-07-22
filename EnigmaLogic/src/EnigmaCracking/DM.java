@@ -29,8 +29,8 @@ import static enigmaAgent.AgentConstants.MORE_TASKS;
 public class DM extends Thread {
     private int numQueues;
     private List<List<EasyTask>> tasksQueues;
-    private List<AgentAnswer> decryptedStrings;
     private Set<AgentAnswer> decryptPotentials;
+    private Set<String> decryptPotentialStrings;
     private MachineProxy machine;
     private int numOfEasyTasks;
     private int taskSize;
@@ -59,7 +59,6 @@ public class DM extends Thread {
     private int agentToAskAns = 0;
 
 
-
     public EnigmaAgent.InterruptReason getInterruptReason() {
         return interruptReason;
     }
@@ -74,12 +73,12 @@ public class DM extends Thread {
 
 
     //TODO:: add mission-level
-    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level){
+    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level) {
         this.numAgents = numAgents;
         this.machine = machine;
         this.taskSize = taskSize;
         this.decryptPotentials = new HashSet<>();
-        this.decryptedStrings = new ArrayList<>();
+        this.decryptPotentialStrings = new HashSet<>();
         this.encryptedString = encrtyptedString;
         this.enigmaDictionary = dictionary;
         this.reflectors = new ArrayList<>(machine.getReflectors());
@@ -91,38 +90,38 @@ public class DM extends Thread {
 
     }
 
-    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level, Mutex mutex){
-        this(machine, dictionary, encrtyptedString, numAgents,taskSize, level);
+    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level, Mutex mutex) {
+        this(machine, dictionary, encrtyptedString, numAgents, taskSize, level);
         this.mainMutex = mutex;
     }
 
-    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level, Mutex mutex, int port){
-        this(machine, dictionary, encrtyptedString, numAgents,taskSize, level);
+    public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level, Mutex mutex, int port) {
+        this(machine, dictionary, encrtyptedString, numAgents, taskSize, level);
         this.mainMutex = mutex;
         try {
             this.serverSocket = new ServerSocket(port, 0, InetAddress.getLoopbackAddress());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         agentSockets = new ArrayList<>();
     }
 
 
-    public DM init(){
+    public DM init() {
         this.calcNumOfEasyTasks()
                 .createTasksQueues()
                 .connectAgents();
 
-        this.levels.add(() ->this.handleEasyTasks());
-        this.levels.add(() ->this.handleMediumTasks());
+        this.levels.add(() -> this.handleEasyTasks());
+        this.levels.add(() -> this.handleMediumTasks());
         this.levels.add(() -> this.handleHardTasks());
-        this.levels.add(() ->this.handleImpossibleTasks());
+        this.levels.add(() -> this.handleImpossibleTasks());
         return this;
     }
 
     private void connectAgents() {
         agentOutputStreams = new ArrayList<>();
-        for (int i = 0; i < numAgents ; i++) {
+        for (int i = 0; i < numAgents; i++) {
 
             Socket socket = null;
             try {
@@ -135,58 +134,53 @@ public class DM extends Thread {
         }
     }
 
-    public boolean handleEasyTasks(){
+    public boolean handleEasyTasks() {
         this.createEasyTasks()
                 .deliverTasksToQueues()
                 .workProtocolAgents();
 
 
-            while (processedTaskQueues < numQueues) {
-                AgentAnswer potential = getAnswerFromSockets();
-                if (potential != null)
-                    if (potential.getEncryptedString().equals(AGENT_FINISHED_TASKS)) {
-                        processedTaskQueues++;
-                        if(processedTaskQueues == numQueues)
-                            break;
+        while (processedTaskQueues < numQueues) {
+            AgentAnswer potential = getAnswerFromSockets();
+            if (potential != null)
+                if (potential.getEncryptedString().equals(AGENT_FINISHED_TASKS)) {
+                    processedTaskQueues++;
+                    if (processedTaskQueues == numQueues)
+                        break;
 
-                        //add this logic when making numqueues and numagents different
+                    //add this logic when making numqueues and numagents different
 
 //                        if(tasksQueues.size() > 0)
 //                        {
 //                            workProtocolSingleAgent(potential.getAgentId());
 //                        }
-                    }
-                    else {
-                        if (decryptPotentials.contains(potential.getEncryptedString()) == false)
-                            decryptPotentials.add(potential);
-                    }
+                }
 
-                //returns boolean
-                handleInterrupts();
-                //initiate new Agent connections
-            }
+                else {
+                    decryptPotentials.add(potential);
+                    decryptPotentialStrings.add(potential.getEncryptedString());
+                }
+
+            //returns boolean
+            handleInterrupts();
+            //initiate new Agent connections
+        }
 
         processedTaskQueues = 0;
 
-            if(wantedLevel == TaskLevels.levelEasy) {
-                System.out.println(createEndOfDecryptionInfo());
-                this.interruptReason = EnigmaAgent.InterruptReason.STOP;
-                makeWebAgentsToStop();
-            }
-
-            else{
-                notifyAgentsThereAreMoreTasks();
-            }
-
-            return true;
+        if (wantedLevel == TaskLevels.levelEasy) {
+            System.out.println(createEndOfDecryptionInfo());
+            this.interruptReason = EnigmaAgent.InterruptReason.STOP;
+            makeWebAgentsToStop();
+        }
+        return true;
     }
 
     private void workProtocolSingleAgent(int agentId) {
         ObjectOutputStream socketOutputStream = null;
         int index = 0;
         for (Socket agentSocket : agentSockets) {
-            if (agentSocket.getPort() == agentId)
-            {
+            if (agentSocket.getPort() == agentId) {
                 socketOutputStream = agentOutputStreams.get(index);
             }
             index++;
@@ -197,6 +191,7 @@ public class DM extends Thread {
             socketOutputStream.writeObject(enigmaDictionary);
             socketOutputStream.writeObject(tasksQueues.get(processedTaskQueues));
             socketOutputStream.flush();
+            socketOutputStream.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -209,7 +204,7 @@ public class DM extends Thread {
                 socketOutputStream.flush();
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -220,7 +215,7 @@ public class DM extends Thread {
                 socketOutputStream.writeObject(AgentConstants.MORE_TASKS);
                 socketOutputStream.flush();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -231,14 +226,14 @@ public class DM extends Thread {
             if (agentInputStreams == null)
                 initAgentInputStreams();
 
-            agentAnswer = (AgentAnswer)agentInputStreams.get(agentToAskAns).readObject();
+            agentAnswer = (AgentAnswer) agentInputStreams.get(agentToAskAns).readObject();
             agentToAskAnsHandle();
 
 //            for (ObjectInputStream agentInputStream : agentInputStreams) {
 //                agentAnswer = (AgentAnswer) agentInputStream.readObject();
 //            }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -248,7 +243,7 @@ public class DM extends Thread {
 
     private void agentToAskAnsHandle() {
         agentToAskAns++;
-        if(agentToAskAns == agentInputStreams.size())
+        if (agentToAskAns >= agentInputStreams.size())
             agentToAskAns = 0;
     }
 
@@ -265,22 +260,21 @@ public class DM extends Thread {
         }
     }
 
-    private void workProtocolAgents(){
+    private void workProtocolAgents() {
         try {
             for (ObjectOutputStream socketOutputStream : agentOutputStreams) {
                 socketOutputStream.writeObject(machine);
                 socketOutputStream.writeObject(enigmaDictionary);
                 socketOutputStream.writeObject(tasksQueues.get(processedTaskQueues));
                 socketOutputStream.flush();
+                socketOutputStream.reset();
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
-
 
 
     private boolean handleInterrupts() {
@@ -291,7 +285,7 @@ public class DM extends Thread {
             if (interruptReason == EnigmaAgent.InterruptReason.INFOS)
                 createInfosHalfWay();
 
-            if(interruptReason == EnigmaAgent.InterruptReason.STOP){
+            if (interruptReason == EnigmaAgent.InterruptReason.STOP) {
                 finishDmProcess();
                 return false;
             }
@@ -304,12 +298,12 @@ public class DM extends Thread {
         wantedLevel = -1; //so printing wont happen again
     }
 
-    public List<String> createEndOfDecryptionInfo(){
+    public List<String> createEndOfDecryptionInfo() {
         List<String> endOfDecryptionInfo = new ArrayList<>();
-        endOfDecryptionInfo.add("total processing time = " + calcTotalTime()  + "\n");
+        endOfDecryptionInfo.add("total processing time = " + calcTotalTime() + "\n");
         endOfDecryptionInfo.add("total number of processed strings = " + totalTasksDelivered + "\n");
-        int tasksPerAgent = totalTasksDelivered /taskSize / numQueues;
-        endOfDecryptionInfo.add("Encrypted Strings: \n " + decryptPotentials.toString());
+        int tasksPerAgent = totalTasksDelivered / taskSize / numQueues;
+        endOfDecryptionInfo.add("Encrypted Strings: \n " + decryptPotentialStrings);
 
         return endOfDecryptionInfo;
 
@@ -328,28 +322,28 @@ public class DM extends Thread {
         ;
     }
 
-    public boolean handleMediumTasks(){
+    public boolean handleMediumTasks() {
+        int dontNotifytMoreTasks = 0;
         for (Reflector reflector : reflectors) {
             this.machine.setChosenReflector(RomanInterpeter.numToRoman(reflector.getId()));
-            if(handleEasyTasks() == false){
+            if (handleEasyTasks() == false) {
                 return false;
             }
+            if (dontNotifytMoreTasks != reflectors.size() - 1)
+                notifyAgentsThereAreMoreTasks();
+
+            dontNotifytMoreTasks++;
         }
-        if(wantedLevel == TaskLevels.levelMedium) {
+        if (wantedLevel == TaskLevels.levelMedium) {
             System.out.println(createEndOfDecryptionInfo());
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
         }
-
-        else{
-            notifyAgentsThereAreMoreTasks();
-        }
-
-            return true;
+        return true;
 
     }
 
-    public void setPermutationForRotorIdsHelper(){
+    public void setPermutationForRotorIdsHelper() {
         rotorIdsPermutations = new ArrayList<>();
 
         List<Integer> chosenRotorIds = new ArrayList<>();
@@ -362,109 +356,107 @@ public class DM extends Thread {
 
 
     //this method assumes ids in machine are allready known
-    public boolean handleHardTasks(){
+    public boolean handleHardTasks() {
         setPermutationForRotorIdsHelper();
+        int dontNotifytMoreTasks = 0;
         Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (List<Integer> rotorIdsPermutation : rotorIdsPermutations) {
-            for (int i = 0; i < machine.getAppliedRotors() ; i++) {
+            for (int i = 0; i < machine.getAppliedRotors(); i++) {
                 rotorsAndLocations[i] = new Pair<>(rotorIdsPermutation.get(i), 1);
             }
             machine.setChosenRotors(rotorsAndLocations);
-            if(handleMediumTasks() == false){
+            if (handleMediumTasks() == false) {
                 return false;
             }
+            if (dontNotifytMoreTasks != rotorIdsPermutations.size() - 1)
+                notifyAgentsThereAreMoreTasks();
+
+            dontNotifytMoreTasks++;
         }
 
-        if(wantedLevel == TaskLevels.levelHard) {
+        if (wantedLevel == TaskLevels.levelHard) {
             System.out.println(createEndOfDecryptionInfo());
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
         }
-
-        else{
-            notifyAgentsThereAreMoreTasks();
-        }
-
-            return true;
+        return true;
 
     }
 
 
-    private void setNoverKForRotorIds(List<Integer> rotors, int len, int startPosition, List<Integer> result){
-        if (len == 0){
+    private void setNoverKForRotorIds(List<Integer> rotors, int len, int startPosition, List<Integer> result) {
+        if (len == 0) {
             rotorIdsNoverK.add(new ArrayList<>(result));
             return;
         }
-        for (int i = startPosition; i <= rotors.size()-len; i++){
+        for (int i = startPosition; i <= rotors.size() - len; i++) {
             result.set(result.size() - len, rotors.get(i));
-            setNoverKForRotorIds(rotors, len-1, i+1, result);
+            setNoverKForRotorIds(rotors, len - 1, i + 1, result);
         }
     }
 
-    private void setNoverKForRotorIdsHelper(){
+    private void setNoverKForRotorIdsHelper() {
         rotorIdsNoverK = new ArrayList<>();
         List<Integer> resultNOverK = new ArrayList();
-        for (int i = 0; i < machine.getAppliedRotors() ; i++) {
+        for (int i = 0; i < machine.getAppliedRotors(); i++) {
             resultNOverK.add(0);
         }
-        setNoverKForRotorIds(machine.getRotorIds(), machine.getAppliedRotors(),0,resultNOverK);
+        setNoverKForRotorIds(machine.getRotorIds(), machine.getAppliedRotors(), 0, resultNOverK);
     }
 
 
-    public boolean handleImpossibleTasks(){
+    public boolean handleImpossibleTasks() {
         setNoverKForRotorIdsHelper();
+        int dontNotifytMoreTasks = 0;
         Pair<Integer, Integer>[] rotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (List<Integer> rotoridsNoverKOneOption : rotorIdsNoverK) {
             for (int i = 0; i < machine.getAppliedRotors(); i++) {
                 rotorsAndLocations[i] = new Pair<>(rotoridsNoverKOneOption.get(i), 1);
             }
             machine.setChosenRotors(rotorsAndLocations);
-            if(handleHardTasks() == false){
+            if (handleHardTasks() == false) {
                 return false;
             }
+            if (dontNotifytMoreTasks != rotorIdsPermutations.size() - 1)
+                notifyAgentsThereAreMoreTasks();
+
+            dontNotifytMoreTasks++;
         }
 
-        if(wantedLevel == TaskLevels.levelImpossible) {
+        if (wantedLevel == TaskLevels.levelImpossible) {
             System.out.println(createEndOfDecryptionInfo());
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
         }
 
-        else{
-            notifyAgentsThereAreMoreTasks();
-        }
-
-
-            return true;
+        return true;
     }
 
     private DM deliverTasksToQueues() {
         int deliveredTasks = 0;
-            for (List<EasyTask> tasksQueue : tasksQueues) {
-                int numOfTasksPerList = (numOfEasyTasks / numQueues);
-                for (int i = 0; i < numOfTasksPerList; i++) {
-                    tasksQueue.add(easyTasks.get(deliveredTasks));
-                    deliveredTasks++;
-                }
-                //last mission for Agent to stop
-                tasksQueue.add(new EasyTask(null, null, 0));
+        for (List<EasyTask> tasksQueue : tasksQueues) {
+            int numOfTasksPerList = (numOfEasyTasks / numQueues);
+            for (int i = 0; i < numOfTasksPerList; i++) {
+                tasksQueue.add(easyTasks.get(deliveredTasks));
+                deliveredTasks++;
             }
+            //last mission for Agent to stop
+            tasksQueue.add(new EasyTask(null, null, 0));
+        }
 
-            if(deliveredTasks < numOfEasyTasks) {
-                tasksQueues.get(0).remove(tasksQueues.get(0).size() -1);
-                while (deliveredTasks < numOfEasyTasks) {
-                    tasksQueues.get(0).add(easyTasks.get(deliveredTasks));
-                    deliveredTasks++;
-                }
-                tasksQueues.get(0).add(new EasyTask(null, null, 0
-                ));
+        if (deliveredTasks < numOfEasyTasks) {
+            tasksQueues.get(0).remove(tasksQueues.get(0).size() - 1);
+            while (deliveredTasks < numOfEasyTasks) {
+                tasksQueues.get(0).add(easyTasks.get(deliveredTasks));
+                deliveredTasks++;
             }
-            this.totalTasksDelivered += deliveredTasks * taskSize;
-            ;//TODO::handle all interrupts in DM
+            tasksQueues.get(0).add(new EasyTask(null, null, 0
+            ));
+        }
+        this.totalTasksDelivered += deliveredTasks * taskSize;
+        ;//TODO::handle all interrupts in DM
         return this;
     }
-
-
 
 
     @Override
@@ -475,13 +467,12 @@ public class DM extends Thread {
     }
 
 
-    private DM calcNumOfEasyTasks()
-    {
+    private DM calcNumOfEasyTasks() {
         int numLetters = machine.getLanguage().length;
         int numRotors = machine.getAppliedRotors();
         //check this casting
-        numOfEasyTasks =(int)Math.pow(numLetters, numRotors) / taskSize;
-        numOfEasyTasks += (int)Math.pow(numLetters, numRotors) % taskSize;
+        numOfEasyTasks = (int) Math.pow(numLetters, numRotors) / taskSize;
+        numOfEasyTasks += (int) Math.pow(numLetters, numRotors) % taskSize;
         return this;
     }
 
@@ -490,13 +481,13 @@ public class DM extends Thread {
         rotorLocationCounter = new RotorLocationCounter(machine.getLanguageInterpeter(), getInitialSettingsOfMachine());
         int createdTasks = 0;
         for (createdTasks = 0; createdTasks < numOfEasyTasks; createdTasks++) {
-            this.easyTasks.add(new EasyTask(rotorLocationCounter.getCurrentRotorsAndLocations() ,encryptedString,taskSize));
+            this.easyTasks.add(new EasyTask(rotorLocationCounter.getCurrentRotorsAndLocations(), encryptedString, taskSize));
             rotorLocationCounter.nextRotorsAndLocations(taskSize);
         }
         return this;
     }
 
-    public DM createTasksQueues(){
+    public DM createTasksQueues() {
         this.tasksQueues = new ArrayList<>();
         for (int i = 0; i < numQueues; i++) {
             this.tasksQueues.add(new ArrayList<>());
@@ -505,7 +496,7 @@ public class DM extends Thread {
     }
 
     //this function assumes the machine has allready set the chosen rotors ids
-    public Pair<Integer,Integer>[] getInitialSettingsOfMachine() {
+    public Pair<Integer, Integer>[] getInitialSettingsOfMachine() {
         Pair<Integer, Integer>[] initialRotorsAndLocations = new Pair[machine.getAppliedRotors()];
         for (int i = 0; i < machine.getAppliedRotors(); i++) {
             initialRotorsAndLocations[i] = new Pair(machine.getCurrentRotorAndLocations()[i].getKey(), machine.getLanguageInterpeter().getLanguageAsNumbers().get(0));
@@ -513,13 +504,13 @@ public class DM extends Thread {
         return initialRotorsAndLocations;
     }
 
-    public void setPermutationsForRotorIds(List<Integer> chosenRotorIds, int currentCreatedSize){
-        for(int i = currentCreatedSize; i < chosenRotorIds.size(); i++){
+    public void setPermutationsForRotorIds(List<Integer> chosenRotorIds, int currentCreatedSize) {
+        for (int i = currentCreatedSize; i < chosenRotorIds.size(); i++) {
             java.util.Collections.swap(chosenRotorIds, i, currentCreatedSize);
-            setPermutationsForRotorIds(chosenRotorIds, currentCreatedSize+1);
+            setPermutationsForRotorIds(chosenRotorIds, currentCreatedSize + 1);
             java.util.Collections.swap(chosenRotorIds, currentCreatedSize, i);
         }
-        if (currentCreatedSize == chosenRotorIds.size() -1){
+        if (currentCreatedSize == chosenRotorIds.size() - 1) {
             rotorIdsPermutations.add(new ArrayList<>(chosenRotorIds));
         }
     }
@@ -534,7 +525,7 @@ public class DM extends Thread {
         int id = 1;
         for (List<EasyTask> tasksQueue : tasksQueues) {
             for (EasyTask easyTask : tasksQueue) {
-                if(easyTask.getRotorsAndNotches() != null) {
+                if (easyTask.getRotorsAndNotches() != null) {
                     missionsForAgent.add("Agent id: " + id + " mission: " + machine.getLanguageInterpeter().numberToLetters(easyTask.getNumberLocations()) + "\n");
                 }
             }
@@ -546,14 +537,14 @@ public class DM extends Thread {
         for (AgentAnswer decryptPotential : decryptPotentials) {
             tempAgentAnsewer.add(decryptPotential);
             index++;
-            if(index == 10)
+            if (index == 10)
                 break;
         }
 
 
         int percentageLeft = ((totalTasksDelivered * 100) / totalTasksOptions);
-        while(percentageLeft > 99)
-                percentageLeft = percentageLeft / 10;
+        while (percentageLeft > 99)
+            percentageLeft = percentageLeft / 10;
 
         HalfWayInfo halfWayInfo = new HalfWayInfo(tempAgentAnsewer, percentageLeft, missionsForAgent);
     }

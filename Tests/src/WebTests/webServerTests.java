@@ -26,9 +26,7 @@ public class webServerTests {
     public static void init() {
         mp = null;
         try {
-            mp = MachineXmlParser.parseXmlToMachineProxy("ex2-basic.xml");
-            mp.setChosenRotors(new Pair<>(2, 3), new Pair<>(1, 3)); //left to right
-            mp.setChosenReflector("I");
+            mp = MachineXmlParser.parseXmlToMachineProxy("ex3-basic.xml");
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -54,18 +52,19 @@ public class webServerTests {
     public void testDMWeb() {
         integrator.loadMachineFromXml("ex3-basic.xml");
         mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
-        mp.setChosenReflector("I");
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex2-basic.xml"), "?KUUCYVAQS", 2, 20, TaskLevels.levelEasy, new Mutex(), 9090);
+        mp.setChosenReflector("II");
+        String test = mp.encryptCodeToString("encapsulation".toUpperCase());
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex3-basic.xml"), test, 1, 20, TaskLevels.levelEasy, new Mutex(), 9090);
         dm.run();
     }
 
     @Test
     public void testDMmedium() {
         integrator.loadMachineFromXml("ex3-basic.xml");
-        mp.setChosenRotors(new Pair<>(2, 1), new Pair<>(3, 1), new Pair(5, 1)); //left to right
-        // mp.setChosenReflector("II");
-        String test = mp.encryptCodeToString("encapsulation".toUpperCase());
-        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex3-basic.xml"), test, 2, 20, TaskLevels.levelMedium, new Mutex(), 9090);
+        mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
+        mp.setChosenReflector("II");
+        String test = mp.encryptCodeToString("electricity".toUpperCase());
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex3-basic.xml"), test, 3, 20, TaskLevels.levelMedium, new Mutex(), 9090);
         dm.run();
     }
 
