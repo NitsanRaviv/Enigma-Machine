@@ -31,6 +31,4 @@ public class newUboatServlet extends HttpServlet {
         competitionList.add(competition);
         getServletContext().setAttribute("competitions", competitionList);
     }
-
-
 }

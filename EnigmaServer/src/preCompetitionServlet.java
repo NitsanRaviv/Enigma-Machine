@@ -1,6 +1,4 @@
 import EnigmaCompetition.Competition;
-import LogicManager.InitialCode.InitialCodeParser;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +13,7 @@ public class preCompetitionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         setInitialCode(req);
         setStringToDecrypt(req);
+        setGameLevel(req);
         resp.sendRedirect("/theGameUboat.html");
     }
 
@@ -32,6 +31,15 @@ public class preCompetitionServlet extends HttpServlet {
         String stringToEncrypt = req.getParameter("stringToProcess").toUpperCase();
         competition.setDecryptedString(stringToEncrypt.toUpperCase());
         competition.setEncryptedString(competition.getIntegrator().processInput(stringToEncrypt.toUpperCase()).toUpperCase());
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
+    }
+
+    private void setGameLevel(HttpServletRequest req) {
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
+        //String gameLevel = competition.getBattlefield().getLevel();
+        //TODO::get competition from string - easy, medium etc.
+        String gameLevel = "1";
+        competition.setTaskLevel(Integer.parseInt(gameLevel));
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 }

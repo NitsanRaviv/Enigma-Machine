@@ -11,8 +11,10 @@ import javax.servlet.http.Part;
 import EnigmaCompetition.Competition;
 import EnigmaCompetition.Ubout;
 import LogicManager.*;
+import XmlParsing.DictionaryXmlParser;
 import XmlParsing.Ex3XmlParser;
 import XmlParsing.JaxbClasses.Battlefield;
+import agentUtilities.EnigmaDictionary;
 
 
 @WebServlet("/UploadServlet")
@@ -63,6 +65,7 @@ public class UploadServlet extends HttpServlet {
         createNewUboat(request);
         setIntegratorForCompetition(pathToNewFile, request);
         setBattlefieldForCompetition(pathToNewFile, request);
+        setEnigmaDictionaryForCompetition(pathToNewFile, request);
     }
 
     private void createNewUboat(HttpServletRequest req) {
@@ -90,6 +93,20 @@ public class UploadServlet extends HttpServlet {
             e.printStackTrace();
         }
         competition.setBattlefield(battlefield);
+        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
+    }
+
+
+    private void setEnigmaDictionaryForCompetition(String xmlPath, HttpServletRequest req){
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
+        EnigmaDictionary dictionary = null;
+        try {
+            dictionary = DictionaryXmlParser.getDictionaryXmlParser().getDictionary(xmlPath);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        competition.setDictionary(dictionary);
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 

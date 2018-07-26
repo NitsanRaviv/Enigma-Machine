@@ -68,4 +68,14 @@ public class webServerTests {
         dm.run();
     }
 
+    @Test
+    public void testDMhard() {
+        integrator.loadMachineFromXml("ex3-basic.xml");
+        mp.setChosenRotors(new Pair<>(5, 1), new Pair<>(2, 1), new Pair(3, 1)); //left to right
+        mp.setChosenReflector("II");
+        String test = mp.encryptCodeToString("electricity".toUpperCase());
+        DM dm = new DM(mp, DictionaryXmlParser.getDictionaryXmlParser().getDictionary("ex3-basic.xml"), test, 3, 20, TaskLevels.levelHard, new Mutex(), 9090);
+        dm.run();
+    }
+
 }

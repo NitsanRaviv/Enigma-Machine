@@ -1,7 +1,9 @@
 package EnigmaCompetition;
 
+import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.Integrator;
 import XmlParsing.JaxbClasses.Battlefield;
+import agentUtilities.EnigmaDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +15,34 @@ public class Competition {
     private String decryptedString;
     private String encryptedString;
     private Battlefield battlefield;
+    private EnigmaDictionary dictionary;
+    private int taskLevel;
+
+    public EnigmaDictionary getDictionary() {
+        return dictionary;
+    }
+
+    public void setDictionary(EnigmaDictionary dictionary) {
+        this.dictionary = dictionary;
+    }
 
 
-    public void setAllies(Ally ally) {
+
+    public int getTaskLevel() {
+        return taskLevel;
+    }
+
+    public void setTaskLevel(int taskLevel) {
+        this.taskLevel = taskLevel;
+    }
+
+
+
+    public String getEncryptedString() {
+        return encryptedString;
+    }
+
+    public void addAlly(Ally ally) {
         if(ally == null)
             this.allies = new ArrayList<>();
 
@@ -49,5 +76,9 @@ public class Competition {
 
     public void setBattlefield(Battlefield battlefield) {
         this.battlefield = battlefield;
+    }
+
+    public Ubout getUboat() {
+        return uboat;
     }
 }
