@@ -5,7 +5,9 @@ var availableGames_url = "localhost:8080/openCompetitions";
           //prevent IE from caching ajax calls
           $.ajaxSetup({cache: false});
 
-          getAvailableGames();
+          window.setInterval(function(){
+              getAvailableGames();
+          }, 5000);
 
 
       });
