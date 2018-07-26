@@ -1,5 +1,5 @@
 var availableGames_url = "http://localhost:8080/openCompetitions";
-var allGames = {};
+var allGames = [];
 var i = 1;
 
       $(function () {
@@ -33,7 +33,7 @@ var i = 1;
                               game.appendChild(t_game);
 
                               document.getElementById("availableCompetition").appendChild(game);
-                              allGames[i-1] = availableGames[url];
+                              allGames.push(availableGames[url]);
                               i++;
                           }
 
