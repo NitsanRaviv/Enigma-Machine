@@ -1,4 +1,6 @@
-var availableGames_url = "localhost:8080/openCompetitions";
+var availableGames_url = "http://localhost:8080/openCompetitions";
+var allGames = {};
+var i = 1;
 
       $(function () {
 
@@ -19,14 +21,22 @@ var availableGames_url = "localhost:8080/openCompetitions";
               success: function (data) {
                   if (data) {
                       availableGames = $.parseJSON(data);
-                      var i = 1;
+                      var addNew = 1;
                       for (var url in availableGames) {
-                          var game = document.createElement("P");
-                          var t_game = document.createTextNode(i + ". " + availableGames[url]);
-                          game.appendChild(t_game);
+                          for(var game in allGames){
+                              if(game.localeCompare(availableGames[url]) === 0)
+                                  addNew = 0;
+                          }
+                          if(addNew) {
+                              var game = document.createElement("P");
+                              var t_game = document.createTextNode(i + ". " + availableGames[url]);
+                              game.appendChild(t_game);
 
-                          document.getElementById("availableCompetition").appendChild(game);
-                          i++;
+                              document.getElementById("availableCompetition").appendChild(game);
+                              i++;
+                          }
+
+                          addNew = 1;
                       }
                   }
               }
