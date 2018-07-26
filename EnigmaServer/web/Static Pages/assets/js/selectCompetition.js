@@ -9,7 +9,7 @@ var i = 1;
 
           window.setInterval(function(){
               getAvailableGames();
-          }, 5000);
+          }, 3000);
 
 
       });
@@ -33,6 +33,7 @@ var i = 1;
                               game.appendChild(t_game);
 
                               document.getElementById("availableCompetition").appendChild(game);
+                              allGames[i-1] = availableGames[url];
                               i++;
                           }
 
