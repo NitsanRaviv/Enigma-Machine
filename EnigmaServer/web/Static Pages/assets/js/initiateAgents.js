@@ -1,4 +1,4 @@
-var port_url = "http://localhost:8080/???";
+var port_url = "http://localhost:8080/getAllyPort";
 
 
       $(function () {
@@ -18,10 +18,12 @@ var port_url = "http://localhost:8080/???";
                   if (data) {
                       thePort = $.parseJSON(data);
 
+                      for (var url in thePort) {
                       var portToUser = document.createElement("h2");
-                      var t_port = document.createTextNode(thePort);
+                      var t_port = document.createTextNode(thePort[url]);
                       portToUser.appendChild(t_port);
                       document.getElementById("port").appendChild(portToUser);
-                      }
+                    }
+                 }
           });
       }
