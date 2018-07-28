@@ -57,6 +57,16 @@ public class DM extends Thread {
     private List<ObjectOutputStream> agentOutputStreams;
     private int numAgents;
     private int agentToAskAns = 0;
+    boolean ready = false;
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
 
 
     public EnigmaAgent.InterruptReason getInterruptReason() {
@@ -111,6 +121,9 @@ public class DM extends Thread {
         this.calcNumOfEasyTasks()
                 .createTasksQueues()
                 .connectAgents();
+        this.mainMutex.lock();
+        this.mainMutex.unlock();
+        //add - wait for ally to say - start
 
         this.levels.add(() -> this.handleEasyTasks());
         this.levels.add(() -> this.handleMediumTasks());
@@ -132,6 +145,8 @@ public class DM extends Thread {
                 e.printStackTrace();
             }
         }
+        //TODO:: new thread for connecting, ready is decided by user!!
+        ready = true;
     }
 
     public boolean handleEasyTasks() {
@@ -263,6 +278,7 @@ public class DM extends Thread {
     private void workProtocolAgents() {
         try {
             for (ObjectOutputStream socketOutputStream : agentOutputStreams) {
+                socketOutputStream.reset();
                 socketOutputStream.writeObject(machine);
                 socketOutputStream.writeObject(enigmaDictionary);
                 socketOutputStream.writeObject(tasksQueues.get(processedTaskQueues));
@@ -462,6 +478,7 @@ public class DM extends Thread {
     @Override
     public void run() {
         this.init();
+        System.out.println("DM: finished initiation");
         startTime = System.currentTimeMillis();
         this.levels.get(wantedLevel - 1).run();
     }

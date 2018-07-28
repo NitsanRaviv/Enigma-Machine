@@ -180,6 +180,8 @@ public class MachineProxy implements Serializable {
     @Override
     public MachineProxy clone() throws CloneNotSupportedException {
         MachineProxy clone = new MachineProxy(machine.clone(), languageInterpeter, appliedRotors);
+        Pair<Integer, Integer>[] copyRotorLoc = copyRotorsAndLocations(currentRotorAndLocations);
+        clone.currentRotorAndLocations = copyRotorLoc;
         return clone;
     }
 

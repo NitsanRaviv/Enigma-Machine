@@ -30,7 +30,7 @@ public class preCompetitionServlet extends HttpServlet {
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
         String stringToEncrypt = req.getParameter("stringToProcess").toUpperCase();
         competition.setDecryptedString(stringToEncrypt.toUpperCase());
-        competition.setEncryptedString(competition.getIntegrator().processInput(stringToEncrypt.toUpperCase()).toUpperCase());
+        competition.setEncryptedString(competition.getIntegrator().getMachine().encryptCodeToString(stringToEncrypt.toUpperCase()));
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 
@@ -38,7 +38,7 @@ public class preCompetitionServlet extends HttpServlet {
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
         //String gameLevel = competition.getBattlefield().getLevel();
         //TODO::get competition from string - easy, medium etc.
-        String gameLevel = "1";
+        String gameLevel = "1"; // change
         competition.setTaskLevel(Integer.parseInt(gameLevel));
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }

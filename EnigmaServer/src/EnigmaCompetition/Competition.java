@@ -17,6 +17,7 @@ public class Competition {
     private Battlefield battlefield;
     private EnigmaDictionary dictionary;
     private int taskLevel;
+    private boolean competitionReady = false;
 
     public EnigmaDictionary getDictionary() {
         return dictionary;
@@ -43,7 +44,7 @@ public class Competition {
     }
 
     public void addAlly(Ally ally) {
-        if(ally == null)
+        if(this.allies == null)
             this.allies = new ArrayList<>();
 
         this.allies.add(ally);
@@ -80,5 +81,21 @@ public class Competition {
 
     public Ubout getUboat() {
         return uboat;
+    }
+
+    public boolean checkReady() {
+
+        if(battlefield.getAllies() != allies.size())
+            return false;
+
+        for (Ally ally : allies) {
+            if(ally.checkReady() == false)
+                return false;
+        }
+        return true;
+    }
+
+    public List<Ally> getAllies() {
+        return this.allies;
     }
 }

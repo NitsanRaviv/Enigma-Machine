@@ -6,7 +6,7 @@ var i = 1;
 
           //prevent IE from caching ajax calls
           $.ajaxSetup({cache: false});
-
+          getAvailableGames();
           window.setInterval(function(){
               getAvailableGames();
           }, 3000);
@@ -24,7 +24,7 @@ var i = 1;
                       var addNew = 1;
                       for (var url in availableGames) {
                           for(var game in allGames){
-                              if(game.localeCompare(availableGames[url]) === 0)
+                              if(allGames[game].localeCompare(availableGames[url]) === 0)
                                   addNew = 0;
                           }
                           if(addNew) {

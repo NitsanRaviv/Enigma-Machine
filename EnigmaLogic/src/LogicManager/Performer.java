@@ -60,7 +60,7 @@ public class Performer {
         machineProxy.isMachineSet(true);
     }
 
-    public String setRandomMachineCode(){
+    public static String setRandomMachineCode(MachineProxy machineProxy){
         Random random = new Random();
         boolean exists = false;
         int rotorId = 0;
@@ -89,6 +89,38 @@ public class Performer {
         machineProxy.isMachineSet(true);
         return machineProxy.getCurrentCode();
     }
+
+    public String setRandomMachineCode(){
+        Random random = new Random();
+        boolean exists = false;
+        int rotorId = 0;
+        int maxRotorNum = Math.min(5, machineProxy.getNumRotors());
+        int rotorNum  = machineProxy.getAppliedRotors();
+        int insertedrotors = 0;
+        Pair<Integer, Integer>rotorsAndNotchArr [] = new Pair[rotorNum];
+        while (rotorNum > insertedrotors) {
+            rotorId = Math.abs(random.nextInt()) % machineProxy.getNumRotors() + 1;
+            for (Pair<Integer, Integer> p : rotorsAndNotchArr) {
+                if (p != null) {
+                    if (p.getKey() == rotorId)
+                        exists = true;
+                }
+            }
+            if(exists == false){
+                rotorsAndNotchArr[insertedrotors] = new Pair<>(rotorId, Math.abs(random.nextInt()) % machineProxy.getLanguageInterpeter().getLanguageAsNumbers().size() + 1);
+                insertedrotors++;
+            }
+            exists = false;
+        }
+        machineProxy.setChosenRotors(rotorsAndNotchArr);
+        int randomRefl = Math.abs(random.nextInt());
+        Integer reflRand = randomRefl % machineProxy.getNumReflectors() + 1;
+        machineProxy.setChosenReflector(RomanInterpeter.numToRoman(reflRand));
+        machineProxy.isMachineSet(true);
+        return machineProxy.getCurrentCode();
+    }
+
+
 
     public List<String> getMachineSpecification()
     {

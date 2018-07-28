@@ -1,10 +1,12 @@
 package Utils;
 
 import Constants.ServerConstants;
+import EnigmaCompetition.Ally;
 import EnigmaCompetition.Competition;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
+import java.util.List;
 
 public class CookieUtils {
 
@@ -26,5 +28,20 @@ public class CookieUtils {
 
         }
         return userCookie;
+    }
+
+    public static Ally getAllyFromUserName(Cookie userCookie, ServletContext servletContext) {
+        String allyName = userCookie.getValue();
+        Ally ally = null;
+        List<Competition> competitions = (List<Competition>) servletContext.getAttribute("competitions");
+        for (Competition competition : competitions) {
+            for (Ally allyComp : competition.getAllies()) {
+                if(allyComp.getUsername().equals(allyName)){
+                    ally = allyComp;
+                    break;
+                }
+            }
+        }
+        return ally;
     }
 }
