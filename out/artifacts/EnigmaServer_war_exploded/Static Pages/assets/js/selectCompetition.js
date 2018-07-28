@@ -6,7 +6,7 @@ var i = 1;
 
           //prevent IE from caching ajax calls
           $.ajaxSetup({cache: false});
-
+          getAvailableGames();
           window.setInterval(function(){
               getAvailableGames();
           }, 3000);

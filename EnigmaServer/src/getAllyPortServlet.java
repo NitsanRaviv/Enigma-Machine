@@ -23,7 +23,6 @@ public class getAllyPortServlet extends HttpServlet {
 
     private void startDmIfneeded(Ally ally){
         if(ally.getState().equals(Ally.State.inActive)) {
-            ally.getMutex().lock();
             ally.getDm().start();
             ally.setState(Ally.State.waitingForAgents);
         }

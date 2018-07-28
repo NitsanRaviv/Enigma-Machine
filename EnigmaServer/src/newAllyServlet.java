@@ -42,12 +42,12 @@ public class newAllyServlet extends HttpServlet {
         DM dm = null;
         try {
             MachineProxy machineProxy = competition.getIntegrator().getMachine().clone();
-            //Performer.setRandomMachineCode(machineProxy);
             String stringToDecrypt = competition.getEncryptedString().toUpperCase();
             EnigmaDictionary enigmaDictionary = competition.getDictionary();
             int taskLevel = competition.getTaskLevel();
             ///change numAgents!!
-             dm = new DM(machineProxy, enigmaDictionary, stringToDecrypt,1, 100, taskLevel, mutex, allyPort);
+             dm = new DM(machineProxy, enigmaDictionary, stringToDecrypt,0, 100, taskLevel, mutex, allyPort);
+             //numAgents is redundant - decided by user dynamically
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

@@ -57,17 +57,11 @@ public class DM extends Thread {
     private List<ObjectOutputStream> agentOutputStreams;
     private int numAgents;
     private int agentToAskAns = 0;
-    boolean ready = false;
+    private boolean keepConnectingAgents = true;
 
-    public boolean isReady() {
-        return ready;
+    public void setKeepConnectingAgents(boolean keepConnectingAgents) {
+        this.keepConnectingAgents = keepConnectingAgents;
     }
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
-
-
 
     public EnigmaAgent.InterruptReason getInterruptReason() {
         return interruptReason;
@@ -119,12 +113,19 @@ public class DM extends Thread {
 
     public DM init() {
         this.calcNumOfEasyTasks()
-                .createTasksQueues()
                 .connectAgents();
-        this.mainMutex.lock();
-        this.mainMutex.unlock();
-        //add - wait for ally to say - start
 
+        synchronized (mainMutex) {
+            try {
+                mainMutex.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //this.mainMutex.lock(); //ask lock
+            //this.mainMutex.unlock(); //release lock
+        }
+
+        createTasksQueues();
         this.levels.add(() -> this.handleEasyTasks());
         this.levels.add(() -> this.handleMediumTasks());
         this.levels.add(() -> this.handleHardTasks());
@@ -132,21 +133,28 @@ public class DM extends Thread {
         return this;
     }
 
-    private void connectAgents() {
+    private DM connectAgents() {
         agentOutputStreams = new ArrayList<>();
-        for (int i = 0; i < numAgents; i++) {
+        connectAgentThread();
+        return this;
+    }
 
-            Socket socket = null;
-            try {
-                socket = serverSocket.accept();
-                this.agentSockets.add(socket);
-                agentOutputStreams.add(new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream())));
-            } catch (Exception e) {
-                e.printStackTrace();
+    private void connectAgentThread() {
+        Thread thread = new Thread(() -> {
+            while (keepConnectingAgents) {
+                Socket socket = null;
+                try {
+                    socket = serverSocket.accept();
+                    this.agentSockets.add(socket);
+                    agentOutputStreams.add(new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream())));
+                    numAgents++;
+                    numQueues++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        //TODO:: new thread for connecting, ready is decided by user!!
-        ready = true;
+        });
+        thread.start();
     }
 
     public boolean handleEasyTasks() {
@@ -169,16 +177,16 @@ public class DM extends Thread {
 //                        {
 //                            workProtocolSingleAgent(potential.getAgentId());
 //                        }
-                }
-
-                else {
+                } else {
                     decryptPotentials.add(potential);
                     decryptPotentialStrings.add(potential.getEncryptedString());
+                    //lock and notify ally a potential was found,
+                    //ally should notify competition-manager - observer pattern
+
                 }
 
             //returns boolean
             handleInterrupts();
-            //initiate new Agent connections
         }
 
         processedTaskQueues = 0;

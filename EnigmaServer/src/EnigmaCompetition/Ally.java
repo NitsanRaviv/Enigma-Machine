@@ -39,7 +39,7 @@ public class Ally {
     }
 
     public boolean checkReady() {
-       return this.dm.isReady();
+       return this.state.equals(State.waitingToStart);
     }
 
     public void setCompetition(Competition competition) {
@@ -59,7 +59,7 @@ public class Ally {
     }
 
     public enum State {
-        inActive, waitingForAgents, dmProcessing,
+        inActive, waitingForAgents,waitingToStart, dmProcessing,
     }
 
 }
