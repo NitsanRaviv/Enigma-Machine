@@ -2,31 +2,40 @@ var competitionStart_url = buildUrlWithContextPath("competitionStart");
 var membersInfo_url = buildUrlWithContextPath("membersInfo");
 var optionalStrings_url = buildUrlWithContextPath("optionalStrings");
 var gameOver_url = buildUrlWithContextPath("gameOver");
+var membersInfo = []
 
 
 $(function () {
 
     //prevent IE from caching ajax calls
     $.ajaxSetup({cache: false});
-
-    competitionStart();
+    while(competitionStart() === false){
+        sleepFor(30000)
+    }
     getMembersInfo();
     getOptionalStrings();
     gameOver();
 });
 
 
-function competitionStart() {
+function sleepFor( sleepDuration ){
+    var now = new Date().getTime();
+    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
+}
 
+function competitionStart() {
+    var res = false;
     $.ajax({
         url: competitionStart_url,
         datatype: 'json',
         success: function (data) {
             if (data) {
                 alert("We are ready to start!");
+                res = true;
             }
         }
     });
+    return res;
 }
 
 // get json with crew name and num of agents
@@ -56,7 +65,7 @@ function competitionStart() {
       });
   }
 
-// get json with crew name and optinal string
+// get json with crew name and optional string
 
       function getOptionalStrings() {
           $.ajax({

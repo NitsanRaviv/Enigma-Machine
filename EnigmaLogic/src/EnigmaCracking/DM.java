@@ -58,6 +58,7 @@ public class DM extends Thread {
     private int numAgents;
     private int agentToAskAns = 0;
     private boolean keepConnectingAgents = true;
+    private AllyObserver allyObserver;
 
     public void setKeepConnectingAgents(boolean keepConnectingAgents) {
         this.keepConnectingAgents = keepConnectingAgents;
@@ -180,6 +181,7 @@ public class DM extends Thread {
                 } else {
                     decryptPotentials.add(potential);
                     decryptPotentialStrings.add(potential.getEncryptedString());
+                    allyObserver.notifyAlly(potential.getEncryptedString());
                     //lock and notify ally a potential was found,
                     //ally should notify competition-manager - observer pattern
 
@@ -468,7 +470,7 @@ public class DM extends Thread {
             tasksQueue.add(new EasyTask(null, null, 0));
         }
 
-        if (deliveredTasks < numOfEasyTasks) {
+        if (deliveredTasks < numOfEasyTasks && tasksQueues.get(0).size() > 0) {
             tasksQueues.get(0).remove(tasksQueues.get(0).size() - 1);
             while (deliveredTasks < numOfEasyTasks) {
                 tasksQueues.get(0).add(easyTasks.get(deliveredTasks));
@@ -478,7 +480,7 @@ public class DM extends Thread {
             ));
         }
         this.totalTasksDelivered += deliveredTasks * taskSize;
-        ;//TODO::handle all interrupts in DM
+        //TODO::handle all interrupts in DM
         return this;
     }
 
@@ -580,5 +582,9 @@ public class DM extends Thread {
 
     public void setTotalTasksOptions(int totalTasksOptions) {
         this.totalTasksOptions = totalTasksOptions;
+    }
+
+    public void setAllyObserver(AllyObserver allyObserver) {
+        this.allyObserver = allyObserver;
     }
 }

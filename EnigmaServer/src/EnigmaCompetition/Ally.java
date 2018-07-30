@@ -1,10 +1,11 @@
 package EnigmaCompetition;
 
 import EnigmaCracking.DM;
+import EnigmaCracking.AllyObserver;
 import LogicManager.Integrator;
 import sun.awt.Mutex;
 
-public class Ally {
+public class Ally implements AllyObserver {
     private String username;
     private Integrator integrator;
     private DM dm;
@@ -12,6 +13,12 @@ public class Ally {
     private Competition competition;
     private Mutex mutex;
     private State state;
+    private CompetitionObserver competitionObserver;
+
+    public void setCompetitionObserver(CompetitionObserver competitionObserver) {
+        this.competitionObserver = competitionObserver;
+    }
+
 
     public String getUsername() {
         return username;
@@ -56,6 +63,14 @@ public class Ally {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    @Override
+    public void notifyAlly(String potential) {
+        //verify not to much threads are opening
+        Thread thread = new Thread(()->
+        this.competitionObserver.notifyFoundPotential(potential, this));
+        thread.start();
     }
 
     public enum State {

@@ -1,6 +1,5 @@
 package EnigmaCompetition;
 
-import EnigmaCracking.Tasks.TaskLevels;
 import LogicManager.Integrator;
 import XmlParsing.JaxbClasses.Battlefield;
 import agentUtilities.EnigmaDictionary;
@@ -8,7 +7,7 @@ import agentUtilities.EnigmaDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Competition {
+public class Competition implements CompetitionObserver {
     private Ubout uboat;
     private List<Ally> allies;
     private Integrator integrator;
@@ -18,6 +17,7 @@ public class Competition {
     private EnigmaDictionary dictionary;
     private int taskLevel;
     private boolean competitionReady = false;
+    private boolean foundString;
 
     public EnigmaDictionary getDictionary() {
         return dictionary;
@@ -26,7 +26,6 @@ public class Competition {
     public void setDictionary(EnigmaDictionary dictionary) {
         this.dictionary = dictionary;
     }
-
 
 
     public int getTaskLevel() {
@@ -38,13 +37,12 @@ public class Competition {
     }
 
 
-
     public String getEncryptedString() {
         return encryptedString;
     }
 
     public void addAlly(Ally ally) {
-        if(this.allies == null)
+        if (this.allies == null)
             this.allies = new ArrayList<>();
 
         this.allies.add(ally);
@@ -85,11 +83,11 @@ public class Competition {
 
     public boolean checkReady() {
 
-        if(battlefield.getAllies() != allies.size())
+        if (battlefield.getAllies() != allies.size())
             return false;
 
         for (Ally ally : allies) {
-            if(ally.checkReady() == false)
+            if (ally.checkReady() == false)
                 return false;
         }
         return true;
@@ -97,5 +95,45 @@ public class Competition {
 
     public List<Ally> getAllies() {
         return this.allies;
+    }
+
+    public void runCompetition() {
+        boolean alliesFinished = false;
+        foundString = false;
+        while (alliesFinished == false && foundString == false) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (alliesStillProccessing() == false && foundString == false) {
+                alliesFinished = true;
+                //update json that will be sent to allies - losers
+                //make dm stop!
+            }
+        }
+        System.out.println("competition finished");
+    }
+
+    private boolean alliesStillProccessing() {
+        for (Ally ally : allies) {
+            //there is at least one ally that processes data
+            if (ally.getState() == Ally.State.dmProcessing)
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void notifyFoundPotential(String potential, Ally ally) {
+        //add here a check if competition is finished
+        synchronized (this) {
+            if (potential.equals(this.decryptedString)) {
+                foundString = true;
+                System.out.println("found potential! winner is: " + ally.getUsername() + " encrypted string: " + potential);
+            } else {
+                System.out.println("ally " + ally.getUsername() + " didnt found the correct string, found string: " + potential);
+            }
+        }
     }
 }

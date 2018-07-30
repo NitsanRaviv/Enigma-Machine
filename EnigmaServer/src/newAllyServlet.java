@@ -33,6 +33,8 @@ public class newAllyServlet extends HttpServlet {
         Mutex allyMutex = new Mutex();
         DM dm = buildDmFromCompetition(competition,port, allyMutex);
         Ally ally = new Ally(username, dm, port, competition, allyMutex);
+        ally.setCompetitionObserver(competition);
+        dm.setAllyObserver(ally);
         competition.addAlly(ally);
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
         resp.sendRedirect("/initiateAgents.html");

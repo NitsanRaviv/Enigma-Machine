@@ -18,6 +18,7 @@ public class stopConnectingAgentsServlet extends HttpServlet {
        ///for tests reasons only! do this when competition starts
        synchronized (ally.getMutex()){
            ally.getMutex().notifyAll();
+           System.out.println(ally.getUsername() + " started contest");
        }
     }
 
