@@ -1,5 +1,6 @@
 package EnigmaCracking;
 
 public interface AllyObserver {
-    public void notifyAlly(String potential);
+    void notifyAlly(String potential, int agentId);
+    void notifyFinished();
 }

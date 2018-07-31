@@ -60,6 +60,22 @@ public class DM extends Thread {
     private boolean keepConnectingAgents = true;
     private AllyObserver allyObserver;
 
+    public DM(int numAgents, int taskSize, Mutex mutex, int allyPort ) {
+        this.numAgents = numAgents;
+        this.taskSize = taskSize;
+        this.mainMutex = mutex;
+        try {
+            this.serverSocket = new ServerSocket(allyPort, 0, InetAddress.getLoopbackAddress());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        agentSockets = new ArrayList<>();
+        this.decryptPotentials = new HashSet<>();
+        this.decryptPotentialStrings = new HashSet<>();
+        this.levels = new ArrayList<>();
+        this.agentLock = new Mutex();
+    }
+
     public void setKeepConnectingAgents(boolean keepConnectingAgents) {
         this.keepConnectingAgents = keepConnectingAgents;
     }
@@ -77,6 +93,7 @@ public class DM extends Thread {
     }
 
 
+
     //TODO:: add mission-level
     public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level) {
         this.numAgents = numAgents;
@@ -84,15 +101,20 @@ public class DM extends Thread {
         this.taskSize = taskSize;
         this.decryptPotentials = new HashSet<>();
         this.decryptPotentialStrings = new HashSet<>();
-        this.encryptedString = encrtyptedString;
-        this.enigmaDictionary = dictionary;
         this.reflectors = new ArrayList<>(machine.getReflectors());
         this.levels = new ArrayList<>();
-        this.wantedLevel = level;
         this.agentLock = new Mutex();
+        this.enigmaDictionary = dictionary;
+        this.encryptedString = encrtyptedString;
+        this.wantedLevel = level;
         //make smarter!
         this.numQueues = numAgents;
 
+    }
+
+
+    public void setEncryptedString(String encryptedString) {
+        this.encryptedString = encryptedString;
     }
 
     public DM(MachineProxy machine, EnigmaDictionary dictionary, String encrtyptedString, int numAgents, int taskSize, int level, Mutex mutex) {
@@ -113,8 +135,7 @@ public class DM extends Thread {
 
 
     public DM init() {
-        this.calcNumOfEasyTasks()
-                .connectAgents();
+        this.connectAgents();
 
         synchronized (mainMutex) {
             try {
@@ -126,6 +147,7 @@ public class DM extends Thread {
             //this.mainMutex.unlock(); //release lock
         }
 
+        this.calcNumOfEasyTasks();
         createTasksQueues();
         this.levels.add(() -> this.handleEasyTasks());
         this.levels.add(() -> this.handleMediumTasks());
@@ -181,22 +203,24 @@ public class DM extends Thread {
                 } else {
                     decryptPotentials.add(potential);
                     decryptPotentialStrings.add(potential.getEncryptedString());
-                    allyObserver.notifyAlly(potential.getEncryptedString());
+                    allyObserver.notifyAlly(potential.getEncryptedString(), potential.getAgentId());
                     //lock and notify ally a potential was found,
                     //ally should notify competition-manager - observer pattern
 
                 }
 
             //returns boolean
-            handleInterrupts();
+           if(handleInterrupts() == false)
+               return false;
         }
 
         processedTaskQueues = 0;
 
         if (wantedLevel == TaskLevels.levelEasy) {
-            System.out.println(createEndOfDecryptionInfo());
+            //System.out.println(createEndOfDecryptionInfo()); - was for testing, not needed in ex3
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
+            allyObserver.notifyFinished();
         }
         return true;
     }
@@ -313,6 +337,7 @@ public class DM extends Thread {
 
             if (interruptReason == EnigmaAgent.InterruptReason.STOP) {
                 finishDmProcess();
+                allyObserver.notifyFinished();
                 return false;
             }
         }
@@ -320,8 +345,10 @@ public class DM extends Thread {
     }
 
     private void finishDmProcess() {
-        System.out.println(createEndOfDecryptionInfo());
+        //System.out.println(createEndOfDecryptionInfo());
         wantedLevel = -1; //so printing wont happen again
+        makeWebAgentsToStop();
+        allyObserver.notifyFinished();
     }
 
     public List<String> createEndOfDecryptionInfo() {
@@ -361,9 +388,11 @@ public class DM extends Thread {
             dontNotifytMoreTasks++;
         }
         if (wantedLevel == TaskLevels.levelMedium) {
-            System.out.println(createEndOfDecryptionInfo());
+           // System.out.println(createEndOfDecryptionInfo());
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
+            allyObserver.notifyFinished();
+
         }
         return true;
 
@@ -401,9 +430,11 @@ public class DM extends Thread {
         }
 
         if (wantedLevel == TaskLevels.levelHard) {
-            System.out.println(createEndOfDecryptionInfo());
+           // System.out.println(createEndOfDecryptionInfo());
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
+            allyObserver.notifyFinished();
+
         }
         return true;
 
@@ -453,6 +484,7 @@ public class DM extends Thread {
             System.out.println(createEndOfDecryptionInfo());
             this.interruptReason = EnigmaAgent.InterruptReason.STOP;
             makeWebAgentsToStop();
+            allyObserver.notifyFinished();
         }
 
         return true;
@@ -586,5 +618,23 @@ public class DM extends Thread {
 
     public void setAllyObserver(AllyObserver allyObserver) {
         this.allyObserver = allyObserver;
+    }
+
+    public void setMachine(MachineProxy machine) {
+        this.machine = machine;
+        if(reflectors == null)
+           this.reflectors = new ArrayList<>(machine.getReflectors());
+    }
+
+    public void setEnigmaDictionary(EnigmaDictionary enigmaDictionary) {
+        this.enigmaDictionary = enigmaDictionary;
+    }
+
+    public void setTaskLevel(int taskLevel) {
+        this.wantedLevel = taskLevel;
+    }
+
+    public int getNumAgents() {
+        return numAgents;
     }
 }

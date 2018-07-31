@@ -225,5 +225,5 @@
 		</Words>
 		</Dictionary>
 	</Decipher>	
-	<Battlefield battle-name="pearl harbour" allies="2" level="Easy" rounds="3"/>
+	<Battlefield battle-name="pearl harbour" allies="1" level="Easy" rounds="3"/>
 </Enigma>

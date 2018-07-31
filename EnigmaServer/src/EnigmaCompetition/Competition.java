@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Competition implements CompetitionObserver {
     private Ubout uboat;
-    private List<Ally> allies;
+    private List<Ally> allies = new ArrayList<>();
     private Integrator integrator;
     private String decryptedString;
     private String encryptedString;
@@ -18,6 +18,23 @@ public class Competition implements CompetitionObserver {
     private int taskLevel;
     private boolean competitionReady = false;
     private boolean foundString;
+    private String winner = "noWinner";
+    private boolean finished = false;
+    private boolean running = false;
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+
+    public String getWinner() {
+        return winner;
+    }
+
 
     public EnigmaDictionary getDictionary() {
         return dictionary;
@@ -83,7 +100,7 @@ public class Competition implements CompetitionObserver {
 
     public boolean checkReady() {
 
-        if (battlefield.getAllies() != allies.size())
+        if (battlefield.getAllies() > allies.size())
             return false;
 
         for (Ally ally : allies) {
@@ -98,6 +115,9 @@ public class Competition implements CompetitionObserver {
     }
 
     public void runCompetition() {
+        winner = "noWinner";
+        this.running = true;
+        runAllies();
         boolean alliesFinished = false;
         foundString = false;
         while (alliesFinished == false && foundString == false) {
@@ -112,7 +132,21 @@ public class Competition implements CompetitionObserver {
                 //make dm stop!
             }
         }
+        if(this.finished == false){
+            finished = true;
+            stopCompetition();
+        }
         System.out.println("competition finished");
+    }
+
+    private void runAllies() {
+        for (Ally ally : allies) {
+            synchronized (ally.getMutex()) {
+                ally.setState(Ally.State.dmProcessing);
+                ally.getMutex().notifyAll();
+                System.out.println(ally.getUsername() + " started contest");
+            }
+        }
     }
 
     private boolean alliesStillProccessing() {
@@ -129,11 +163,42 @@ public class Competition implements CompetitionObserver {
         //add here a check if competition is finished
         synchronized (this) {
             if (potential.equals(this.decryptedString)) {
-                foundString = true;
-                System.out.println("found potential! winner is: " + ally.getUsername() + " encrypted string: " + potential);
-            } else {
+                if(foundString == false) {
+                    foundString = true;
+                    stopCompetition();
+                    System.out.println("found potential! winner is: " + ally.getUsername() + " encrypted string: " + potential);
+                    winner = ally.getUsername();
+                }
+                else{
+                    //maybe return a value here???? so ally and Dm will know to stop
+                }
+            } else if (foundString == false) {
                 System.out.println("ally " + ally.getUsername() + " didnt found the correct string, found string: " + potential);
             }
         }
+    }
+
+    private void stopCompetition() {
+        for (Ally ally : allies) {
+            ally.stopDM();
+        }
+        this.finished = true;
+        this.running = false;
+    }
+
+    public String getAlliesAndAgents() {
+        StringBuilder sb = new StringBuilder();
+        for (Ally ally : allies) {
+            sb.append(ally.getUsername()+ ": " + ally.getNumAgents());
+        }
+        return sb.toString();
+    }
+
+    public String getAllAllyPotentials() {
+        StringBuilder sb = new StringBuilder();
+        for (Ally ally : allies) {
+            sb.append(ally.getAgentPotentials());
+        }
+        return sb.toString();
     }
 }

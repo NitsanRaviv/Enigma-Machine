@@ -4,6 +4,7 @@ import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EasyTask implements Serializable{
@@ -36,5 +37,14 @@ public class EasyTask implements Serializable{
             numbers.add(rotorsAndNotch.getValue());
         }
         return numbers;
+    }
+
+    @Override
+    public String toString() {
+        return "EasyTask{" +
+                "taskSize=" + taskSize +
+                ", stringToEncrypt='" + stringToEncrypt + '\'' +
+                ", rotorsAndNotches=" + Arrays.toString(rotorsAndNotches) +
+                '}';
     }
 }

@@ -1,5 +1,12 @@
 import EnigmaCompetition.Ally;
+import EnigmaCompetition.Competition;
+import EnigmaCracking.DM;
+import Machine.MachineProxy;
+import Utils.CookieUtils;
+import Utils.generalUtils;
+import agentUtilities.EnigmaDictionary;
 import com.google.gson.JsonObject;
+import sun.awt.Mutex;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,19 +19,24 @@ import java.io.IOException;
 public class getAllyPortServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       Ally ally = Utils.CookieUtils.getAllyFromUserName(Utils.CookieUtils.getUserCookie(req.getCookies()), getServletContext());
-       JsonObject jsonObject = new JsonObject();
-       jsonObject.addProperty(ally.getUsername(), ally.getPort());
-       startDmIfneeded(ally);
-       resp.getOutputStream().print(jsonObject.toString());
-       //next sreen is initiate agents screen which Ally will be until set up all agents
+        String username = Utils.CookieUtils.getUserCookie(req.getCookies()).getValue();
+        Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(ally.getUsername(), ally.getPort());
+        DM dm = buildDmFromCompetition(ally.getPort(), ally.getMutex());
+        dm.setAllyObserver(ally);
+        ally.setDm(dm);
+        dm.start();
+        resp.getOutputStream().print(jsonObject.toString());
+        //next screen is initiate agents screen which Ally will be until set up all agents
         // for now - one agent
     }
 
-    private void startDmIfneeded(Ally ally){
-        if(ally.getState().equals(Ally.State.inActive)) {
-            ally.getDm().start();
-            ally.setState(Ally.State.waitingForAgents);
-        }
+    private DM buildDmFromCompetition(int allyPort, Mutex mutex) {
+        DM dm = null;
+        //possible to change task size
+        dm = new DM(0, 100, mutex, allyPort);
+        return dm;
     }
+
 }

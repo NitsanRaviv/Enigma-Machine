@@ -83,6 +83,7 @@ public class EnigmaAgent extends Thread {
                 agentAnsewerQueue.put(new AgentAnswer(AGENT_FINISHED_TASKS, "", 0, id, ""));
             }
             else {
+                System.out.println("current rotor settings (id to location: " + easyTask.getRotorsAndNotches());
                 machineProxy.setChosenRotors(easyTask.getRotorsAndNotches());
                 if(rotorLocationCounter == null) //first task so we need to initialize it
                     rotorLocationCounter = new RotorLocationCounter(machineProxy.getLanguageInterpeter(), easyTask.getRotorsAndNotches());

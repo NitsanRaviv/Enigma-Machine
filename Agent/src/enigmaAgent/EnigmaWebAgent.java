@@ -3,9 +3,7 @@ package enigmaAgent;
 import Machine.MachineProxy;
 import Tasks.EasyTask;
 import agentUtilities.EnigmaDictionary;
-import com.sun.xml.internal.bind.v2.TODO;
 import sun.awt.Mutex;
-
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -154,6 +152,4 @@ public class EnigmaWebAgent {
         this.agent = new EnigmaAgent(machineProxy, agentAnswers, easyTasks, dictionary, port, lock);
         return this;
     }
-
-
 }
