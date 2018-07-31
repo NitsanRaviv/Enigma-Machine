@@ -41,12 +41,12 @@ function waitingMsg() {
 }
 
 function readyToStart() {
+    var res = false;
     $.ajax({
         url: allies_url,
         datatype: 'json',
         success: function (data) {
             allies = $.parseJSON(data);
-            var res = false;
 
             if(allies[0].localeCompare("yes") === 0)
                 res = true;
@@ -90,12 +90,12 @@ function getDecodeString() {
 
 
 function gameOver() {
+    var res = true;
     $.ajax({
         url: allies_url,
         datatype: 'json',
         success: function (data) {
             allies = $.parseJSON(data);
-            var res = true;
 
             if(allies[0].localeCompare("no") === 0)
                 res = false;
