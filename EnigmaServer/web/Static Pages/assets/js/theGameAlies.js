@@ -8,6 +8,7 @@ $(function () {
     showReadyBtn();
     while(readyToStart() == false){
         waitingMsg();
+        setTimeout(mySleep, 2000);
     }
     clearBox("ready");
 
@@ -17,6 +18,7 @@ $(function () {
     while(gameOver() == false){
         getCompetitorsInfo();
         getAgentDetails();
+        setTimeout(mySleep, 2000);
     }
 
     printWinner();
@@ -151,3 +153,6 @@ function printWinner() {
         }
     });
 }
+
+function mySleep() { //sleeping
+ }
