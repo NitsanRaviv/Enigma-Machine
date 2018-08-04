@@ -23,6 +23,7 @@ public class stopConnectingAgentsServlet extends HttpServlet {
         String username = Utils.CookieUtils.getUserCookie(req.getCookies()).getValue();
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
         setCompAndAlly(ally, Integer.parseInt(req.getParameter("selectCompetition")));
+        resp.sendRedirect("/theGameAlies.html");
     }
 
     private void setCompAndAlly(Ally ally, int index) {

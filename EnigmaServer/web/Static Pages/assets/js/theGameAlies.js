@@ -1,37 +1,49 @@
-var allies_url = "http://localhost:8080/???";
+var allies_url = "http://localhost:8080/getInfoCompAlly";
 
 $(function () {
-
-    //prevent IE from caching ajax calls
     $.ajaxSetup({cache: false});
-
-    showReadyBtn();
-    while(readyToStart() == false){
-        waitingMsg();
-        setTimeout(mySleep, 2000);
-    }
-    clearBox("ready");
 
     getMissionSize();
     getDecodeString();
+    waitingMsg();
 
-    while(gameOver() == false){
-        getCompetitorsInfo();
-        getAgentDetails();
-        setTimeout(mySleep, 2000);
-    }
+    var readyInterval = window.setInterval(function(){
+        $.ajax({
+            url: allies_url,
+            datatype: 'json',
+            success: function (data) {
+                if(data){
+                    allies = $.parseJSON(data);
+                    if(allies.started.localeCompare("yes") === 0){
+                        clearBox("ready");
+                        window.clearInterval(readyInterval);
+                    }
+                }
+            }
+        });
+    }, 3000);
 
-    printWinner();
-
+    var gameOverInterval = window.setInterval(function(){
+        $.ajax({
+            url: allies_url,
+            datatype: 'json',
+            success: function (data) {
+                if(data){
+                    allies = $.parseJSON(data);
+                    clearBox("competitorsInfo");
+                    clearBox("agentDetails");
+                    getCompetitorsInfo();
+                    getAgentDetails();
+                    if(allies.winner.localeCompare("noWinner") != 0){
+                        printWinner();
+                        window.clearInterval(gameOverInterval);
+                    }
+                }
+            }
+        });
+    }, 3000);
 });
 
-function showReadyBtn() {
-    var btn = document.createElement("BUTTON");
-    var t_ready = document.createTextNode("Ready");
-    btn.appendChild(t_ready);
-    document.getElementById("ready").appendChild(btn);
-    document.getElementById("ready").onclick = function() {clearBox("ready")};
-}
 
 function waitingMsg() {
     var msg = document.createElement("p");
@@ -40,32 +52,18 @@ function waitingMsg() {
     document.getElementById("ready").appendChild(msg);
 }
 
-function readyToStart() {
-    var res = false;
-    $.ajax({
-        url: allies_url,
-        datatype: 'json',
-        success: function (data) {
-            allies = $.parseJSON(data);
-
-            if(allies[0].localeCompare("yes") === 0)
-                res = true;
-        }
-    });
-
-    return res;
-}
-
 function getMissionSize() {
     $.ajax({
         url: allies_url,
         datatype: 'json',
         success: function (data) {
-            allies = $.parseJSON(data);
-            var theSize = document.createElement("P");
-            var t_size = document.createTextNode(allies[1]);
-            theSize.appendChild(t_size);
-            document.getElementById("missionSize").appendChild(theSize);
+            if(data){
+                allies = $.parseJSON(data);
+                var theSize = document.createElement("P");
+                var t_size = document.createTextNode(allies.sizeOfMission);
+                theSize.appendChild(t_size);
+                document.getElementById("missionSize").appendChild(theSize);
+            }
         }
     });
 }
@@ -79,30 +77,15 @@ function getDecodeString() {
         url: allies_url,
         datatype: 'json',
         success: function (data) {
-            allies = $.parseJSON(data);
-            var theString = document.createElement("P");
-            var t_String= document.createTextNode(allies[2]);
-            theString.appendChild(t_String);
-            document.getElementById("decodeString").appendChild(theString);
+            if(data){
+                allies = $.parseJSON(data);
+                var theString = document.createElement("P");
+                var t_String= document.createTextNode(allies.encryptedString);
+                theString.appendChild(t_String);
+                document.getElementById("decodeString").appendChild(theString);
+            }
         }
     });
-}
-
-
-function gameOver() {
-    var res = true;
-    $.ajax({
-        url: allies_url,
-        datatype: 'json',
-        success: function (data) {
-            allies = $.parseJSON(data);
-
-            if(allies[0].localeCompare("no") === 0)
-                res = false;
-        }
-    });
-
-    return res;
 }
 
 function getCompetitorsInfo() {
@@ -110,11 +93,13 @@ function getCompetitorsInfo() {
         url: allies_url,
         datatype: 'json',
         success: function (data) {
-            allies = $.parseJSON(data);
-            var competitor = document.createElement("P");
-            var t_Competitor= document.createTextNode(allies[1]);
-            competitor.appendChild(t_Competitor);
-            document.getElementById("competitorsInfo").appendChild(competitor);
+            if(data){
+                allies = $.parseJSON(data);
+                var competitor = document.createElement("P");
+                var t_Competitor= document.createTextNode(allies.alliesAndAgents);
+                competitor.appendChild(t_Competitor);
+                document.getElementById("competitorsInfo").appendChild(competitor);
+            }
         }
     });
 }
@@ -124,11 +109,13 @@ function getAgentDetails() {
         url: allies_url,
         datatype: 'json',
         success: function (data) {
-        allies = $.parseJSON(data);
-        var theAgentDetails = document.createElement("P");
-        var t_agent = document.createTextNode(allies[2]);
-        theAgentDetails.appendChild(t_agent);
-        document.getElementById("agentDetails").appendChild(theAgentDetails);
+            if(data){
+                allies = $.parseJSON(data);
+                var theAgentDetails = document.createElement("P");
+                var t_agent = document.createTextNode(allies.allyAndPotentials);
+                theAgentDetails.appendChild(t_agent);
+                document.getElementById("agentDetails").appendChild(theAgentDetails);
+            }
         }
     });
 }
@@ -138,21 +125,25 @@ function printWinner() {
         url: allies_url,
         datatype: 'json',
         success: function (data) {
-            allies = $.parseJSON(data);
-            clearBox("missionSize");
-            clearBox("decodeString");
-            clearBox("competitorsInfo");
-            clearBox("agentDetails");
-            var Winner = document.createElement("h2");
-            var t_Winner = document.createTextNode("The Winner" + allies[0]);
-            Winner.appendChild(t_Winner);
-            document.getElementById("gameOver").appendChild(Winner);
-            window.setTimeout(function () {
-                window.location = "initiateAgents.html";
-            }, 4000);
+            if(data){
+                allies = $.parseJSON(data);
+               // clearBox("missionSize");
+                //clearBox("decodeString");
+                //clearBox("competitorsInfo");
+              //clearBox("agentDetails");
+                var Winner = document.createElement("P");
+                var t_Winner = document.createTextNode(allies.winner);
+                Winner.appendChild(t_Winner);
+                document.getElementById("gameOver").appendChild(Winner);
+
+                var end = document.createElement("P");
+                var t_End = document.createTextNode("In 10 seconds leave this page...");
+                end.appendChild(t_End);
+                document.getElementById("byebye").appendChild(end);
+                window.setTimeout(function () {
+                       window.location = "initiateAgents.html";
+                }, 10000);
+            }
         }
     });
 }
-
-function mySleep() { //sleeping
- }

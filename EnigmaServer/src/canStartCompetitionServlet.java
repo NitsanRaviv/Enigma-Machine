@@ -33,6 +33,8 @@ public class canStartCompetitionServlet extends HttpServlet {
         }
         else if(competition.isFinished()){
             jsonObject.addProperty("finished", "yes");
+            jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
+            jsonObject.addProperty("allAlliesPotentials", competition.getAllAllyPotentials());
             //add logout functionality!
         }
         else{

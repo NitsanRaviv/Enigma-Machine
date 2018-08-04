@@ -21,13 +21,14 @@ public class getInfoCompAllyServlet extends HttpServlet {
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
         Competition competition = ally.getCompetition();
         JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("sizeOfMission", competition.getIntegrator().getTaskDifficulty(competition.getTaskLevel()));
+        jsonObject.addProperty("encryptedString", competition.getEncryptedString());
         if (competition.isRunning() == false && competition.isFinished() == false) {
             jsonObject.addProperty("started", "no");
-            jsonObject.addProperty("sizeOfMission", competition.getIntegrator().getTaskDifficulty(competition.getTaskLevel()));
-            jsonObject.addProperty("encryptedString", competition.getEncryptedString());
         }
         //competition started
         else{
+            jsonObject.addProperty("started", "yes");
             jsonObject.addProperty("winner", competition.getWinner());
             jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
             jsonObject.addProperty("allyAndPotentials", ally.getAgentPotentials());
