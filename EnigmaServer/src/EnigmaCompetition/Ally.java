@@ -18,6 +18,7 @@ public class Ally implements AllyObserver {
     private State state;
     private CompetitionObserver competitionObserver;
     private Map<Integer, Set<String>> idToPotentials = new HashMap<>();
+    private boolean secondRun = false;
 
     public Ally(String username, int port, Mutex allyMutex) {
         this.username = username;
@@ -32,6 +33,7 @@ public class Ally implements AllyObserver {
 
     public void stopDM(){
         dm.setInterruptReason(EnigmaAgent.InterruptReason.STOP);
+        this.state = State.finished;
     }
 
 
@@ -119,6 +121,14 @@ public class Ally implements AllyObserver {
 
     public String getAgentPotentials() {
         return idToPotentials.toString();
+    }
+
+    public void setSecondRun(boolean secondRun) {
+        this.secondRun = secondRun;
+    }
+
+    public boolean getSecondRun() {
+        return secondRun;
     }
 
     public enum State {

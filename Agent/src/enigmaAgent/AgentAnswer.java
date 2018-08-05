@@ -42,7 +42,7 @@ public class AgentAnswer implements Serializable {
 
     @Override
     public String toString(){
-        String res =  "Encrypted String: " + encryptedString + ", Agent ID: " + agentId + ", Mission Time: " + missionTime  +
+        String res =  "Decrypted String: " + encryptedString + ", Agent ID: " + agentId + ", Mission Time: " + missionTime  +
                 ", Machine Code: " + machineCode + "\n";
         return res;
     }

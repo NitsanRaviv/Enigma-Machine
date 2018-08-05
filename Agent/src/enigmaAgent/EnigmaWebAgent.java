@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -120,7 +121,7 @@ public class EnigmaWebAgent {
     }
 
     public EnigmaWebAgent connect() throws IOException {
-        this.socket = new Socket(InetAddress.getLoopbackAddress(), port);
+        this.socket = new Socket("localhost", port);
         System.out.println("WebAgent: connected to remote DM");
         this.inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
         System.out.println("WebAgent: got socket input stream - I have data awaits for me");
@@ -149,7 +150,14 @@ public class EnigmaWebAgent {
 
     private EnigmaWebAgent buildAgent() {
         this.agentAnswers = new ArrayBlockingQueue<AgentAnswer>(10000);
-        this.agent = new EnigmaAgent(machineProxy, agentAnswers, easyTasks, dictionary, port, lock);
+
+        //only to produce a different id for each agent
+        Random random = new Random();
+        int id = random.nextInt() % 520;
+        if(id < 0)
+            id *= -1;
+
+        this.agent = new EnigmaAgent(machineProxy, agentAnswers, easyTasks, dictionary, id, lock);
         return this;
     }
 }

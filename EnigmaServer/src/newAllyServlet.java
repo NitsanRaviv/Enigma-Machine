@@ -20,6 +20,7 @@ public class newAllyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = Utils.CookieUtils.getUserCookie(req.getCookies()).getValue();
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
+        //this if is added to keep the port the same for each competition
         if(ally == null) {
             int port = generalUtils.generatePort();
             Mutex allyMutex = new Mutex();
@@ -28,6 +29,9 @@ public class newAllyServlet extends HttpServlet {
             List<Ally> allies = CookieUtils.getAllyList(getServletContext());
             allies.add(ally);
             //TODO:: generate a different cookie for ally so you can retrieve a competition from it, or add to competition allies memeber
+        }
+        else {
+            ally.setSecondRun(true);
         }
         resp.sendRedirect("/initiateAgents.html");
     }

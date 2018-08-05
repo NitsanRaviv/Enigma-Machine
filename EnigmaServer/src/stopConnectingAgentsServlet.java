@@ -47,7 +47,7 @@ public class stopConnectingAgentsServlet extends HttpServlet {
             dm.setMachine(machineProxy);
             dm.setEnigmaDictionary(enigmaDictionary);
             dm.setTaskLevel(taskLevel);
-            dm.setEncryptedString(competition.getEncryptedString());
+            dm.setEncryptedString(stringToDecrypt);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

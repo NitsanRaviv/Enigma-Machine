@@ -189,7 +189,7 @@ public class Competition implements CompetitionObserver {
     public String getAlliesAndAgents() {
         StringBuilder sb = new StringBuilder();
         for (Ally ally : allies) {
-            sb.append(ally.getUsername()+ ": " + ally.getNumAgents());
+            sb.append(ally.getUsername()+ ": " + ally.getNumAgents() + " ");
         }
         return sb.toString();
     }

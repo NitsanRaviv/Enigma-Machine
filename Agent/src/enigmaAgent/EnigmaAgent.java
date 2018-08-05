@@ -6,6 +6,7 @@ import Tasks.EasyTask;
 import sun.awt.Mutex;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -83,7 +84,7 @@ public class EnigmaAgent extends Thread {
                 agentAnsewerQueue.put(new AgentAnswer(AGENT_FINISHED_TASKS, "", 0, id, ""));
             }
             else {
-                System.out.println("current rotor settings (id to location: " + easyTask.getRotorsAndNotches());
+                System.out.println("current mission - defined by rotor settings, id to location: " + Arrays.toString(easyTask.getRotorsAndNotches()) + "\n");
                 machineProxy.setChosenRotors(easyTask.getRotorsAndNotches());
                 if(rotorLocationCounter == null) //first task so we need to initialize it
                     rotorLocationCounter = new RotorLocationCounter(machineProxy.getLanguageInterpeter(), easyTask.getRotorsAndNotches());
@@ -116,7 +117,7 @@ public class EnigmaAgent extends Thread {
     }
 
     public enum InterruptReason{
-        FREE, SUSPEND, INFOS, STOP;
+        FREE, SUSPEND, INFOS, STOP
     }
 
     public void setInterruptReason(InterruptReason ie){

@@ -11,7 +11,6 @@ var i = 1;
               getAvailableGames();
           }, 3000);
 
-
       });
 
       function getAvailableGames() {

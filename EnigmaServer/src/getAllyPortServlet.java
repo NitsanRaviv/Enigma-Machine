@@ -23,10 +23,15 @@ public class getAllyPortServlet extends HttpServlet {
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(ally.getUsername(), ally.getPort());
-        DM dm = buildDmFromCompetition(ally.getPort(), ally.getMutex());
-        dm.setAllyObserver(ally);
-        ally.setDm(dm);
-        dm.start();
+        if(ally.getSecondRun() == false) {
+            DM dm = buildDmFromCompetition(ally.getPort(), ally.getMutex());
+            dm.setAllyObserver(ally);
+            ally.setDm(dm);
+            dm.start();
+        }
+        else {
+            ally.getDm().run();
+        }
         resp.getOutputStream().print(jsonObject.toString());
         //next screen is initiate agents screen which Ally will be until set up all agents
         // for now - one agent

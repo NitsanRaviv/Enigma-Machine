@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//TODO:: change servlet to start competition if everyone is ready - so for all allies start DM.
 
 @WebServlet("/canStartCompetition")
 public class canStartCompetitionServlet extends HttpServlet {
@@ -26,27 +25,30 @@ public class canStartCompetitionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
         JsonObject jsonObject = new JsonObject();
-        if(competition.isRunning()){
-            jsonObject.addProperty("started", "yes");
-            jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
-            jsonObject.addProperty("allAlliesPotentials", competition.getAllAllyPotentials());
-        }
-        else if(competition.isFinished()){
-            jsonObject.addProperty("finished", "yes");
-            jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
-            jsonObject.addProperty("allAlliesPotentials", competition.getAllAllyPotentials());
-            //add logout functionality!
-        }
-        else{
-            if(competition.checkReady()){
-                competition.runCompetition();
+        if(competition != null) {
+            if (competition.isRunning()) {
                 jsonObject.addProperty("started", "yes");
+                jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
+                jsonObject.addProperty("allAlliesPotentials", competition.getAllAllyPotentials());
+            } else if (competition.isFinished()) {
+                jsonObject.addProperty("finished", "yes");
+                jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
+                jsonObject.addProperty("allAlliesPotentials", competition.getAllAllyPotentials());
+                //add logout functionality!
+            } else {
+                if (competition.checkReady()) {
+                    competition.runCompetition();
+                    jsonObject.addProperty("started", "yes");
+                } else {//competition waiting to start
+                    jsonObject.addProperty("started", "no");
+                }
             }
-            else{//competition waiting to start
-                jsonObject.addProperty("started", "no");
-            }
+        }
+        else {
+            jsonObject.addProperty("started", "no");
         }
         resp.getOutputStream().print(jsonObject.toString());
+
     }
 }
 

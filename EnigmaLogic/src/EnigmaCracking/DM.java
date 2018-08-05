@@ -164,7 +164,8 @@ public class DM extends Thread {
 
     private void connectAgentThread() {
         Thread thread = new Thread(() -> {
-            while (keepConnectingAgents) {
+            boolean dmStopped = false;
+            while (!dmStopped && keepConnectingAgents) {
                 Socket socket = null;
                 try {
                     socket = serverSocket.accept();
@@ -173,7 +174,9 @@ public class DM extends Thread {
                     numAgents++;
                     numQueues++;
                 } catch (Exception e) {
+                    System.out.println("dont fear the exception thrown here - its because me as a thread trying to connect more agents - does so after my DM is null!");
                     e.printStackTrace();
+                    dmStopped = true;
                 }
             }
         });
@@ -205,8 +208,7 @@ public class DM extends Thread {
                     decryptPotentialStrings.add(potential.getEncryptedString());
                     allyObserver.notifyAlly(potential.getEncryptedString(), potential.getAgentId());
                     //lock and notify ally a potential was found,
-                    //ally should notify competition-manager - observer pattern
-
+                    // ally should notify competition-manager - observer pattern
                 }
 
             //returns boolean
@@ -348,7 +350,6 @@ public class DM extends Thread {
         //System.out.println(createEndOfDecryptionInfo());
         wantedLevel = -1; //so printing wont happen again
         makeWebAgentsToStop();
-        allyObserver.notifyFinished();
     }
 
     public List<String> createEndOfDecryptionInfo() {
