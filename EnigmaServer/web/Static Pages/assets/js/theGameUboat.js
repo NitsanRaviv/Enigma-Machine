@@ -1,4 +1,4 @@
-var uboat_url = "http://localhost:8080/canStartCompetition";
+var uboat_url = myBuildUrlWithContextPath("canStartCompetition");
 
 $(function () {
     $.ajaxSetup({cache: false});

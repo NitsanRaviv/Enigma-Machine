@@ -1,4 +1,4 @@
-var port_url = "http://localhost:8080/getAllyPort";
+var port_url =  myBuildUrlWithContextPath("getAllyPort");
 
 
       $(function () {
