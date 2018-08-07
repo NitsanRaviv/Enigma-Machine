@@ -1,10 +1,5 @@
 import EnigmaCompetition.Ally;
-import EnigmaCompetition.Competition;
-import EnigmaCracking.DM;
-import Machine.MachineProxy;
 import Utils.CookieUtils;
-import agentUtilities.EnigmaDictionary;
-import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,37 +17,13 @@ public class stopConnectingAgentsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = Utils.CookieUtils.getUserCookie(req.getCookies()).getValue();
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
-        setCompAndAlly(ally, Integer.parseInt(req.getParameter("selectCompetition")));
+        stopConnectingAgents(ally);
         resp.sendRedirect("/theGameAlies.html");
     }
 
-    private void setCompAndAlly(Ally ally, int index) {
-        Competition competition = Utils.generalUtils.getCompetitionFromIndex(index, getServletContext());
-        ally.setCompetition(competition);
-        ally.setCompetitionObserver(competition);
-        competition.addAlly(ally);
-        setDmFromCompetition(ally.getDm(), competition);
+    private void stopConnectingAgents(Ally ally) {
         ally.getDm().setKeepConnectingAgents(false);
         ally.setState(Ally.State.waitingToStart);
-
-    }
-
-
-    private DM setDmFromCompetition(DM dm,Competition competition) {
-        try {
-            MachineProxy machineProxy = competition.getIntegrator().getMachine().clone();
-            String stringToDecrypt = competition.getEncryptedString().toUpperCase();
-            EnigmaDictionary enigmaDictionary = competition.getDictionary();
-            int taskLevel = competition.getTaskLevel();
-            dm.setMachine(machineProxy);
-            dm.setEnigmaDictionary(enigmaDictionary);
-            dm.setTaskLevel(taskLevel);
-            dm.setEncryptedString(stringToDecrypt);
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return dm;
-
     }
 
 }

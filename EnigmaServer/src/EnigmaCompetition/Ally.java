@@ -137,6 +137,10 @@ public class Ally implements AllyObserver {
         return secondRun;
     }
 
+    public void initIdsToPotential() {
+        this.idToPotentials = new HashMap<>();
+    }
+
     public enum State {
         inActive, waitingForAgents,waitingToStart, dmProcessing, finished
     }

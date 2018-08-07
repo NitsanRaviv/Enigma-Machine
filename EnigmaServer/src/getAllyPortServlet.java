@@ -23,6 +23,7 @@ public class getAllyPortServlet extends HttpServlet {
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(ally.getUsername(), ally.getPort());
+        ally.initIdsToPotential();
         DM dm = buildDmFromCompetition(ally.getPort(), ally.getMutex());
         dm.setAllyObserver(ally);
         ally.setDm(dm);

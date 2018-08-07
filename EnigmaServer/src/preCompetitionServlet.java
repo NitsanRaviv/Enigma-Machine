@@ -38,10 +38,9 @@ public class preCompetitionServlet extends HttpServlet {
 
     private void setGameLevel(HttpServletRequest req) {
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
-       // String gameLevel = competition.getBattlefield().getLevel();
+        String gameLevel = competition.getBattlefield().getLevel();
         //TODO::get competition from string - easy, medium etc.
-        String gameLevel = "2"; // change
-        competition.setTaskLevel(Integer.parseInt(gameLevel));
+        competition.setTaskLevel(Utils.generalUtils.getLevelFromString(gameLevel));
     }
 
     private void addCompetitionToList(Competition competition) {

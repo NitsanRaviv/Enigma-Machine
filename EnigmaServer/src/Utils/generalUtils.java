@@ -50,4 +50,30 @@ public class generalUtils {
 
     }
 
+    public static int getLevelFromString(String gameLevel) {
+        int res = 1;
+        switch (gameLevel) {
+            case "Easy": {
+                res = 1;
+                break;
+            }
+
+            case "Medium": {
+                res = 2;
+                break;
+            }
+
+            case "Hard": {
+                res = 3;
+                break;
+            }
+
+            case "Impossible": {
+                res = 4;
+                break;
+            }
+
+        }
+        return res;
+    }
 }

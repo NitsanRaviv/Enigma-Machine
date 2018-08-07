@@ -2,8 +2,10 @@ import enigmaAgent.EnigmaWebAgent;
 
 public class Main {
     public static void main(String[] args){
-        int port = Integer.parseInt(args[0]);
-        EnigmaWebAgent webAgent = new EnigmaWebAgent(port);
+        String[] portAndhost = args[0].split(":");
+        String host = portAndhost[0];
+        int port = Integer.parseInt(portAndhost[1]);
+        EnigmaWebAgent webAgent = new EnigmaWebAgent(host, port);
         try {
             webAgent.run();
         }catch (Exception e)

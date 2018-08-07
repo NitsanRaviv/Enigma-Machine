@@ -15,6 +15,7 @@ import java.util.concurrent.BlockingQueue;
 import static enigmaAgent.AgentConstants.*;
 
 public class EnigmaWebAgent {
+    private String host;
     private EnigmaAgent agent;
     private MachineProxy machineProxy;
     private BlockingQueue<EasyTask> easyTasks;
@@ -29,7 +30,8 @@ public class EnigmaWebAgent {
     private List<AgentAnswer> answerList;
     private boolean continueWorking = true;
 
-    public EnigmaWebAgent(int port) {
+    public EnigmaWebAgent(String host, int port) {
+        this.host = host;
         this.port = port;
     }
 
@@ -121,7 +123,7 @@ public class EnigmaWebAgent {
     }
 
     public EnigmaWebAgent connect() throws IOException {
-        this.socket = new Socket("localhost", port);
+        this.socket = new Socket(host, port);
         System.out.println("WebAgent: connected to remote DM");
         this.inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
         System.out.println("WebAgent: got socket input stream - I have data awaits for me");
