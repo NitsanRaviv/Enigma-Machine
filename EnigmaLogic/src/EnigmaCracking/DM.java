@@ -638,4 +638,8 @@ public class DM extends Thread {
     public int getNumAgents() {
         return numAgents;
     }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
 }

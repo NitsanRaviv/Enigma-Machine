@@ -6,6 +6,7 @@ import LogicManager.Integrator;
 import enigmaAgent.EnigmaAgent;
 import sun.awt.Mutex;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Ally implements AllyObserver {
@@ -34,6 +35,11 @@ public class Ally implements AllyObserver {
     public void stopDM(){
         dm.setInterruptReason(EnigmaAgent.InterruptReason.STOP);
         this.state = State.finished;
+        try {
+            dm.getServerSocket().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -1,4 +1,4 @@
-var allies_url = "http://localhost:8080/getInfoCompAlly";
+var allies_url = myBuildUrlWithContextPath("getInfoCompAlly");
 
 $(function () {
     $.ajaxSetup({cache: false});

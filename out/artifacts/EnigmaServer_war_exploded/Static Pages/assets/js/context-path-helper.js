@@ -17,4 +17,8 @@ function wrapBuildingURLWithContextPath() {
 }
 
 // call the wrapper method and expose a final method to be used to build complete resource names (buildUrlWithContextPath)
-var buildUrlWithContextPath = wrapBuildingURLWithContextPath(); 
+var buildUrlWithContextPath = wrapBuildingURLWithContextPath();
+
+function myBuildUrlWithContextPath(pathName) {
+    return window.location.protocol + "//" + window.location.host + "/" + pathName;
+}

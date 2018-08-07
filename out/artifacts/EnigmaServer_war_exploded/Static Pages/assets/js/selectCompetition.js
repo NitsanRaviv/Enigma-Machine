@@ -1,4 +1,4 @@
-var availableGames_url = "http://localhost:8080/openCompetitions";
+var availableGames_url = myBuildUrlWithContextPath("openCompetitions");
 var allGames = [];
 var i = 1;
 
