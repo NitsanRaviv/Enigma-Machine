@@ -20,15 +20,7 @@ public class newUboatServlet extends HttpServlet {
         //need to change this flow - competition is created only when a uboat is signed in
         Competition competition = new Competition();
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
-        addCompetitionToList(req, competition);
+        //addCompetitionToList(competition);
         resp.sendRedirect("/createCompetition.html");
-    }
-
-    private void addCompetitionToList(HttpServletRequest req, Competition competition) {
-        List<Competition> competitionList =(ArrayList)getServletContext().getAttribute("competitions");
-        if(competitionList == null)
-            competitionList = new ArrayList<>();
-        competitionList.add(competition);
-        getServletContext().setAttribute("competitions", competitionList);
     }
 }

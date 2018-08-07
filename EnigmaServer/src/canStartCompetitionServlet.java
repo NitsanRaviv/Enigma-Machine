@@ -21,6 +21,7 @@ import java.util.List;
 
 @WebServlet("/canStartCompetition")
 public class canStartCompetitionServlet extends HttpServlet {
+    private  boolean compReseted = false;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
@@ -34,10 +35,24 @@ public class canStartCompetitionServlet extends HttpServlet {
                 jsonObject.addProperty("finished", "yes");
                 jsonObject.addProperty("alliesAndAgents", competition.getAlliesAndAgents());
                 jsonObject.addProperty("allAlliesPotentials", competition.getAllAllyPotentials());
+
+                if(compReseted == false) {
+                    compReseted = true;
+                    Thread thread = new Thread(() -> {
+                        try {
+                            Thread.sleep(25000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        competition.reset();
+                    });
+                    thread.start();
+                }
                 //add logout functionality!
             } else {
                 if (competition.checkReady()) {
                     competition.runCompetition();
+                    compReseted = false;
                     jsonObject.addProperty("started", "yes");
                 } else {//competition waiting to start
                     jsonObject.addProperty("started", "no");

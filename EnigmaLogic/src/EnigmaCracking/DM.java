@@ -174,9 +174,10 @@ public class DM extends Thread {
                     numAgents++;
                     numQueues++;
                 } catch (Exception e) {
-                    System.out.println("dont fear the exception thrown here - its because me as a thread trying to connect more agents - does so after my DM is null!");
+                    System.out.println("dont fear the exception thrown here - its because me as a thread trying to connect more agents - does so after my socket is closed!");
                     e.printStackTrace();
                     dmStopped = true;
+                    break;
                 }
             }
         });

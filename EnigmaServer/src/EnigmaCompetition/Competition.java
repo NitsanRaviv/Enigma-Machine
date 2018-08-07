@@ -99,15 +99,19 @@ public class Competition implements CompetitionObserver {
     }
 
     public boolean checkReady() {
-
-        if (battlefield.getAllies() > allies.size())
-            return false;
-
-        for (Ally ally : allies) {
-            if (ally.checkReady() == false)
+        try {
+            if (battlefield.getAllies() > allies.size())
                 return false;
+
+            for (Ally ally : allies) {
+                if (ally.checkReady() == false)
+                    return false;
+            }
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     public List<Ally> getAllies() {
@@ -197,8 +201,16 @@ public class Competition implements CompetitionObserver {
     public String getAllAllyPotentials() {
         StringBuilder sb = new StringBuilder();
         for (Ally ally : allies) {
-            sb.append(ally.getAgentPotentials());
+            sb.append(ally.getUsername() + ": " + ally.getAgentPotentials());
         }
         return sb.toString();
+    }
+
+    public void reset() {
+        this.allies = new ArrayList<>();
+        this.winner = "noWinner";
+        this.finished = false;
+        this.running = false;
+        this.foundString = false;
     }
 }

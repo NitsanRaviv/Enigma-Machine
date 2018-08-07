@@ -39,6 +39,7 @@ $(function () {
 
                     if(uboat.finished.localeCompare("yes") === 0){
                         window.clearInterval(gameOverInterval);
+                        //window.location = "/theGameUboat.html"
                     }
                 }
             }
@@ -96,5 +97,5 @@ function logout() {
     var t_logout = document.createTextNode("Logout");
     btn.appendChild(t_logout);
     document.getElementById("logout").appendChild(btn);
-    document.getElementById("logout").onclick = function() {window.location = "index.html";};
+    document.getElementById("logout").onclick = function() {window.location = "/uboutLogout";};
 }

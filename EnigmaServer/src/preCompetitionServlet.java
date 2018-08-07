@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/preCompetition")
 public class preCompetitionServlet extends HttpServlet {
@@ -15,6 +17,8 @@ public class preCompetitionServlet extends HttpServlet {
         setStringToDecrypt(req);
         setGameLevel(req);
         resp.sendRedirect("/theGameUboat.html");
+        Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
+        addCompetitionToList(competition);
     }
 
     private void setInitialCode(HttpServletRequest req) {
@@ -23,7 +27,6 @@ public class preCompetitionServlet extends HttpServlet {
         String[] initialLoc = req.getParameter("initialLocation").split(",");
         String chosenRefl = req.getParameter("reflector");
         competition.getIntegrator().setInitialCode(rotorIds, initialLoc, chosenRefl);
-        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 
     private void setStringToDecrypt(HttpServletRequest req) {
@@ -31,15 +34,21 @@ public class preCompetitionServlet extends HttpServlet {
         String stringToEncrypt = req.getParameter("stringToProcess").toUpperCase();
         competition.setDecryptedString(stringToEncrypt.toUpperCase());
         competition.setEncryptedString(competition.getIntegrator().getMachine().encryptCodeToString(stringToEncrypt.toUpperCase()));
-        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
     }
 
     private void setGameLevel(HttpServletRequest req) {
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
-        //String gameLevel = competition.getBattlefield().getLevel();
+       // String gameLevel = competition.getBattlefield().getLevel();
         //TODO::get competition from string - easy, medium etc.
         String gameLevel = "2"; // change
         competition.setTaskLevel(Integer.parseInt(gameLevel));
-        Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
+    }
+
+    private void addCompetitionToList(Competition competition) {
+        List<Competition> competitionList =(ArrayList)getServletContext().getAttribute("competitions");
+        if(competitionList == null)
+            competitionList = new ArrayList<>();
+        competitionList.add(competition);
+        getServletContext().setAttribute("competitions", competitionList);
     }
 }
