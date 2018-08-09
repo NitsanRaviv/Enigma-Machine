@@ -18,7 +18,7 @@ public class stopConnectingAgentsServlet extends HttpServlet {
         String username = Utils.CookieUtils.getUserCookie(req.getCookies()).getValue();
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
         stopConnectingAgents(ally);
-        resp.sendRedirect("/theGameAlies.html");
+        resp.sendRedirect("/EnigmaServer/theGameAlies.html");
     }
 
     private void stopConnectingAgents(Ally ally) {

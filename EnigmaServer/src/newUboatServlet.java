@@ -21,6 +21,6 @@ public class newUboatServlet extends HttpServlet {
         Competition competition = new Competition();
         Utils.CookieUtils.setCompetitionFromCookie(competition, req.getCookies(), getServletContext());
         //addCompetitionToList(competition);
-        resp.sendRedirect("/createCompetition.html");
+        resp.sendRedirect("/EnigmaServer/createCompetition.html");
     }
 }

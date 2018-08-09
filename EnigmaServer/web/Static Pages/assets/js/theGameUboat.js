@@ -1,4 +1,4 @@
-var uboat_url = myBuildUrlWithContextPath("canStartCompetition");
+var uboat_url = myBuildUrlWithContextPath("EnigmaServer/canStartCompetition");
 
 $(function () {
     $.ajaxSetup({cache: false});
@@ -97,5 +97,5 @@ function logout() {
     var t_logout = document.createTextNode("Logout");
     btn.appendChild(t_logout);
     document.getElementById("logout").appendChild(btn);
-    document.getElementById("logout").onclick = function() {window.location = "/uboutLogout";};
+    document.getElementById("logout").onclick = function() {window.location = "EnigmaServer/uboutLogout";};
 }

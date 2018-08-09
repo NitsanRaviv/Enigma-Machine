@@ -16,7 +16,7 @@ public class preCompetitionServlet extends HttpServlet {
         setInitialCode(req);
         setStringToDecrypt(req);
         setGameLevel(req);
-        resp.sendRedirect("/theGameUboat.html");
+        resp.sendRedirect("/EnigmaServer/theGameUboat.html");
         Competition competition = Utils.CookieUtils.getCompetitionFromCookie(req.getCookies(), getServletContext());
         addCompetitionToList(competition);
     }

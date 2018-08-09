@@ -1,4 +1,4 @@
-var uboat_url = myBuildUrlWithContextPath("canStartCompetition");
+var uboat_url = myBuildUrlWithContextPath("/EnigmaServer/canStartCompetition");
 
 $(function () {
     $.ajaxSetup({cache: false});

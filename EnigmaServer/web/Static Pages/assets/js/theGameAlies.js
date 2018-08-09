@@ -1,4 +1,4 @@
-var allies_url = myBuildUrlWithContextPath("getInfoCompAlly");
+var allies_url = myBuildUrlWithContextPath("EnigmaServer/getInfoCompAlly");
 
 $(function () {
     $.ajaxSetup({cache: false});

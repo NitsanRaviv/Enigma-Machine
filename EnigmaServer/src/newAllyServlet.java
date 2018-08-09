@@ -33,6 +33,6 @@ public class newAllyServlet extends HttpServlet {
         else {
             ally.setSecondRun(true);
         }
-        resp.sendRedirect("/initiateAgents.html");
+        resp.sendRedirect("/EnigmaServer/initiateAgents.html");
     }
 }

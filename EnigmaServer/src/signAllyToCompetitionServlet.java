@@ -22,7 +22,7 @@ public class signAllyToCompetitionServlet extends HttpServlet {
         String username = CookieUtils.getUserCookie(req.getCookies()).getValue();
         Ally ally = CookieUtils.getAllyFromUserName(username, getServletContext());
         setCompAndAlly(ally, Integer.parseInt(req.getParameter("selectCompetition")));
-        resp.sendRedirect("/readyToCompetition.html");
+        resp.sendRedirect("/EnigmaServer/readyToCompetition.html");
     }
 
     private void setCompAndAlly(Ally ally, int index) {

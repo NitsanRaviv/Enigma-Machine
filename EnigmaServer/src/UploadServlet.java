@@ -58,7 +58,7 @@ public class UploadServlet extends HttpServlet {
 
         //TODO:: check xml is valid
         setCompetitionFromFile(pathToNewFile, request);
-        response.sendRedirect("/defineCompetition.html");
+        response.sendRedirect("/EnigmaServer/defineCompetition.html");
     }
 
     private void setCompetitionFromFile(String pathToNewFile, HttpServletRequest request) {

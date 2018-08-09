@@ -19,7 +19,7 @@ public class ubouatLogoutServlet extends HttpServlet {
         CookieUtils.removeCompetitionCookie(competition.getUboat(), getServletContext());
         List<Competition> competitionList = (List<Competition>)getServletContext().getAttribute("competitions");
         competitionList.remove(competition);
-        resp.sendRedirect("index.html");
+        resp.sendRedirect("/EnigmaServer/index.html");
     }
 }
 
