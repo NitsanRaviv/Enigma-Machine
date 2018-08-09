@@ -1,4 +1,4 @@
-var availableGames_url = myBuildUrlWithContextPath("/EnigmaServer/openCompetitions");
+var availableGames_url = myBuildUrlWithContextPath("EnigmaServer/openCompetitions");
 var allGames = [];
 var i = 1;
 

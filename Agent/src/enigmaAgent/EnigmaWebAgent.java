@@ -133,7 +133,7 @@ public class EnigmaWebAgent {
 
     private EnigmaWebAgent getTasksFromSocket() throws Exception {
         easyTasksList = (List<EasyTask>) inputStream.readObject();
-        this.easyTasks = new ArrayBlockingQueue<EasyTask>(10000);
+        this.easyTasks = new ArrayBlockingQueue<EasyTask>(250000);
         for (EasyTask easyTask : easyTasksList) {
             this.easyTasks.add(easyTask);
         }
@@ -151,7 +151,7 @@ public class EnigmaWebAgent {
     }
 
     private EnigmaWebAgent buildAgent() {
-        this.agentAnswers = new ArrayBlockingQueue<AgentAnswer>(10000);
+        this.agentAnswers = new ArrayBlockingQueue<AgentAnswer>(50000);
 
         //only to produce a different id for each agent
         Random random = new Random();

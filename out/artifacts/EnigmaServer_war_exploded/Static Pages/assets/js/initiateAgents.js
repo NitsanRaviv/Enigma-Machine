@@ -1,4 +1,4 @@
-var port_url =  myBuildUrlWithContextPath("/EnigmaServer/getAllyPort");
+var port_url =  myBuildUrlWithContextPath("EnigmaServer/getAllyPort");
 
 
       $(function () {
