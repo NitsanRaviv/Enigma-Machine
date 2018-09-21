@@ -7,4 +7,4 @@ you can just use the ex3 xml׳s.
 
 if you want only to use the machine than clone the EnigmaMachine module and use the ex1 xml׳s.
 
-fur further information please contact through mail.
+for further information please contact through mail.
