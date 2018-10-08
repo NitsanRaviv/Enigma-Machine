@@ -1,5 +1,5 @@
-# Enigma Machine
-# Web-Server
+# Enigma Machine -  Web-Server      
+
 
 A project me and my partner did in Java, html, css and Java Script for a Java and web development course in my Bsc.
 in order to deploy the server, clone or take artifacts and put in a tomcat webapp directory.
